@@ -20,12 +20,7 @@ public record JoinRequest(
 
         @NotNull
         @Length(min = 10, message = "10 글자 이상으로 작성해주세요.")
-        String password,
+        String password
 
-        @NotNull(message = "우편 번호를 입력해주세요.")
-        String postcode,
-
-        @NotNull(message = "상세 주소를 입력해주세요.")
-        String detail
 ) {
 }

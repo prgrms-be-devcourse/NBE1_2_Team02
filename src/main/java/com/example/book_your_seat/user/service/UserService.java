@@ -1,5 +1,7 @@
 package com.example.book_your_seat.user.service;
 
+import com.example.book_your_seat.user.controller.dto.AddAddressRequest;
+import com.example.book_your_seat.user.controller.dto.AddressResponse;
 import com.example.book_your_seat.user.controller.dto.JoinRequest;
 import com.example.book_your_seat.user.controller.dto.LoginRequest;
 import com.example.book_your_seat.user.controller.dto.UserResponse;
@@ -31,9 +33,6 @@ public class UserService {
 
         User savedUser = userRepository.save(user);
 
-        Address address = new Address(joinRequest.postcode(), joinRequest.detail(), savedUser);
-        addressRepository.save(address);
-
         return new UserResponse(savedUser.getId());
     }
 
@@ -50,5 +49,19 @@ public class UserService {
                 .orElseThrow(() -> new IllegalArgumentException("이메일 또는 비밀번호가 올바르지 않습니다."));
         return new UserResponse(user.getId());
     }
+
+    @Transactional
+    public AddressResponse addAddress(Long userId, AddAddressRequest addAddressRequest) {
+        User user = getUser(userId);
+        Address address = new Address(addAddressRequest.postcode(), addAddressRequest.detail(), user);
+        Address savedAddress = addressRepository.save(address);
+        return new AddressResponse(savedAddress.getId());
+    }
+
+    private User getUser(Long userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 유저를 찾을 수 없습니다."));
+    }
+
 
 }
