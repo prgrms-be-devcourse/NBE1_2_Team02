@@ -3,13 +3,17 @@ package com.example.book_your_seat.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import com.example.book_your_seat.user.controller.dto.AddAddressRequest;
+import com.example.book_your_seat.user.controller.dto.AddressResponse;
 import com.example.book_your_seat.user.controller.dto.JoinRequest;
 import com.example.book_your_seat.user.controller.dto.LoginRequest;
 import com.example.book_your_seat.user.controller.dto.UserResponse;
+import com.example.book_your_seat.user.domain.Address;
 import com.example.book_your_seat.user.domain.User;
 import com.example.book_your_seat.user.repository.AddressRepository;
 import com.example.book_your_seat.user.repository.UserRepository;
 import com.example.book_your_seat.user.service.UserService;
+import java.util.Optional;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -89,6 +93,35 @@ public class UserServiceTest {
         LoginRequest loginRequest = new LoginRequest("test@test.com", "wrongpassword");
 
         // when // then
-        assertThrows(Exception.class, () -> userService.login(loginRequest));
+        assertThrows(IllegalArgumentException.class, () -> userService.login(loginRequest));
+    }
+
+    @Test
+    @DisplayName("주소 추가 테스트")
+    void AddAddressTest() {
+        // given
+        AddAddressRequest addAddressRequest = new AddAddressRequest("postcode", "detail");
+
+        // when
+        AddressResponse addressResponse = userService.addAddress(existingUser.getId(), addAddressRequest);
+
+        // then
+        assertThat(addressResponse.addressId()).isEqualTo(1L);
+    }
+
+    @Test
+    @DisplayName("주소 삭제 테스트")
+    void deleteAddressTest() {
+        // given
+        AddAddressRequest addAddressRequest = new AddAddressRequest("postcode", "detail");
+        AddressResponse addressResponse = userService.addAddress(existingUser.getId(), addAddressRequest);
+
+        // when
+        userService.deleteAddress(addressResponse.addressId());
+
+        // then
+        Optional<Address> byId = addressRepository.findById(addressResponse.addressId());
+
+        assertThat(byId.isEmpty()).isTrue();
     }
 }

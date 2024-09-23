@@ -33,7 +33,7 @@ public class User extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private UserRole userRole;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private final List<Address> addressList = new ArrayList<>();
 
     public User(String nickname, String username, String email, String password) {
