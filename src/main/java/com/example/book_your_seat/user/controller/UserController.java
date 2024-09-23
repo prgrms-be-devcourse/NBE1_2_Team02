@@ -1,8 +1,15 @@
 package com.example.book_your_seat.user.controller;
 
+import static com.example.book_your_seat.common.SessionConst.LOGIN_USER;
+
 import com.example.book_your_seat.user.controller.dto.JoinRequest;
+import com.example.book_your_seat.user.controller.dto.LoginRequest;
 import com.example.book_your_seat.user.controller.dto.UserResponse;
+import com.example.book_your_seat.user.domain.User;
 import com.example.book_your_seat.user.service.UserService;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,9 +26,23 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping
-    public ResponseEntity<UserResponse> createUser(@RequestBody JoinRequest joinRequest) {
+    public ResponseEntity<UserResponse> createUser(@Valid @RequestBody JoinRequest joinRequest) {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(userService.join(joinRequest));
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<UserResponse> login(@Valid @RequestBody LoginRequest loginRequest, HttpServletRequest request) {
+        UserResponse loginUserId = userService.login(loginRequest);
+        addMemberInSession(request, loginUserId);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(loginUserId);
+    }
+
+    private void addMemberInSession(HttpServletRequest request, UserResponse loginUser) {
+        HttpSession session = request.getSession();
+        session.setAttribute(LOGIN_USER, loginUser);
     }
 }
