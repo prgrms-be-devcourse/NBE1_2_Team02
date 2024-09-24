@@ -3,6 +3,7 @@ package com.example.book_your_seat.concert.domain;
 import com.example.book_your_seat.common.entity.BaseEntity;
 import com.example.book_your_seat.coupon.domain.UserCoupon;
 import com.example.book_your_seat.review.domain.Review;
+import com.example.book_your_seat.seat.domain.Seat;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -41,6 +42,9 @@ public class Concert extends BaseEntity {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private final List<Review> reviews = new ArrayList<>();
 
+    @OneToMany(mappedBy = "concert", cascade = CascadeType.ALL)
+    private final List<Seat> seats = new ArrayList<>();
+
     public Concert(String title, int totalStock, LocalDate startDate, LocalDate endDate, int price, int time) {
         this.title = title;
         this.totalStock = totalStock;
@@ -56,5 +60,9 @@ public class Concert extends BaseEntity {
 
     public void addReview(Review review) {
         this.reviews.add(review);
+    }
+
+    public void addSeat(Seat seat) {
+        this.seats.add(seat);
     }
 }
