@@ -12,7 +12,7 @@ import com.example.book_your_seat.user.domain.Address;
 import com.example.book_your_seat.user.domain.User;
 import com.example.book_your_seat.user.repository.AddressRepository;
 import com.example.book_your_seat.user.repository.UserRepository;
-import com.example.book_your_seat.user.service.UserService;
+import com.example.book_your_seat.user.service.UserCommandServiceImpl;
 import java.util.Optional;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -24,10 +24,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 @SpringBootTest
 @Transactional
-public class UserServiceTest {
+public class UserCommandServiceImplTest {
 
     @Autowired
-    private UserService userService;
+    private UserCommandServiceImpl userCommandServiceImpl;
 
     @Autowired
     private UserRepository userRepository;
@@ -56,7 +56,7 @@ public class UserServiceTest {
         JoinRequest joinRequest = new JoinRequest("nickname", "username", "test2@test.com", "passwordpassword");
 
         // when
-        UserResponse response = userService.join(joinRequest);
+        UserResponse response = userCommandServiceImpl.join(joinRequest);
 
         // then
         assertThat(response).isNotNull();
@@ -70,7 +70,7 @@ public class UserServiceTest {
         JoinRequest joinRequest = new JoinRequest("nickname", "username", "test@test.com", "passwordpassword");
 
         // when // then
-        assertThrows(IllegalArgumentException.class, () -> userService.join(joinRequest));
+        assertThrows(IllegalArgumentException.class, () -> userCommandServiceImpl.join(joinRequest));
     }
 
     @Test
@@ -80,7 +80,7 @@ public class UserServiceTest {
         LoginRequest loginRequest = new LoginRequest("test@test.com", "passwordpassword");
 
         // when
-        UserResponse response = userService.login(loginRequest);
+        UserResponse response = userCommandServiceImpl.login(loginRequest);
 
         // then
         assertThat(response.userId()).isEqualTo(existingUser.getId());
@@ -93,7 +93,7 @@ public class UserServiceTest {
         LoginRequest loginRequest = new LoginRequest("test@test.com", "wrongpassword");
 
         // when // then
-        assertThrows(IllegalArgumentException.class, () -> userService.login(loginRequest));
+        assertThrows(IllegalArgumentException.class, () -> userCommandServiceImpl.login(loginRequest));
     }
 
     @Test
@@ -103,7 +103,7 @@ public class UserServiceTest {
         AddAddressRequest addAddressRequest = new AddAddressRequest("postcode", "detail");
 
         // when
-        AddressResponse addressResponse = userService.addAddress(existingUser.getId(), addAddressRequest);
+        AddressResponse addressResponse = userCommandServiceImpl.addAddress(existingUser.getId(), addAddressRequest);
 
         // then
         assertThat(addressResponse.addressId()).isEqualTo(1L);
@@ -114,10 +114,10 @@ public class UserServiceTest {
     void deleteAddressTest() {
         // given
         AddAddressRequest addAddressRequest = new AddAddressRequest("postcode", "detail");
-        AddressResponse addressResponse = userService.addAddress(existingUser.getId(), addAddressRequest);
+        AddressResponse addressResponse = userCommandServiceImpl.addAddress(existingUser.getId(), addAddressRequest);
 
         // when
-        userService.deleteAddress(addressResponse.addressId());
+        userCommandServiceImpl.deleteAddress(addressResponse.addressId());
 
         // then
         Optional<Address> byId = addressRepository.findById(addressResponse.addressId());

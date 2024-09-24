@@ -7,7 +7,7 @@ import com.example.book_your_seat.user.controller.dto.AddressResponse;
 import com.example.book_your_seat.user.controller.dto.JoinRequest;
 import com.example.book_your_seat.user.controller.dto.LoginRequest;
 import com.example.book_your_seat.user.controller.dto.UserResponse;
-import com.example.book_your_seat.user.service.UserService;
+import com.example.book_your_seat.user.service.UserCommandServiceImpl;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class UserController {
 
-    private final UserService userService;
+    private final UserCommandServiceImpl userCommandServiceImpl;
 
     @PostMapping
     public ResponseEntity<UserResponse> createUser(
@@ -34,7 +34,7 @@ public class UserController {
     ) {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(userService.join(joinRequest));
+                .body(userCommandServiceImpl.join(joinRequest));
     }
 
     @PostMapping("/login")
@@ -42,7 +42,7 @@ public class UserController {
             @Valid @RequestBody LoginRequest loginRequest,
             HttpServletRequest request
     ) {
-        UserResponse loginUserId = userService.login(loginRequest);
+        UserResponse loginUserId = userCommandServiceImpl.login(loginRequest);
         addMemberInSession(request, loginUserId);
         return ResponseEntity
                 .status(HttpStatus.OK)
@@ -61,7 +61,7 @@ public class UserController {
     ) {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(userService.addAddress(userId, addAddressRequest));
+                .body(userCommandServiceImpl.addAddress(userId, addAddressRequest));
     }
 
     @DeleteMapping("/address/{addressId}")
@@ -70,6 +70,6 @@ public class UserController {
     ) {
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(userService.deleteAddress(addressId));
+                .body(userCommandServiceImpl.deleteAddress(addressId));
     }
 }

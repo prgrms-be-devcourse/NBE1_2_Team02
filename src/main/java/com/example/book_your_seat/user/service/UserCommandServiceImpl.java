@@ -14,14 +14,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-@Transactional(readOnly = true)
+@Transactional
 @RequiredArgsConstructor
-public class UserService {
+public class UserCommandServiceImpl implements UserCommandService {
 
     private final UserRepository userRepository;
     private final AddressRepository addressRepository;
 
-    @Transactional
     public UserResponse join(JoinRequest joinRequest) {
         checkEmail(joinRequest.email());
         User user = new User(
@@ -42,7 +41,6 @@ public class UserService {
         }
     }
 
-    @Transactional
     public UserResponse login(LoginRequest loginRequest) {
         User user = userRepository.findByEmail(loginRequest.email())
                 .filter(m -> m.getPassword().equals(loginRequest.password()))
@@ -50,7 +48,6 @@ public class UserService {
         return new UserResponse(user.getId());
     }
 
-    @Transactional
     public AddressResponse addAddress(Long userId, AddAddressRequest addAddressRequest) {
         User user = getUser(userId);
         Address address = new Address(addAddressRequest.postcode(), addAddressRequest.detail(), user);
@@ -63,7 +60,6 @@ public class UserService {
                 .orElseThrow(() -> new IllegalArgumentException("해당 유저를 찾을 수 없습니다."));
     }
 
-    @Transactional
     public AddressResponse deleteAddress(Long addressId) {
         addressRepository.deleteById(addressId);
         return new AddressResponse(addressId);
