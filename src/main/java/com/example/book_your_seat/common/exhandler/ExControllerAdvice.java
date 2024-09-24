@@ -15,7 +15,7 @@ public class ExControllerAdvice {
     public ResponseEntity<ErrorResult> catchError(IllegalArgumentException e) {
         log.error("[exceptionHandle] ex", e);
 
-        ErrorResult errorResult = new ErrorResult("BAD", e.getMessage());
+        ErrorResult errorResult = new ErrorResult(HttpStatus.BAD_REQUEST.name(), e.getMessage());
         return new ResponseEntity<>(errorResult, HttpStatus.BAD_REQUEST);
     }
 }
