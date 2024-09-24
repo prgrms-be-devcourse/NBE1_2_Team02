@@ -1,5 +1,6 @@
 package com.example.book_your_seat.reservation.domain;
 
+import com.example.book_your_seat.payment.domain.Payment;
 import com.example.book_your_seat.user.domain.Address;
 import com.example.book_your_seat.user.domain.User;
 import jakarta.persistence.CascadeType;
@@ -40,6 +41,10 @@ public class Reservation {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "address_id")
     private Address address;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "payment_id")
+    private Payment payment;
 
     @OneToMany(mappedBy = "reservation", cascade = CascadeType.ALL)
     private final List<ConcertReservation> concertReservations = new ArrayList<>();
