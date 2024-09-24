@@ -13,7 +13,10 @@ import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.IntStream;
+
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -28,18 +31,18 @@ public class Concert extends BaseEntity {
     private Long id;
 
     private String title;
-    private int totalStock;
+    private Integer totalStock;
 
     private LocalDate startDate;
     private LocalDate endDate;
 
-    private int price;
+    private Integer price;
     private int time;
 
     @OneToMany(mappedBy = "concert", cascade = CascadeType.ALL)
     private final List<LikeConcert> likeConcerts = new ArrayList<>();
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "concert", cascade = CascadeType.ALL)
     private final List<Review> reviews = new ArrayList<>();
 
     @OneToMany(mappedBy = "concert", cascade = CascadeType.ALL)
@@ -55,6 +58,12 @@ public class Concert extends BaseEntity {
         this.endDate = endDate;
         this.price = price;
         this.time = time;
+        initializeSeats(); // 혹시라도 Seat 가 100개를 초과하지 않을까
+    }
+
+    private void initializeSeats() {
+        IntStream.range(0, 100)
+                .forEach(i -> new Seat(this));
     }
 
     public void addLikeConcert(LikeConcert likeConcert) {
