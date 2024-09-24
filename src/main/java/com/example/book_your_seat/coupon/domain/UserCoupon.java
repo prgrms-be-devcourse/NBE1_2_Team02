@@ -1,7 +1,7 @@
-package com.example.book_your_seat.user.domain;
+package com.example.book_your_seat.coupon.domain;
 
 import com.example.book_your_seat.common.entity.BaseEntity;
-import com.example.book_your_seat.reservation.domain.Reservation;
+import com.example.book_your_seat.user.domain.User;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -10,7 +10,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,27 +17,24 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Address extends BaseEntity {
+public class UserCoupon extends BaseEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "address_id")
+    @Column(name = "user_coupon_id")
     private Long id;
-
-    private String postcode;
-    private String detail;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "reservation_id")
-    private Reservation reservation;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "coupon_id")
+    private Coupon coupon;
 
-    public Address(String postcode, String detail, User user) {
-        this.postcode = postcode;
-        this.detail = detail;
+    public UserCoupon(User user, Coupon coupon) {
         this.user = user;
-        user.setAddress(this);
+        this.coupon = coupon;
+        user.adduserCoupon(this);
+        coupon.addUserCoupon(this);
     }
 }
