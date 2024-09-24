@@ -1,12 +1,17 @@
 package com.example.book_your_seat.concert.domain;
 
 import com.example.book_your_seat.common.entity.BaseEntity;
+import com.example.book_your_seat.coupon.domain.UserCoupon;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -29,6 +34,9 @@ public class Concert extends BaseEntity {
     private int price;
     private int time;
 
+    @OneToMany(mappedBy = "concert", cascade = CascadeType.ALL)
+    private final List<LikeConcert> likeConcerts = new ArrayList<>();
+
     public Concert(String title, int totalStock, LocalDate startDate, LocalDate endDate, int price, int time) {
         this.title = title;
         this.totalStock = totalStock;
@@ -36,5 +44,9 @@ public class Concert extends BaseEntity {
         this.endDate = endDate;
         this.price = price;
         this.time = time;
+    }
+
+    public void addLikeConcert(LikeConcert likeConcert) {
+        this.likeConcerts.add(likeConcert);
     }
 }

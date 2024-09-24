@@ -1,6 +1,7 @@
 package com.example.book_your_seat.user.domain;
 
 import com.example.book_your_seat.common.entity.BaseEntity;
+import com.example.book_your_seat.concert.domain.LikeConcert;
 import com.example.book_your_seat.coupon.domain.UserCoupon;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -40,6 +41,9 @@ public class User extends BaseEntity {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private final List<UserCoupon> userCoupons = new ArrayList<>();
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private final List<LikeConcert> likeConcerts = new ArrayList<>();
+
     public User(String nickname, String username, String email, String password) {
         this.nickname = nickname;
         this.username = username;
@@ -50,5 +54,13 @@ public class User extends BaseEntity {
 
     public void setAddress(Address address) {
         this.addressList.add(address);
+    }
+
+    public void adduserCoupon(UserCoupon userCoupon) {
+        this.userCoupons.add(userCoupon);
+    }
+
+    public void addLikeConcert(LikeConcert likeConcert) {
+        this.likeConcerts.add(likeConcert);
     }
 }

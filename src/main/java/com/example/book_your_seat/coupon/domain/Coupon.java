@@ -37,4 +37,8 @@ public class Coupon extends BaseEntity {
         this.amount = amount;
         this.discountRate = discountRate;
     }
+
+    public void addUserCoupon(UserCoupon userCoupon) {
+        this.userCoupons.add(userCoupon);
+    }
 }
