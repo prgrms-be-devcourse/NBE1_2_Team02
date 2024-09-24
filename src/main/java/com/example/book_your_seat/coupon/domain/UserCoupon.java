@@ -1,5 +1,6 @@
 package com.example.book_your_seat.coupon.domain;
 
+import com.example.book_your_seat.common.entity.BaseEntity;
 import com.example.book_your_seat.user.domain.User;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -16,7 +17,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class UserCoupon {
+public class UserCoupon extends BaseEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_coupon_id")
