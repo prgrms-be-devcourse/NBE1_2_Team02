@@ -1,0 +1,41 @@
+package com.example.book_your_seat.coupon.service;
+
+import com.example.book_your_seat.coupon.controller.dto.CouponCreateRequest;
+import com.example.book_your_seat.coupon.controller.dto.CouponResponse;
+import com.example.book_your_seat.coupon.domain.Coupon;
+import com.example.book_your_seat.coupon.domain.UserCoupon;
+import com.example.book_your_seat.coupon.repository.CouponRepository;
+import com.example.book_your_seat.coupon.repository.UserCouponRepository;
+import com.example.book_your_seat.user.domain.User;
+import com.example.book_your_seat.user.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+@Service
+@Transactional
+@RequiredArgsConstructor
+public class CouponCommandServiceImpl implements CouponCommandService {
+
+    private final CouponRepository couponRepository;
+    private final UserCouponRepository userCouponRepository;
+    private final UserRepository userRepository;
+
+    @Override
+    public CouponResponse createCoupon(CouponCreateRequest couponCreateRequest) {
+        Coupon coupon = couponCreateRequest.toCoupon();
+        Coupon savedCoupon = couponRepository.save(coupon);
+        return new CouponResponse(coupon.getId());
+    }
+
+    @Override
+    public CouponResponse issueCoupon(Long userId, Long couponId) {
+        return null;
+    }
+
+    private User getUser(Long userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 유저를 찾을 수 없습니다."));
+    }
+
+}
