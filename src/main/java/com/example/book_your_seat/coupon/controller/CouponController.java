@@ -39,7 +39,7 @@ public class CouponController {
     }
 
     @PostMapping("/{couponId}")
-    public ResponseEntity<CouponResponse> issueCoupone(
+    public ResponseEntity<CouponResponse> issueCoupon(
             @PathVariable("couponId") Long couponId,
             HttpServletRequest request
     ) {

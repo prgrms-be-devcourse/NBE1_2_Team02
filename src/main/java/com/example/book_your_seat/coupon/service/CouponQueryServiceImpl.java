@@ -23,7 +23,7 @@ public class CouponQueryServiceImpl implements CouponQueryService {
         User user = getUser(userId);
         return user.getUserCoupons().stream()
                 .map(UserCoupon::getCoupon)
-                .map(it -> new CouponDetailResponse(it.getDiscountRate().getStringForm(), it.getCreatedAt().toLocalDate()))
+                .map(coupon -> new CouponDetailResponse(coupon.getDiscountRate().getStringForm(), coupon.getCreatedAt().toLocalDate()))
                 .toList();
     }
 
