@@ -5,6 +5,6 @@ import com.example.book_your_seat.concert.controller.dto.ConcertResponse;
 
 public interface ConcertCommandService {
 
-    ConcertResponse add(AddConcertRequest request);
+    Long add(AddConcertRequest request);
     void delete(Long id);
 }

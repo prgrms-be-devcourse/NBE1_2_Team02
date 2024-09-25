@@ -7,27 +7,32 @@ import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDate;
 
-import static com.example.book_your_seat.concert.ConcertConst.TOTAL_STOCK;
+import static com.example.book_your_seat.concert.ConcertConst.*;
 
 public record AddConcertRequest(
 
-        @NotBlank
+        @NotBlank(message = ENTER_CONCERT_TITLE)
         String title,
 
-        @NotNull
+        @NotNull(message = ENTER_CONCERT_START_DATE)
         LocalDate startDate,
 
-        @NotNull
+        @NotNull(message = ENTER_CONCERT_END_DATE)
         LocalDate endDate,
 
-        @NotNull
+        @NotNull(message = ENTER_CONCERT_PRICE)
         Integer price,
 
-        @NotNull
-        Integer time
+        @NotNull(message = ENTER_CONCERT_RUNNING_TIME)
+        Integer startHour
 ) {
         public static Concert to(final AddConcertRequest request) {
-                return new Concert(request.title, TOTAL_STOCK,
-                        request.startDate, request.endDate, request.price, request.time);
+                return new Concert(
+                        request.title,
+                        request.startDate,
+                        request.endDate,
+                        request.price,
+                        request.startHour
+                );
         }
 }

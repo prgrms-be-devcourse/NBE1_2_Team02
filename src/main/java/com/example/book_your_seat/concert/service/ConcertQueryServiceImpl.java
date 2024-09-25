@@ -8,7 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-import static com.example.book_your_seat.concert.ConcertConst.NO_DATA_IN_REPOSITORY;
+import static com.example.book_your_seat.concert.ConcertConst.INVALID_CONCERT_ID;
 
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
@@ -28,6 +28,6 @@ public class ConcertQueryServiceImpl implements ConcertQueryService {
     public ConcertResponse findById(final Long id) {
         return concertRepository.findById(id)
                 .map(ConcertResponse::from)
-                .orElseThrow(() -> new IllegalArgumentException(NO_DATA_IN_REPOSITORY));
+                .orElseThrow(() -> new IllegalArgumentException(INVALID_CONCERT_ID + id));
     }
 }

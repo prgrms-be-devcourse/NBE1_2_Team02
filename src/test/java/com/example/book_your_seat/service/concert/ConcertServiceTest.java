@@ -1,4 +1,4 @@
-package com.example.book_your_seat.service;
+package com.example.book_your_seat.service.concert;
 
 import com.example.book_your_seat.IntegerTestSupport;
 import com.example.book_your_seat.concert.controller.dto.AddConcertRequest;
@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 
@@ -36,11 +37,12 @@ class ConcertServiceTest extends IntegerTestSupport {
         );
 
         // when
-        ConcertResponse response = concertCommandService.add(request);
+        Long id = concertCommandService.add(request);
+        ConcertResponse response = concertQueryService.findById(id);
 
         // then  쿼리 101개 전송.. Concert 1, Seat 100..
         Assertions.assertThat(response)
-                .extracting("title", "startDate", "endDate", "price", "time")
+                .extracting("title", "startDate", "endDate", "price", "startHour")
                         .containsExactly(
                                 "제목1",
                                 LocalDate.of(2024, 9, 24),
@@ -48,6 +50,26 @@ class ConcertServiceTest extends IntegerTestSupport {
                                 10000,
                                 120
                         );
+    }
+
+    @DisplayName("Concert 를 등록하면 예매 가능 날짜는 공연 시작일로부터 일주일 전, 낮 12시로 설정된다.")
+    @Test
+    void reservationTimeTest() {
+        // given
+        AddConcertRequest request = new AddConcertRequest(
+                "제목1",
+                LocalDate.of(2024, 9, 24),
+                LocalDate.of(2024,9,25),
+                10000,
+                14
+        );
+        Long id = concertCommandService.add(request);
+
+        // when
+        ConcertResponse response = concertQueryService.findById(id);
+
+        Assertions.assertThat(response.getReservationStartAt())
+                .isEqualTo(LocalDateTime.of(2024, 9, 17, 12, 0, 0));
     }
 
     @DisplayName("Concert 전체 목록을 조회한다.")
@@ -91,14 +113,14 @@ class ConcertServiceTest extends IntegerTestSupport {
                 10000,
                 120
         );
-        ConcertResponse response = concertCommandService.add(request);
+        Long id = concertCommandService.add(request);
 
         // when
-        ConcertResponse result = concertQueryService.findById(response.getId());
+        ConcertResponse result = concertQueryService.findById(id);
 
         // then
         Assertions.assertThat(result)
-                .extracting("title", "startDate", "endDate", "price", "time")
+                .extracting("title", "startDate", "endDate", "price", "startHour")
                 .containsExactly(
                         "제목1",
                         LocalDate.of(2024, 9, 24),
@@ -121,15 +143,14 @@ class ConcertServiceTest extends IntegerTestSupport {
                 10000,
                 120
         );
-        ConcertResponse response = concertCommandService.add(request);
+        Long id = concertCommandService.add(request);
 
         // when
-        concertCommandService.delete(response.getId());
-        Long deletedId = response.getId();
+        concertCommandService.delete(id);
 
         // then
         Assertions.assertThatExceptionOfType(IllegalArgumentException.class)
-                .isThrownBy(() -> concertQueryService.findById(deletedId));
+                .isThrownBy(() -> concertQueryService.findById(id));
     }
 
 }

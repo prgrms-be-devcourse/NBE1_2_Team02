@@ -33,11 +33,11 @@ public class ConcertController {
     }
 
     @PostMapping
-    public ResponseEntity<ConcertResponse> addConcert(
+    public ResponseEntity<Void> addConcert(
             @Valid @RequestBody final AddConcertRequest request
     ) {
-        ConcertResponse response = concertCommandService.add(request);
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        concertCommandService.add(request);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @DeleteMapping("/{concertId}")
