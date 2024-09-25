@@ -1,11 +1,10 @@
 package com.example.book_your_seat.coupon.service;
 
 import com.example.book_your_seat.coupon.domain.UserCoupon;
-
-import java.lang.reflect.Member;
+import com.example.book_your_seat.user.domain.User;
 
 public interface CouponCommandService {
 
-    UserCoupon useCoupon(Member member, Long couponId);
+    void useCoupon(User user, Long couponId);
 
 }
