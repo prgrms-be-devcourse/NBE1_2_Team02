@@ -10,8 +10,10 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+
 import java.util.ArrayList;
 import java.util.List;
+
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -40,5 +42,9 @@ public class Coupon extends BaseEntity {
 
     public void addUserCoupon(UserCoupon userCoupon) {
         this.userCoupons.add(userCoupon);
+    }
+
+    public void decreaseAmount() {
+        this.amount -= 1;
     }
 }
