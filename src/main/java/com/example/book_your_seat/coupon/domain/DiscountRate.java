@@ -1,7 +1,9 @@
 package com.example.book_your_seat.coupon.domain;
 
 import java.util.Arrays;
+import lombok.Getter;
 
+@Getter
 public enum DiscountRate {
     FIVE(5),
     TEN(10),
