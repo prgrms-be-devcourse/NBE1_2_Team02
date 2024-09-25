@@ -25,12 +25,23 @@ public class CouponCommandServiceImpl implements CouponCommandService {
     public CouponResponse createCoupon(CouponCreateRequest couponCreateRequest) {
         Coupon coupon = couponCreateRequest.toCoupon();
         Coupon savedCoupon = couponRepository.save(coupon);
-        return new CouponResponse(coupon.getId());
+        return new CouponResponse(savedCoupon.getId());
     }
 
     @Override
     public CouponResponse issueCoupon(Long userId, Long couponId) {
-        return null;
+        Coupon coupon = getCoupon(couponId);
+        User user = getUser(userId);
+
+        coupon.issue();
+        userCouponRepository.save(new UserCoupon(user, coupon));
+
+        return new CouponResponse(coupon.getId());
+    }
+
+    private Coupon getCoupon(Long couponId) {
+        return couponRepository.findById(couponId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 쿠폰을 찾을 수 없습니다."));
     }
 
     private User getUser(Long userId) {
