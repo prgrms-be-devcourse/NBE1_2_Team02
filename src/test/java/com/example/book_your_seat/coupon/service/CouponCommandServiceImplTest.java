@@ -55,7 +55,7 @@ class CouponCommandServiceImplTest {
     @DisplayName("쿠폰 발급 테스트")
     void coupon() throws Exception {
        //given
-        couponCommandService.useCoupon(user, coupon.getId());
+        couponCommandService.useCoupon(user.getId(), coupon.getId());
 
        //when
         entityManager.flush();
@@ -71,7 +71,7 @@ class CouponCommandServiceImplTest {
     @DisplayName("쿠폰 발급 두번할때 예외처리")
     public void couponException() throws Exception {
        //given
-        couponCommandService.useCoupon(user, coupon.getId());
+        couponCommandService.useCoupon(user.getId(), coupon.getId());
 
 
         //when
@@ -80,7 +80,7 @@ class CouponCommandServiceImplTest {
 
        //then
         org.junit.jupiter.api.Assertions.assertThrows(IllegalArgumentException.class, () -> {
-            couponCommandService.useCoupon(user, coupon.getId());
+            couponCommandService.useCoupon(user.getId(), coupon.getId());
         });
     }
 

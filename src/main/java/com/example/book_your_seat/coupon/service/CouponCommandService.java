@@ -6,6 +6,6 @@ import com.example.book_your_seat.user.domain.User;
 
 public interface CouponCommandService {
 
-    CouponResponse useCoupon(User user, Long couponId);
+    CouponResponse useCoupon(Long userId, Long couponId);
 
 }
