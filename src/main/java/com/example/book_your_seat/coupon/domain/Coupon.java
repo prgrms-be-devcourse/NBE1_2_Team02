@@ -16,6 +16,8 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import static com.example.book_your_seat.coupon.CouponConst.STOCK_ZERO;
+
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -41,4 +43,13 @@ public class Coupon extends BaseEntity {
     public void addUserCoupon(UserCoupon userCoupon) {
         this.userCoupons.add(userCoupon);
     }
+
+    public void removeCoupon(int quantity){
+        if(amount - quantity < 0){
+            throw new IllegalArgumentException(STOCK_ZERO);
+        }
+
+        amount -= quantity;
+    }
+
 }
