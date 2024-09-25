@@ -12,11 +12,16 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.IntStream;
+
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import static com.example.book_your_seat.concert.ConcertConst.*;
 
 @Entity
 @Getter
@@ -28,13 +33,18 @@ public class Concert extends BaseEntity {
     private Long id;
 
     private String title;
-    private int totalStock;
+
+    private Integer totalStock;
 
     private LocalDate startDate;
+
     private LocalDate endDate;
 
-    private int price;
-    private int time;
+    private Integer price;
+
+    private int startHour;  // Hour, 시작시간
+
+    private LocalDateTime reservationStartAt;
 
     @OneToMany(mappedBy = "concert", cascade = CascadeType.ALL)
     private final List<LikeConcert> likeConcerts = new ArrayList<>();
@@ -42,19 +52,38 @@ public class Concert extends BaseEntity {
     @OneToMany(mappedBy = "concert", cascade = CascadeType.ALL)
     private final List<Review> reviews = new ArrayList<>();
 
-    @OneToMany(mappedBy = "concert", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "concert", cascade = CascadeType.ALL, orphanRemoval = true)
     private final List<Seat> seats = new ArrayList<>();
 
     @OneToMany(mappedBy = "concert", cascade = CascadeType.ALL)
     private final List<ConcertReservation> concertReservations = new ArrayList<>();
 
-    public Concert(String title, int totalStock, LocalDate startDate, LocalDate endDate, int price, int time) {
+    public Concert(String title, LocalDate startDate, LocalDate endDate, int price, int startHour) {
         this.title = title;
-        this.totalStock = totalStock;
+        this.totalStock = TOTAL_STOCK;
         this.startDate = startDate;
         this.endDate = endDate;
         this.price = price;
-        this.time = time;
+        this.startHour = startHour;
+        this.reservationStartAt = setReservationTime(startDate);
+        initializeSeats(); // 혹시라도 Seat 가 100개를 초과하지 않을까
+    }
+
+    private LocalDateTime setReservationTime(LocalDate startDate) {
+        return LocalDateTime.of(
+                startDate.getYear(),
+                startDate.getMonth(),
+                startDate.getDayOfMonth(),
+                RESERVATION_START_HOUR,
+                RESERVATION_START_MINUTE,
+                RESERVATION_START_SECOND
+        )
+                .minusWeeks(1);
+    }
+
+    private void initializeSeats() {
+        IntStream.range(ZERO, TOTAL_STOCK)
+                .forEach(i -> new Seat(this));
     }
 
     public void addLikeConcert(LikeConcert likeConcert) {
