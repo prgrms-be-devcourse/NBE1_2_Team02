@@ -8,5 +8,7 @@ public final class CouponConst {
 
     public static final String VALIDATION_COUPON = "이미 쿠폰을 받으셨습니다";
 
+    public static final String COUPON_MESSAGE = "축하합니다 쿠폰에 당첨되었습니다";
+
     private CouponConst() {}
 }

@@ -52,4 +52,5 @@ public class Coupon extends BaseEntity {
         amount -= quantity;
     }
 
+
 }
