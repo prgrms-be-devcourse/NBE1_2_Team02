@@ -1,6 +1,8 @@
 package com.example.book_your_seat.concert.controller.dto;
 
 import com.example.book_your_seat.concert.domain.Concert;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
@@ -23,9 +25,12 @@ public record AddConcertRequest(
         @NotNull(message = ENTER_CONCERT_PRICE)
         Integer price,
 
-        @NotNull(message = ENTER_CONCERT_RUNNING_TIME)
+        @NotNull(message = ENTER_CONCERT_START_HOUR)
+        @Min(value = 0, message = INVALID_CONCERT_START_HOUR)
+        @Max(value = 24, message = INVALID_CONCERT_START_HOUR)
         Integer startHour
 ) {
+
         public static Concert to(final AddConcertRequest request) {
                 return new Concert(
                         request.title,
