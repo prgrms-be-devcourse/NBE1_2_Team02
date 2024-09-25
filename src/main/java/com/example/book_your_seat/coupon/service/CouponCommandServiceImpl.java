@@ -29,15 +29,36 @@ public class CouponCommandServiceImpl implements CouponCommandService {
         checkDuplicate(user.getId(), couponId);
 
         //수량 체크
-        if(coupon.getAmount() > 0) {
-            coupon.decreaseAmount();
-        } else {
+        if(coupon.getAmount() <= 0) {
             throw new IllegalArgumentException(COUPON_OUT_OF_STOCK);
         }
+
+        coupon.decreaseAmount();
 
         return new UserCouponResponse(
                 userCouponRepository.save(new UserCoupon(user, coupon)).getId()
         );
+    }
+
+    //낙관적 락
+    public UserCouponResponse issueCouponWithOptimistic(User user, Long couponId) {
+
+        Coupon coupon = couponQueryService.findByIdWithOptimistic(couponId);
+
+        //선착순 쿠폰 중복수령 방지
+        checkDuplicate(user.getId(), couponId);
+
+        //수량 체크
+        if(coupon.getAmount() <= 0) {
+            throw new IllegalArgumentException(COUPON_OUT_OF_STOCK);
+        }
+
+        coupon.decreaseAmount();
+
+        return new UserCouponResponse(
+                userCouponRepository.save(new UserCoupon(user, coupon)).getId()
+        );
+
     }
 
     private void checkDuplicate(Long userId, Long couponId) {

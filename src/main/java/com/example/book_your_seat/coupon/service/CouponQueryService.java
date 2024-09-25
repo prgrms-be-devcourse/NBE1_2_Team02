@@ -4,4 +4,5 @@ import com.example.book_your_seat.coupon.domain.Coupon;
 
 public interface CouponQueryService {
     Coupon findByIdWithPessimistic(Long couponId);
+    Coupon findByIdWithOptimistic(Long couponId);
 }

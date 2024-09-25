@@ -20,4 +20,10 @@ public class CouponQueryServiceImpl implements CouponQueryService {
                 .orElseThrow(() -> new IllegalArgumentException(INVALID_COUPON_ID + couponId));
     }
 
+    @Override
+    public Coupon findByIdWithOptimistic(Long couponId) {
+        return couponRepository.findByIdWithOptimistic(couponId)
+                .orElseThrow(() -> new IllegalArgumentException(INVALID_COUPON_ID + couponId));
+    }
+
 }

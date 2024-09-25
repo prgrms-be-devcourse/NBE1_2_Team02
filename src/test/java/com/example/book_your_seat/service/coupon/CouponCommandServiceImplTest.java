@@ -5,6 +5,7 @@ import com.example.book_your_seat.coupon.domain.Coupon;
 import com.example.book_your_seat.coupon.domain.DiscountRate;
 import com.example.book_your_seat.coupon.repository.CouponRepository;
 import com.example.book_your_seat.coupon.service.CouponCommandServiceImpl;
+import com.example.book_your_seat.coupon.facade.OptimisticLockCouponFacade;
 import com.example.book_your_seat.user.domain.User;
 import com.example.book_your_seat.user.repository.UserRepository;
 import org.junit.jupiter.api.*;
@@ -21,6 +22,9 @@ import java.util.concurrent.Executors;
 public class CouponCommandServiceImplTest extends IntegerTestSupport {
     @Autowired
     private CouponCommandServiceImpl couponCommandServiceImpl;
+
+    @Autowired
+    private OptimisticLockCouponFacade optimisticLockCouponFacade;
 
     @Autowired
     private CouponRepository couponRepository;
@@ -61,6 +65,34 @@ public class CouponCommandServiceImplTest extends IntegerTestSupport {
             executorService.submit(() -> {
                 try {
                     couponCommandServiceImpl.issueCouponWithPessimistic(testUser, testCoupon.getId());
+                } finally {
+                    latch.countDown();
+                }
+            });
+        }
+
+        latch.await();
+
+        long stopTime = System.currentTimeMillis();
+        System.out.println(stopTime - startTime + "ms");
+
+        Coupon updateCoupon = couponRepository.findById(testCoupon.getId()).orElseThrow();
+        Assertions.assertEquals(0, updateCoupon.getAmount());
+    }
+
+    @Test
+    @DisplayName("낙관적 락을 이용하여 동시에 100명이 쿠폰 발급을 요청한다.")
+    public void issueCouponWithOptimisticTest() throws InterruptedException {
+        ExecutorService executorService = Executors.newFixedThreadPool(THREAD_COUNT);
+        CountDownLatch latch = new CountDownLatch(testUsers.size());
+
+        long startTime = System.currentTimeMillis();
+        for (User testUser : testUsers) {
+            executorService.submit(() -> {
+                try {
+                    optimisticLockCouponFacade.issueCouponWithOptimistic(testUser, testCoupon.getId());
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
                 } finally {
                     latch.countDown();
                 }
