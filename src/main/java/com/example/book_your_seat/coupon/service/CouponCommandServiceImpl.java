@@ -1,5 +1,9 @@
 package com.example.book_your_seat.coupon.service;
 
+import static com.example.book_your_seat.coupon.CouponConst.ALREADY_ISSUED_USER;
+import static com.example.book_your_seat.coupon.CouponConst.COUPON_NOT_FOUND;
+import static com.example.book_your_seat.coupon.CouponConst.USER_NOT_FOUND;
+
 import com.example.book_your_seat.coupon.controller.dto.CouponCreateRequest;
 import com.example.book_your_seat.coupon.controller.dto.CouponResponse;
 import com.example.book_your_seat.coupon.domain.Coupon;
@@ -43,18 +47,18 @@ public class CouponCommandServiceImpl implements CouponCommandService {
 
     private void checkAlreadyIssuedUser(Long userId, Long couponId) {
         if (userCouponRepository.existsByUserIdAndCouponId(userId, couponId)) {
-            throw new IllegalArgumentException("이미 쿠폰을 발급 받은 유저입니다.");
+            throw new IllegalArgumentException(ALREADY_ISSUED_USER);
         }
     }
 
     private Coupon getCoupon(Long couponId) {
         return couponRepository.findById(couponId)
-                .orElseThrow(() -> new IllegalArgumentException("해당 쿠폰을 찾을 수 없습니다."));
+                .orElseThrow(() -> new IllegalArgumentException(COUPON_NOT_FOUND));
     }
 
     private User getUser(Long userId) {
         return userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("해당 유저를 찾을 수 없습니다."));
+                .orElseThrow(() -> new IllegalArgumentException(USER_NOT_FOUND));
     }
 
 }
