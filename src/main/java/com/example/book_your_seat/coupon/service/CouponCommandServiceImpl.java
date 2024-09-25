@@ -30,6 +30,8 @@ public class CouponCommandServiceImpl implements CouponCommandService {
 
     @Override
     public CouponResponse issueCoupon(Long userId, Long couponId) {
+        checkAlreadyIssuedUser(userId, couponId);
+
         Coupon coupon = getCoupon(couponId);
         User user = getUser(userId);
 
@@ -37,6 +39,12 @@ public class CouponCommandServiceImpl implements CouponCommandService {
         userCouponRepository.save(new UserCoupon(user, coupon));
 
         return new CouponResponse(coupon.getId());
+    }
+
+    private void checkAlreadyIssuedUser(Long userId, Long couponId) {
+        if (userCouponRepository.existsByUserIdAndCouponId(userId, couponId)) {
+            throw new IllegalArgumentException("이미 쿠폰을 발급 받은 유저입니다.");
+        }
     }
 
     private Coupon getCoupon(Long couponId) {
