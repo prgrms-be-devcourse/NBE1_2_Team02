@@ -1,5 +1,6 @@
 package com.example.book_your_seat.coupon.service;
 
+import com.example.book_your_seat.coupon.controller.Dto.CouponResponse;
 import com.example.book_your_seat.coupon.domain.Coupon;
 import com.example.book_your_seat.coupon.domain.UserCoupon;
 import com.example.book_your_seat.coupon.repository.CouponRepository;
@@ -24,11 +25,13 @@ public class CouponCommandServiceImpl implements CouponCommandService{
 
     @Override
     @Transactional
-    public void useCoupon(User user, Long couponId) {
+    public CouponResponse useCoupon(User user, Long couponId) {
         validationUserCoupon(user.getId(), couponId);
         Coupon coupon = couponRepository.findById(couponId).orElseThrow(() -> new IllegalArgumentException(NOTFOUND_COUPON)); //쿠폰 찾기
 
         userCouponRepository.save( new UserCoupon(user, coupon)); // 쿠폰 발급
+
+        return CouponResponse.fromCoupon(coupon, COUPON_MESSAGE);
     }
 
 
