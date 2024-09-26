@@ -28,7 +28,7 @@ public class CouponQueryServiceImpl implements CouponQueryService {
     }
 
     private User getUser(Long userId) {
-        return userRepository.findById(userId)
+        return userRepository.findByIdWithUserCoupons(userId)
                 .orElseThrow(() -> new IllegalArgumentException(USER_NOT_FOUND));
     }
 
