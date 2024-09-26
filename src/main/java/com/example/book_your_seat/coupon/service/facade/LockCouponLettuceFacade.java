@@ -4,20 +4,19 @@ import com.example.book_your_seat.coupon.controller.Dto.CouponResponse;
 import com.example.book_your_seat.coupon.repository.redis.RedisLockRepository;
 import com.example.book_your_seat.coupon.service.CouponCommandService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
-@Component
+@Service
 @RequiredArgsConstructor
-public class LockCouponFacade {
+public class LockCouponLettuceFacade {
 
-    private final RedisLockRepository repository;
     private final CouponCommandService couponCommandService;
     private final RedisLockRepository redisLockRepository;
-    public  CouponResponse couponResponse;
+    private CouponResponse couponResponse;
 
     public CouponResponse useCoupon(Long userId, Long couponId) throws InterruptedException {
 
-        while(!repository.lock(couponId)) {
+        while(!redisLockRepository.lock(couponId)) {
 
             Thread.sleep(100);
         }
