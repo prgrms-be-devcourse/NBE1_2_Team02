@@ -1,9 +1,11 @@
 package com.example.book_your_seat.service.coupon;
 
 import com.example.book_your_seat.IntegerTestSupport;
+import com.example.book_your_seat.coupon.controller.dto.CouponCreateRequest;
 import com.example.book_your_seat.coupon.domain.Coupon;
 import com.example.book_your_seat.coupon.domain.DiscountRate;
 import com.example.book_your_seat.coupon.repository.CouponRepository;
+import com.example.book_your_seat.coupon.repository.UserCouponRepository;
 import com.example.book_your_seat.coupon.service.CouponCommandServiceImpl;
 import com.example.book_your_seat.coupon.facade.OptimisticLockCouponFacade;
 import com.example.book_your_seat.user.domain.User;
@@ -18,6 +20,9 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import static com.example.book_your_seat.coupon.domain.DiscountRate.FIVE;
+import static org.junit.jupiter.api.Assertions.*;
+
 @SpringBootTest
 public class CouponCommandServiceImplTest extends IntegerTestSupport {
     @Autowired
@@ -31,6 +36,8 @@ public class CouponCommandServiceImplTest extends IntegerTestSupport {
 
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private UserCouponRepository userCouponRepository;
 
     private List<User> testUsers;
     private Coupon testCoupon;
@@ -44,13 +51,14 @@ public class CouponCommandServiceImplTest extends IntegerTestSupport {
         }
 
         userRepository.saveAll(testUsers);
-        testCoupon = couponRepository.saveAndFlush(new Coupon(100, DiscountRate.FIVE));
+        testCoupon = couponRepository.saveAndFlush(new Coupon(100, FIVE));
     }
 
     @AfterEach
     public void tearDownCoupon() {
         userRepository.deleteAll();
         couponRepository.deleteAll();
+        userCouponRepository.deleteAll();
     }
 
     @Test
@@ -77,7 +85,7 @@ public class CouponCommandServiceImplTest extends IntegerTestSupport {
         System.out.println(stopTime - startTime + "ms");
 
         Coupon updateCoupon = couponRepository.findById(testCoupon.getId()).orElseThrow();
-        Assertions.assertEquals(0, updateCoupon.getAmount());
+        assertEquals(0, updateCoupon.getAmount());
     }
 
     @Test
@@ -105,6 +113,21 @@ public class CouponCommandServiceImplTest extends IntegerTestSupport {
         System.out.println(stopTime - startTime + "ms");
 
         Coupon updateCoupon = couponRepository.findById(testCoupon.getId()).orElseThrow();
-        Assertions.assertEquals(0, updateCoupon.getAmount());
+        assertEquals(0, updateCoupon.getAmount());
+    }
+
+    @Test
+    @DisplayName("쿠폰을 한개 생성한다.")
+    public void createCoupon() {
+        //given
+        CouponCreateRequest request = new CouponCreateRequest(100, FIVE);
+
+        //when
+        Long couponId = couponCommandServiceImpl.createCoupon(request).couponId();
+        Coupon coupon = couponRepository.findById(couponId).get();
+
+        //then
+        assertEquals(100, coupon.getAmount());
+        assertEquals(FIVE, coupon.getDiscountRate());
     }
 }
