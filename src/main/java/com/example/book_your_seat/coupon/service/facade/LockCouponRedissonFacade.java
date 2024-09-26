@@ -23,7 +23,7 @@ public class LockCouponRedissonFacade {
 
 
     public UserCouponResponse useCoupon(Long userId, Long couponId) {
-            RLock lock = redisson.getLock(String.format("purchase:book:%d", couponId)); // 쿠폰 아이디에 해당하는 분산락 생성
+            RLock lock = redisson.getLock(String.format("purchase:coupon:%d", couponId)); // 쿠폰 아이디에 해당하는 분산락 생성
 
             try{
                 boolean available = lock.tryLock(10, 1, TimeUnit.SECONDS); //락을 10초 동안 기다리돼 락을 1초 동안 가질 수 있다 락을 획득하면 true 락을 얻지 못하면 false

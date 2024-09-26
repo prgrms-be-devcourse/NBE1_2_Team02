@@ -3,6 +3,7 @@ package com.example.book_your_seat.coupon.controller;
 import com.example.book_your_seat.coupon.controller.Dto.CouponRequest;
 import com.example.book_your_seat.coupon.controller.Dto.CouponResponse;
 import com.example.book_your_seat.coupon.service.CouponCommandService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +21,7 @@ public class CouponController {
 
 
     @PostMapping
-    public ResponseEntity<CouponResponse> addCoupon(@RequestBody CouponRequest couponRequest) {
+    public ResponseEntity<CouponResponse> addCoupon(@RequestBody @Valid CouponRequest couponRequest) {
         CouponResponse couponResponse = couponCommandService.saveCoupon(couponRequest);
 
         return new ResponseEntity<>(couponResponse, HttpStatus.CREATED);

@@ -20,7 +20,6 @@ import static com.example.book_your_seat.user.UserConst.NOTFOUND_USER;
 
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
 @Slf4j
 public class CouponCommandServiceImpl implements CouponCommandService{
 
@@ -29,7 +28,6 @@ public class CouponCommandServiceImpl implements CouponCommandService{
     private final UserRepository userRepository;
 
     @Override
-    @Transactional
     public UserCouponResponse useCoupon(Long userId, Long couponId) {
         validationUserCoupon(userId, couponId);
 
@@ -42,7 +40,6 @@ public class CouponCommandServiceImpl implements CouponCommandService{
     }
 
 
-    @Transactional
     @Override
     public CouponResponse saveCoupon(CouponRequest couponRequest) {
 
