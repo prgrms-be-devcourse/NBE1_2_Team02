@@ -14,6 +14,7 @@ import com.example.book_your_seat.user.domain.User;
 import com.example.book_your_seat.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
@@ -33,8 +34,9 @@ public class CouponCommandServiceImpl implements CouponCommandService {
     }
 
     @Override
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public CouponResponse issueCoupon(Long userId, Long couponId) {
-        checkAlreadyIssuedUser(userId, couponId);
+//        checkAlreadyIssuedUser(userId, couponId);
 
         Coupon coupon = getCoupon(couponId);
         User user = getUser(userId);

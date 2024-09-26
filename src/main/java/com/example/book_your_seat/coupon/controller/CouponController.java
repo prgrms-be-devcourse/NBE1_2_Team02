@@ -7,6 +7,7 @@ import com.example.book_your_seat.coupon.controller.dto.CouponDetailResponse;
 import com.example.book_your_seat.coupon.controller.dto.CouponResponse;
 import com.example.book_your_seat.coupon.service.CouponCommandService;
 import com.example.book_your_seat.coupon.service.CouponQueryService;
+import com.example.book_your_seat.coupon.service.NamedLockCouponFacade;
 import com.example.book_your_seat.user.controller.dto.UserResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -28,6 +29,7 @@ public class CouponController {
 
     private final CouponCommandService couponCommandService;
     private final CouponQueryService couponQueryService;
+    private final NamedLockCouponFacade namedLockCouponFacade;
 
     @PostMapping
     public ResponseEntity<CouponResponse> addCoupon(
@@ -43,18 +45,18 @@ public class CouponController {
             @PathVariable("couponId") Long couponId,
             HttpServletRequest request
     ) {
-        Long userId = getUserId(request);
+//        Long userId = getUserId(request);
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(couponCommandService.issueCoupon(userId, couponId));
+                .body(namedLockCouponFacade.issueCouponWithNamedLock(1L, couponId));
     }
 
     @GetMapping("/my")
     public ResponseEntity<List<CouponDetailResponse>> getCouponDetails(HttpServletRequest request) {
-        Long userId = getUserId(request);
+//        Long userId = getUserId(request);
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(couponQueryService.getCouponDetail(userId));
+                .body(couponQueryService.getCouponDetail(1L));
     }
 
     private Long getUserId(HttpServletRequest request) {

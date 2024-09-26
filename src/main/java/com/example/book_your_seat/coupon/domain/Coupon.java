@@ -43,6 +43,12 @@ public class Coupon extends BaseEntity {
     }
 
     public void issue() {
+
+        if (this.amount <= 0) {
+            throw new IllegalArgumentException("수량이 부족합니다.");
+        }
+
         this.amount -= 1;
+
     }
 }
