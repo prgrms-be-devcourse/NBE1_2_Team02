@@ -61,9 +61,9 @@ public class CouponCommandServiceImplTest extends IntegerTestSupport {
 
     @AfterEach
     public void tearDown() {
-        userRepository.deleteAll();
-        couponRepository.deleteAll();
         userCouponRepository.deleteAll();
+        couponRepository.deleteAll();
+        userRepository.deleteAll();
     }
 
     @Test
@@ -113,7 +113,7 @@ public class CouponCommandServiceImplTest extends IntegerTestSupport {
     }
 
     @Test
-    @DisplayName("낙관적 락을 이용하여 동시에 100명이 쿠폰 발급을 요청한다.")
+    @DisplayName("낙관적 락을 이용하여 동시에 100명이 쿠폰 발급을 요청한다.(실제 MySQL에서는 데드락 발생)")
     public void issueCouponWithOptimisticTest() throws InterruptedException {
         ExecutorService executorService = Executors.newFixedThreadPool(THREAD_COUNT);
         CountDownLatch latch = new CountDownLatch(100);
@@ -141,7 +141,7 @@ public class CouponCommandServiceImplTest extends IntegerTestSupport {
     }
 
     @Test
-    @DisplayName("낙관적 락을 이용하여 동시에 101명이 쿠폰 발급을 요청하면 1명은 쿠폰을 받지 못한다.")
+    @DisplayName("낙관적 락을 이용하여 동시에 101명이 쿠폰 발급을 요청하면 1명은 쿠폰을 받지 못한다.(실제 MySQL에서는 데드락 발생)")
     public void issueCouponWithOptimisticFailTest() throws InterruptedException {
 
         ExecutorService executorService = Executors.newFixedThreadPool(THREAD_COUNT);
