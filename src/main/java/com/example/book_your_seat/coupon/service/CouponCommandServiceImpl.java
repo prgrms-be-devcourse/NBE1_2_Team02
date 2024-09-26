@@ -29,7 +29,7 @@ public class CouponCommandServiceImpl implements CouponCommandService{
     @Override
     @Transactional
     public CouponResponse useCoupon(Long userId, Long couponId) {
-        validationUserCoupon(userId, couponId);
+       // validationUserCoupon(userId, couponId);
 
         User user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException(NOTFOUND_USER));
         Coupon coupon = couponRepository.findById(couponId).orElseThrow(() -> new IllegalArgumentException(NOTFOUND_COUPON)); //쿠폰 찾기
@@ -37,6 +37,14 @@ public class CouponCommandServiceImpl implements CouponCommandService{
         userCouponRepository.save( new UserCoupon(user, coupon)); // 쿠폰 발급
 
         return CouponResponse.fromCoupon(coupon, COUPON_MESSAGE);
+    }
+
+    @Transactional
+    @Override
+    public void decreaseCoupon(Long couponId){
+        Coupon coupon = couponRepository.findById(couponId).orElseThrow(() -> new IllegalArgumentException(NOTFOUND_COUPON));
+
+        coupon.removeCoupon(1);
     }
 
 

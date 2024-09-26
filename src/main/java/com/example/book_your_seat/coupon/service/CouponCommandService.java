@@ -8,4 +8,6 @@ public interface CouponCommandService {
 
     CouponResponse useCoupon(Long userId, Long couponId);
 
+    void decreaseCoupon(Long couponId);
+
 }
