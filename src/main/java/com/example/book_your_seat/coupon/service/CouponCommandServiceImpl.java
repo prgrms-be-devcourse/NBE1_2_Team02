@@ -41,13 +41,6 @@ public class CouponCommandServiceImpl implements CouponCommandService{
         return UserCouponResponse.fromCoupon(coupon, COUPON_MESSAGE);
     }
 
-    @Transactional
-    @Override
-    public void decreaseCoupon(Long couponId){
-        Coupon coupon = couponRepository.findById(couponId).orElseThrow(() -> new IllegalArgumentException(NOTFOUND_COUPON));
-
-        coupon.removeCoupon(1);
-    }
 
     @Transactional
     @Override
