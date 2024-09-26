@@ -3,6 +3,7 @@ package com.example.book_your_seat.coupon.domain;
 import com.example.book_your_seat.common.entity.BaseEntity;
 import jakarta.persistence.*;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,6 +24,8 @@ public class Coupon extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     private DiscountRate discountRate;
+
+    private LocalDate expirationDate;
 
     @OneToMany(mappedBy = "coupon", cascade = CascadeType.ALL)
     private final List<UserCoupon> userCoupons = new ArrayList<>();
