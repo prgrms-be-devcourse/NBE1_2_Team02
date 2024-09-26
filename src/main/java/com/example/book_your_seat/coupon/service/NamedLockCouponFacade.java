@@ -14,6 +14,13 @@ public class NamedLockCouponFacade {
     private final CouponCommandService couponCommandService;
     private final NamedLockTemplate namedLockTemplate;
 
+
+    /**
+     * 약식 방법으로 네임드락을 사용하는 방법
+     * @param userId
+     * @param couponId
+     * @return
+     */
     public CouponResponse issueCoupon(Long userId, Long couponId) {
         try {
             lockRepository.getLock(couponId.toString());
@@ -24,7 +31,12 @@ public class NamedLockCouponFacade {
         return new CouponResponse(couponId);
     }
 
-
+    /**
+     * JDBC를 활용해서 네임드 락을 구현하는 방법
+     * @param userId
+     * @param couponId
+     * @return
+     */
     public CouponResponse issueCouponWithNamedLock(Long userId, Long couponId) {
         return namedLockTemplate.executeWithLock(
                 "userLockName",

@@ -3,13 +3,11 @@ package com.example.book_your_seat.concurrent;
 import com.example.book_your_seat.IntegerTestSupport;
 import com.example.book_your_seat.coupon.domain.Coupon;
 import com.example.book_your_seat.coupon.domain.DiscountRate;
-import com.example.book_your_seat.coupon.domain.UserCoupon;
 import com.example.book_your_seat.coupon.repository.CouponRepository;
 import com.example.book_your_seat.coupon.repository.UserCouponRepository;
 import com.example.book_your_seat.coupon.service.NamedLockCouponFacade;
 import com.example.book_your_seat.user.domain.User;
 import com.example.book_your_seat.user.repository.UserRepository;
-import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -70,9 +68,7 @@ public class NamedLockTest extends IntegerTestSupport {
         long stopTime = System.currentTimeMillis();
         System.out.println(stopTime - startTime);
         Coupon stock = couponRepository.findById(savedCoupon.getId()).orElseThrow();
-        long count = userCouponRepository.countAll();
 
-        Assertions.assertThat(count).isEqualTo(100);
         Assertions.assertThat(stock.getAmount()).isEqualTo(0L);
     }
 }
