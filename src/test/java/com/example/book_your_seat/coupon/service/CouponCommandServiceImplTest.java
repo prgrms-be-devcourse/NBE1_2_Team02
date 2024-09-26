@@ -3,7 +3,8 @@ package com.example.book_your_seat.coupon.service;
 import com.example.book_your_seat.coupon.domain.Coupon;
 import com.example.book_your_seat.coupon.domain.DiscountRate;
 import com.example.book_your_seat.coupon.repository.CouponRepository;
-import com.example.book_your_seat.coupon.service.facade.LockCouponFacade;
+import com.example.book_your_seat.coupon.service.facade.LockCouponLettuceFacade;
+import com.example.book_your_seat.coupon.service.facade.LockCouponRedissonFacade;
 import com.example.book_your_seat.user.domain.User;
 import com.example.book_your_seat.user.repository.UserRepository;
 import jakarta.persistence.EntityManager;
@@ -18,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @SpringBootTest
 class CouponCommandServiceImplTest {
@@ -35,7 +37,10 @@ class CouponCommandServiceImplTest {
     private EntityManager entityManager;
 
     @Autowired
-    private LockCouponFacade lockCouponFacade;
+    private LockCouponLettuceFacade lockCouponFacade;
+
+    @Autowired
+    private LockCouponRedissonFacade lockCouponRedissonFacade;
 
     private User user;
 
@@ -148,6 +153,101 @@ class CouponCommandServiceImplTest {
         Coupon findCoupon = couponRepository.findById(coupon.getId()).get();
         //then
         Assertions.assertThat(findCoupon.getAmount()).isZero();
+    }
+
+    @Test
+    @DisplayName("Redis(Lettuce 동시성 테스트 초과 버전")
+    public void LettuceLimitTest() throws Exception {
+        //given
+        ExecutorService executorService = Executors.newFixedThreadPool(101); //스레드 풀 생성
+        CountDownLatch countDownLatch = new CountDownLatch(101); // 다른 스레드에서 작업이 완료될떄 까지 대기할 수 있음
+        AtomicInteger exceptionCount = new AtomicInteger(0); // 예외 발생 카운트
+
+        //when
+
+        for (int i = 0; i < 101; i++) {
+            executorService.submit(() -> {
+                try{
+                    lockCouponFacade.useCoupon(user.getId(), coupon.getId());
+                }
+                catch (IllegalArgumentException e) {
+                    exceptionCount.incrementAndGet(); // 예외 발생 시 카운트
+                }catch (InterruptedException e) {
+                    System.out.println(e);
+                } finally {
+                    countDownLatch.countDown();
+                }
+            });
+
+        }
+
+        countDownLatch.await();
+
+        Coupon findCoupon = couponRepository.findById(coupon.getId()).get();
+        //then
+        Assertions.assertThat(findCoupon.getAmount()).isZero();
+        Assertions.assertThat(exceptionCount.get()).isEqualTo(1); // 예외는 1번 발생해야 함 (101번째 요청
+    }
+
+
+
+    @Test
+    @DisplayName("Redis(Redisson 동시성 테스트")
+    public void RedissonTest() throws Exception {
+        //given
+        ExecutorService executorService = Executors.newFixedThreadPool(100); //스레드 풀 생성
+        CountDownLatch countDownLatch = new CountDownLatch(100); // 다른 스레드에서 작업이 완료될떄 까지 대기할 수 있음
+
+        //when
+
+        for (int i = 0; i < 100; i++) {
+            executorService.submit(() -> {
+                try{
+                    lockCouponRedissonFacade.useCoupon(user.getId(), coupon.getId());
+                } finally {
+                    countDownLatch.countDown();
+                }
+            });
+
+        }
+
+        countDownLatch.await();
+
+        Coupon findCoupon = couponRepository.findById(coupon.getId()).get();
+        //then
+        Assertions.assertThat(findCoupon.getAmount()).isZero();
+    }
+
+    @Test
+    @DisplayName("Redis(Redisson 동시성 초과 테스트")
+    public void RedissonLimitTest() throws Exception {
+        //given
+        ExecutorService executorService = Executors.newFixedThreadPool(101); //스레드 풀 생성
+        CountDownLatch countDownLatch = new CountDownLatch(101); // 다른 스레드에서 작업이 완료될떄 까지 대기할 수 있음
+        AtomicInteger exceptionCount = new AtomicInteger(0); // 예외 발생 카운트
+
+        //when
+
+        for (int i = 0; i < 101; i++) {
+            executorService.submit(() -> {
+                try{
+                    lockCouponRedissonFacade.useCoupon(user.getId(), coupon.getId());
+                }
+                catch (IllegalArgumentException e) {
+                    exceptionCount.incrementAndGet(); // 예외 발생 시 카운트
+                }finally {
+                    countDownLatch.countDown();
+                }
+            });
+
+        }
+
+        countDownLatch.await();
+
+        Coupon findCoupon = couponRepository.findById(coupon.getId()).get();
+        //then
+        Assertions.assertThat(findCoupon.getAmount()).isZero();
+        Assertions.assertThat(exceptionCount.get()).isEqualTo(1); // 예외는 1번 발생해야 함 (101번째 요청
     }
 
 }
