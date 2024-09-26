@@ -1,6 +1,6 @@
 package com.example.book_your_seat.coupon.service.facade;
 
-import com.example.book_your_seat.coupon.controller.Dto.CouponResponse;
+import com.example.book_your_seat.coupon.controller.Dto.UserCouponResponse;
 import com.example.book_your_seat.coupon.service.CouponCommandService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,10 +19,10 @@ public class LockCouponRedissonFacade {
 
     private final CouponCommandService couponCommandService;
     private final RedissonClient redisson;
-    private  CouponResponse couponResponse;
+    private UserCouponResponse couponResponse;
 
 
-    public CouponResponse useCoupon(Long userId, Long couponId) {
+    public UserCouponResponse useCoupon(Long userId, Long couponId) {
             RLock lock = redisson.getLock(String.format("purchase:book:%d", couponId)); // 쿠폰 아이디에 해당하는 분산락 생성
 
             try{

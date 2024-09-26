@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -50,7 +51,7 @@ class CouponCommandServiceImplTest {
     @BeforeEach
     void setUp() {
         // given
-        coupon = new Coupon(100, DiscountRate.FIFTEEN);
+        coupon = new Coupon(100, DiscountRate.FIFTEEN, LocalDateTime.MAX);
 
         user = new User("nickname", "username", "test@test.com", "passwordpassword");
         userRepository.save(user);

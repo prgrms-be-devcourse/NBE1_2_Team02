@@ -1,7 +1,6 @@
 package com.example.book_your_seat.coupon.controller;
 
-import com.example.book_your_seat.coupon.controller.Dto.CouponResponse;
-import com.example.book_your_seat.coupon.service.CouponCommandService;
+import com.example.book_your_seat.coupon.controller.Dto.UserCouponResponse;
 import com.example.book_your_seat.coupon.service.facade.LockCouponRedissonFacade;
 import com.example.book_your_seat.user.controller.dto.UserResponse;
 import jakarta.servlet.http.HttpServletRequest;
@@ -23,14 +22,14 @@ import static com.example.book_your_seat.common.constants.Constants.NOT_VALIDATI
 public class UserCouponController {
     private final LockCouponRedissonFacade lockCouponRedissonFacade;
 
-    @PostMapping()
-    public ResponseEntity<CouponResponse> getCoupon(@RequestParam Long couponId, HttpServletRequest request) {
+    @PostMapping
+    public ResponseEntity<UserCouponResponse> getCoupon(@RequestParam Long couponId, HttpServletRequest request) {
 
         HttpSession session = request.getSession(false);
 
         Long userId = sessionMember(session);
 
-        CouponResponse couponResponse = lockCouponRedissonFacade.useCoupon(userId, couponId);
+        UserCouponResponse couponResponse = lockCouponRedissonFacade.useCoupon(userId, couponId);
 
         return new ResponseEntity<>(couponResponse, HttpStatus.OK);
     }

@@ -39,9 +39,10 @@ public class Coupon extends BaseEntity {
 
     private LocalDateTime expired;
 
-    public Coupon(int amount, DiscountRate discountRate) {
+    public Coupon(int amount, DiscountRate discountRate, LocalDateTime expired) {
         this.amount = amount;
         this.discountRate = discountRate;
+        this.expired = expired;
     }
 
     public void addUserCoupon(UserCoupon userCoupon) {

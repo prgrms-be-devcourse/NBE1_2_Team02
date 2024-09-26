@@ -1,6 +1,8 @@
 package com.example.book_your_seat.coupon.service;
 
+import com.example.book_your_seat.coupon.controller.Dto.CouponRequest;
 import com.example.book_your_seat.coupon.controller.Dto.CouponResponse;
+import com.example.book_your_seat.coupon.controller.Dto.UserCouponResponse;
 import com.example.book_your_seat.coupon.domain.Coupon;
 import com.example.book_your_seat.coupon.domain.UserCoupon;
 import com.example.book_your_seat.coupon.repository.CouponRepository;
@@ -28,7 +30,7 @@ public class CouponCommandServiceImpl implements CouponCommandService{
 
     @Override
     @Transactional
-    public CouponResponse useCoupon(Long userId, Long couponId) {
+    public UserCouponResponse useCoupon(Long userId, Long couponId) {
         validationUserCoupon(userId, couponId);
 
         User user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException(NOTFOUND_USER));
@@ -36,7 +38,7 @@ public class CouponCommandServiceImpl implements CouponCommandService{
 
         userCouponRepository.save( new UserCoupon(user, coupon)); // 쿠폰 발급
 
-        return CouponResponse.fromCoupon(coupon, COUPON_MESSAGE);
+        return UserCouponResponse.fromCoupon(coupon, COUPON_MESSAGE);
     }
 
     @Transactional
@@ -45,6 +47,17 @@ public class CouponCommandServiceImpl implements CouponCommandService{
         Coupon coupon = couponRepository.findById(couponId).orElseThrow(() -> new IllegalArgumentException(NOTFOUND_COUPON));
 
         coupon.removeCoupon(1);
+    }
+
+    @Transactional
+    @Override
+    public CouponResponse saveCoupon(CouponRequest couponRequest) {
+
+        Coupon coupon = CouponRequest.to(couponRequest);
+
+        couponRepository.save(coupon);
+
+        return CouponResponse.fromDto(coupon);
     }
 
 

@@ -12,5 +12,8 @@ public final class CouponConst {
 
     public static final String TIME_OUT = "redisson getLock timeout";
 
+    public static final String QUANTITY_COUPON = "수량을 입력해주세요";
+    public static final String DISCOUNT_COUPON = "할인률을 입력해주세요";
+
     private CouponConst() {}
 }

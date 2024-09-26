@@ -1,13 +1,17 @@
 package com.example.book_your_seat.coupon.service;
 
+import com.example.book_your_seat.coupon.controller.Dto.CouponRequest;
 import com.example.book_your_seat.coupon.controller.Dto.CouponResponse;
-import com.example.book_your_seat.coupon.domain.UserCoupon;
-import com.example.book_your_seat.user.domain.User;
+import com.example.book_your_seat.coupon.controller.Dto.UserCouponResponse;
 
 public interface CouponCommandService {
 
-    CouponResponse useCoupon(Long userId, Long couponId);
+    UserCouponResponse useCoupon(Long userId, Long couponId);
 
     void decreaseCoupon(Long couponId);
+
+    CouponResponse saveCoupon(CouponRequest couponRequest);
+
+
 
 }
