@@ -31,7 +31,8 @@ public class CouponController {
      */
     @PostMapping
     public ResponseEntity<CouponIdResponse> createCoupon(@RequestBody @Valid CouponCreateRequest couponCreateRequest) {
-        return ResponseEntity.status(HttpStatus.CREATED)
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
                 .body(couponCommandService.createCoupon(couponCreateRequest));
     }
 

@@ -36,7 +36,7 @@ public class CouponCommandServiceImpl implements CouponCommandService {
         checkDuplicate(user.getId(), couponId);
 
         //수량 체크
-        if(coupon.getAmount() <= 0) {
+        if(coupon.noAmount()) {
             throw new IllegalArgumentException(COUPON_OUT_OF_STOCK);
         }
 
@@ -59,7 +59,7 @@ public class CouponCommandServiceImpl implements CouponCommandService {
         checkDuplicate(user.getId(), couponId);
 
         //수량 체크
-        if(coupon.getAmount() <= 0) {
+        if(coupon.noAmount()) {
             throw new IllegalArgumentException(COUPON_OUT_OF_STOCK);
         }
 

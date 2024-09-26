@@ -39,6 +39,10 @@ public class Coupon extends BaseEntity {
         this.expirationDate = expirationDate;
     }
 
+    public boolean noAmount() {
+        return this.amount <= 0;
+    }
+
     public void addUserCoupon(UserCoupon userCoupon) {
         this.userCoupons.add(userCoupon);
     }
