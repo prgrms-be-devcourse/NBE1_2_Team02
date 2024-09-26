@@ -31,7 +31,8 @@ public class CouponController {
      */
     @PostMapping
     public ResponseEntity<CouponIdResponse> createCoupon(@RequestBody @Valid CouponCreateRequest couponCreateRequest) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(couponCommandService.createCoupon(couponCreateRequest));
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(couponCommandService.createCoupon(couponCreateRequest));
     }
 
     /**
@@ -41,7 +42,8 @@ public class CouponController {
      */
     @GetMapping("/my")
     public ResponseEntity<List<UserCouponResponse>> getUserCoupons(@SessionAttribute(LOGIN_USER) User user) {
-        return ResponseEntity.ok().body(couponQueryService.getUserCoupons(user));
+        return ResponseEntity.ok()
+                .body(couponQueryService.getUserCoupons(user));
     }
 
 }

@@ -1,5 +1,6 @@
 package com.example.book_your_seat.service.coupon;
 
+import com.example.book_your_seat.IntegralTestSupport;
 import com.example.book_your_seat.coupon.controller.dto.CouponCreateRequest;
 import com.example.book_your_seat.coupon.domain.Coupon;
 import com.example.book_your_seat.coupon.facade.OptimisticLockCouponFacade;
@@ -13,7 +14,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -26,8 +26,7 @@ import static com.example.book_your_seat.coupon.domain.DiscountRate.FIVE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-@SpringBootTest
-public class CouponCommandServiceImplTest {
+public class CouponCommandServiceImplTest extends IntegralTestSupport {
     @Autowired
     private CouponCommandServiceImpl couponCommandServiceImpl;
 
