@@ -25,6 +25,7 @@ import java.util.concurrent.Executors;
 
 import static com.example.book_your_seat.coupon.domain.DiscountRate.FIVE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
 public class CouponCommandServiceImplTest extends IntegerTestSupport {
@@ -39,6 +40,7 @@ public class CouponCommandServiceImplTest extends IntegerTestSupport {
 
     @Autowired
     private UserRepository userRepository;
+
     @Autowired
     private UserCouponRepository userCouponRepository;
 
@@ -49,7 +51,7 @@ public class CouponCommandServiceImplTest extends IntegerTestSupport {
     @BeforeEach
     public void setUp() {
         testUsers = new ArrayList<>();
-        for (int i = 1; i <= 100; i++) {
+        for (int i = 1; i <= 101; i++) {
             testUsers.add(new User("nickname", "username", "test" + i + "@test.com", "passwordpassword"));
         }
 
@@ -69,7 +71,7 @@ public class CouponCommandServiceImplTest extends IntegerTestSupport {
     public void issueCouponWithPessimisticTest() throws InterruptedException {
 
         ExecutorService executorService = Executors.newFixedThreadPool(THREAD_COUNT);
-        CountDownLatch latch = new CountDownLatch(testUsers.size());
+        CountDownLatch latch = new CountDownLatch(100);
 
         long startTime = System.currentTimeMillis();
         for (User testUser : testUsers) {
@@ -92,10 +94,29 @@ public class CouponCommandServiceImplTest extends IntegerTestSupport {
     }
 
     @Test
+    @DisplayName("비관적 락을 이용하여 동시에 101명이 쿠폰 발급을 요청하면 1명은 쿠폰을 받지 못한다.")
+    public void issueCouponWithPessimisticFailTest() throws InterruptedException {
+
+        ExecutorService executorService = Executors.newFixedThreadPool(THREAD_COUNT);
+        CountDownLatch latch = new CountDownLatch(101);
+
+        for (User testUser : testUsers) {
+            executorService.submit(() -> {
+                try {
+                    assertThrows(IllegalArgumentException.class, () ->  couponCommandServiceImpl.issueCouponWithPessimistic(testUser, testCoupon.getId()));
+                } finally {
+                    latch.countDown();
+                }
+            });
+        }
+        latch.await();
+    }
+
+    @Test
     @DisplayName("낙관적 락을 이용하여 동시에 100명이 쿠폰 발급을 요청한다.")
     public void issueCouponWithOptimisticTest() throws InterruptedException {
         ExecutorService executorService = Executors.newFixedThreadPool(THREAD_COUNT);
-        CountDownLatch latch = new CountDownLatch(testUsers.size());
+        CountDownLatch latch = new CountDownLatch(100);
 
         long startTime = System.currentTimeMillis();
         for (User testUser : testUsers) {
@@ -120,7 +141,26 @@ public class CouponCommandServiceImplTest extends IntegerTestSupport {
     }
 
     @Test
-    @DisplayName("쿠폰을 한개 생성한다.")
+    @DisplayName("낙관적 락을 이용하여 동시에 101명이 쿠폰 발급을 요청하면 1명은 쿠폰을 받지 못한다.")
+    public void issueCouponWithOptimisticFailTest() throws InterruptedException {
+
+        ExecutorService executorService = Executors.newFixedThreadPool(THREAD_COUNT);
+        CountDownLatch latch = new CountDownLatch(101);
+
+        for (User testUser : testUsers) {
+            executorService.submit(() -> {
+                try {
+                    assertThrows(IllegalArgumentException.class, () ->  couponCommandServiceImpl.issueCouponWithOptimistic(testUser, testCoupon.getId()));
+                } finally {
+                    latch.countDown();
+                }
+            });
+        }
+        latch.await();
+    }
+
+    @Test
+    @DisplayName("쿠폰을 한 개 생성한다.")
     public void createCoupon() {
         //given
         CouponCreateRequest request = new CouponCreateRequest(100, FIVE, LocalDate.of(2024,11,01));
