@@ -3,17 +3,20 @@ package com.example.book_your_seat.service.coupon;
 import com.example.book_your_seat.IntegerTestSupport;
 import com.example.book_your_seat.coupon.controller.dto.CouponCreateRequest;
 import com.example.book_your_seat.coupon.domain.Coupon;
-import com.example.book_your_seat.coupon.domain.DiscountRate;
+import com.example.book_your_seat.coupon.facade.OptimisticLockCouponFacade;
 import com.example.book_your_seat.coupon.repository.CouponRepository;
 import com.example.book_your_seat.coupon.repository.UserCouponRepository;
 import com.example.book_your_seat.coupon.service.CouponCommandServiceImpl;
-import com.example.book_your_seat.coupon.facade.OptimisticLockCouponFacade;
 import com.example.book_your_seat.user.domain.User;
 import com.example.book_your_seat.user.repository.UserRepository;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
@@ -21,7 +24,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import static com.example.book_your_seat.coupon.domain.DiscountRate.FIVE;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest
 public class CouponCommandServiceImplTest extends IntegerTestSupport {
@@ -44,18 +47,18 @@ public class CouponCommandServiceImplTest extends IntegerTestSupport {
     private final int THREAD_COUNT = 16;
 
     @BeforeEach
-    public void setUpCoupon() {
+    public void setUp() {
         testUsers = new ArrayList<>();
         for (int i = 1; i <= 100; i++) {
             testUsers.add(new User("nickname", "username", "test" + i + "@test.com", "passwordpassword"));
         }
 
         userRepository.saveAll(testUsers);
-        testCoupon = couponRepository.saveAndFlush(new Coupon(100, FIVE));
+        testCoupon = couponRepository.saveAndFlush(new Coupon(100, FIVE, LocalDate.of(2024,11,01)));
     }
 
     @AfterEach
-    public void tearDownCoupon() {
+    public void tearDown() {
         userRepository.deleteAll();
         couponRepository.deleteAll();
         userCouponRepository.deleteAll();
@@ -120,7 +123,7 @@ public class CouponCommandServiceImplTest extends IntegerTestSupport {
     @DisplayName("쿠폰을 한개 생성한다.")
     public void createCoupon() {
         //given
-        CouponCreateRequest request = new CouponCreateRequest(100, FIVE);
+        CouponCreateRequest request = new CouponCreateRequest(100, FIVE, LocalDate.of(2024,11,01));
 
         //when
         Long couponId = couponCommandServiceImpl.createCoupon(request).couponId();

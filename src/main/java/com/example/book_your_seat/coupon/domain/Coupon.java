@@ -2,14 +2,13 @@ package com.example.book_your_seat.coupon.domain;
 
 import com.example.book_your_seat.common.entity.BaseEntity;
 import jakarta.persistence.*;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
@@ -34,9 +33,10 @@ public class Coupon extends BaseEntity {
     @Version
     private Long version;
 
-    public Coupon(int amount, DiscountRate discountRate) {
+    public Coupon(int amount, DiscountRate discountRate, LocalDate expirationDate) {
         this.amount = amount;
         this.discountRate = discountRate;
+        this.expirationDate = expirationDate;
     }
 
     public void addUserCoupon(UserCoupon userCoupon) {

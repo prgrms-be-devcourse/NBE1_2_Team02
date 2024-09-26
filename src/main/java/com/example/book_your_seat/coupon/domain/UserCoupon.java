@@ -36,6 +36,7 @@ public class UserCoupon extends BaseEntity {
     public UserCoupon(User user, Coupon coupon) {
         this.user = user;
         this.coupon = coupon;
+        this.isUsed = false;
         user.adduserCoupon(this);
         coupon.addUserCoupon(this);
     }

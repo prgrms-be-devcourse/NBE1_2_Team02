@@ -4,7 +4,7 @@ import com.example.book_your_seat.coupon.controller.dto.CouponCreateRequest;
 import com.example.book_your_seat.coupon.controller.dto.CouponIdResponse;
 import com.example.book_your_seat.coupon.domain.Coupon;
 import com.example.book_your_seat.coupon.domain.UserCoupon;
-import com.example.book_your_seat.coupon.controller.dto.UserCouponResponse;
+import com.example.book_your_seat.coupon.controller.dto.UserCouponIdResponse;
 import com.example.book_your_seat.coupon.repository.CouponRepository;
 import com.example.book_your_seat.coupon.repository.UserCouponRepository;
 import com.example.book_your_seat.user.domain.User;
@@ -28,7 +28,7 @@ public class CouponCommandServiceImpl implements CouponCommandService {
     쿠폰 발급 - 비관적 락
      */
     @Override
-    public UserCouponResponse issueCouponWithPessimistic(User user, Long couponId) {
+    public UserCouponIdResponse issueCouponWithPessimistic(User user, Long couponId) {
 
         Coupon coupon = couponQueryService.findByIdWithPessimistic(couponId);
 
@@ -42,7 +42,7 @@ public class CouponCommandServiceImpl implements CouponCommandService {
 
         coupon.decreaseAmount();
 
-        return new UserCouponResponse(
+        return new UserCouponIdResponse(
                 userCouponRepository.save(new UserCoupon(user, coupon)).getId()
         );
     }
@@ -51,7 +51,7 @@ public class CouponCommandServiceImpl implements CouponCommandService {
     쿠폰 발급 - 낙관적 락
     */
     @Override
-    public UserCouponResponse issueCouponWithOptimistic(User user, Long couponId) {
+    public UserCouponIdResponse issueCouponWithOptimistic(User user, Long couponId) {
 
         Coupon coupon = couponQueryService.findByIdWithOptimistic(couponId);
 
@@ -65,7 +65,7 @@ public class CouponCommandServiceImpl implements CouponCommandService {
 
         coupon.decreaseAmount();
 
-        return new UserCouponResponse(
+        return new UserCouponIdResponse(
                 userCouponRepository.save(new UserCoupon(user, coupon)).getId()
         );
 
@@ -77,7 +77,7 @@ public class CouponCommandServiceImpl implements CouponCommandService {
     @Override
     public CouponIdResponse createCoupon(CouponCreateRequest request) {
         return new CouponIdResponse(
-                couponRepository.save(new Coupon(request.amount(), request.discountRate())).getId()
+                couponRepository.save(new Coupon(request.amount(), request.discountRate(),request.expirationDate())).getId()
         );
     }
 
