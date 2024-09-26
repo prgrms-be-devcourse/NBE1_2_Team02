@@ -31,6 +31,8 @@ public class UserCoupon extends BaseEntity {
     @JoinColumn(name = "coupon_id")
     private Coupon coupon;
 
+    private boolean useStatus;
+
     public UserCoupon(User user, Coupon coupon) {
         this.user = user;
         this.coupon = coupon;
