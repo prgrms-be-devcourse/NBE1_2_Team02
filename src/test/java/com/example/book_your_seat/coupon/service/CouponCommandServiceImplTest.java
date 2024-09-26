@@ -134,7 +134,7 @@ class CouponCommandServiceImplTest {
             executorService.submit(() -> {
                 try{
                     lockCouponFacade.useCoupon(user.getId(), coupon.getId());
-                } catch (Exception e) {
+                } catch (InterruptedException e) {
                     System.out.println(e);
                 } finally {
                     countDownLatch.countDown();
