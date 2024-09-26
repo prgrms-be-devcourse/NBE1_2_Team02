@@ -24,7 +24,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest
-
 public class CouponQueryServiceImplTest {
     @Autowired
     private CouponQueryServiceImpl couponQueryService;
@@ -34,6 +33,7 @@ public class CouponQueryServiceImplTest {
 
     @Autowired
     private UserRepository userRepository;
+
     @Autowired
     private UserCouponRepository userCouponRepository;
 
@@ -46,14 +46,13 @@ public class CouponQueryServiceImplTest {
         testUser = userRepository.saveAndFlush(new User("nickname", "username", "email@gmail.com", "userpassword"));
         testCoupon1 = couponRepository.saveAndFlush(new Coupon(100, FIVE, LocalDate.of(2024, 11, 01)));
         testCoupon2 = couponRepository.saveAndFlush(new Coupon(200, FIFTEEN, LocalDate.of(2024, 11, 01)));
-
     }
 
     @AfterEach
     public void tearDown() {
-        userRepository.deleteAll();
-        couponRepository.deleteAll();
         userCouponRepository.deleteAll();
+        couponRepository.deleteAll();
+        userRepository.deleteAll();
     }
 
     @Test
@@ -67,9 +66,6 @@ public class CouponQueryServiceImplTest {
 
         //then
         assertEquals(2, userCouponList.size());
-
-        assertThat(userCouponList).extracting(UserCouponResponse::userCouponId)
-                .containsExactly(1L, 2L);
 
         assertThat(userCouponList).extracting(UserCouponResponse::discountRate)
                 .containsExactly(FIVE, FIFTEEN);

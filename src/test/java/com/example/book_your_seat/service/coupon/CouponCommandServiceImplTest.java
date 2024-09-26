@@ -1,6 +1,5 @@
 package com.example.book_your_seat.service.coupon;
 
-import com.example.book_your_seat.IntegerTestSupport;
 import com.example.book_your_seat.coupon.controller.dto.CouponCreateRequest;
 import com.example.book_your_seat.coupon.domain.Coupon;
 import com.example.book_your_seat.coupon.facade.OptimisticLockCouponFacade;
@@ -28,7 +27,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
-public class CouponCommandServiceImplTest extends IntegerTestSupport {
+public class CouponCommandServiceImplTest {
     @Autowired
     private CouponCommandServiceImpl couponCommandServiceImpl;
 
@@ -46,12 +45,12 @@ public class CouponCommandServiceImplTest extends IntegerTestSupport {
 
     private List<User> testUsers;
     private Coupon testCoupon;
-    private final int THREAD_COUNT = 16;
+    private final int THREAD_COUNT = 32;
 
     @BeforeEach
     public void setUp() {
         testUsers = new ArrayList<>();
-        for (int i = 1; i <= 101; i++) {
+        for (int i = 1; i <= 100; i++) {
             testUsers.add(new User("nickname", "username", "test" + i + "@test.com", "passwordpassword"));
         }
 
@@ -96,6 +95,9 @@ public class CouponCommandServiceImplTest extends IntegerTestSupport {
     @Test
     @DisplayName("비관적 락을 이용하여 동시에 101명이 쿠폰 발급을 요청하면 1명은 쿠폰을 받지 못한다.")
     public void issueCouponWithPessimisticFailTest() throws InterruptedException {
+        User addUser = new User("nickname", "username", "test100"+ "@test.com", "passwordpassword");
+        testUsers.add(addUser);
+        userRepository.saveAndFlush(addUser);
 
         ExecutorService executorService = Executors.newFixedThreadPool(THREAD_COUNT);
         CountDownLatch latch = new CountDownLatch(101);
@@ -143,6 +145,9 @@ public class CouponCommandServiceImplTest extends IntegerTestSupport {
     @Test
     @DisplayName("낙관적 락을 이용하여 동시에 101명이 쿠폰 발급을 요청하면 1명은 쿠폰을 받지 못한다.(실제 MySQL에서는 데드락 발생)")
     public void issueCouponWithOptimisticFailTest() throws InterruptedException {
+        User addUser = new User("nickname", "username", "test100"+ "@test.com", "passwordpassword");
+        testUsers.add(addUser);
+        userRepository.saveAndFlush(addUser);
 
         ExecutorService executorService = Executors.newFixedThreadPool(THREAD_COUNT);
         CountDownLatch latch = new CountDownLatch(101);
@@ -150,7 +155,7 @@ public class CouponCommandServiceImplTest extends IntegerTestSupport {
         for (User testUser : testUsers) {
             executorService.submit(() -> {
                 try {
-                    assertThrows(IllegalArgumentException.class, () ->  couponCommandServiceImpl.issueCouponWithOptimistic(testUser, testCoupon.getId()));
+                    assertThrows(IllegalArgumentException.class, () ->  optimisticLockCouponFacade.issueCouponWithOptimistic(testUser, testCoupon.getId()));
                 } finally {
                     latch.countDown();
                 }
