@@ -26,13 +26,13 @@ public class Seat {
     @JoinColumn(name = "reservation_id", nullable = true)
     private Reservation reservation;
 
-    public Seat(Concert concert) {
+    public Seat(final Concert concert) {
         this.isSold = false;
         this.concert = concert;
         concert.addSeat(this);
     }
 
-    public void assignReservation(Reservation reservation) {
+    public void assignReservation(final Reservation reservation) {
         this.reservation = reservation;
     }
 }

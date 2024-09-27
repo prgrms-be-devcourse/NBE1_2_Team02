@@ -48,9 +48,9 @@ public class Reservation {
     private Payment payment;
 
     @OneToMany(mappedBy = "reservation", cascade = CascadeType.ALL)
-    private List<Seat> seats = new ArrayList<>();
+    private final List<Seat> seats = new ArrayList<>();
 
-    public void addSeat(Seat seat) {
+    public void addSeat(final Seat seat) {
         seats.add(seat);
         seat.assignReservation(this);
     }
