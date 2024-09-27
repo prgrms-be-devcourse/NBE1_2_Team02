@@ -14,5 +14,7 @@ public final class CouponConst {
 
     public static final String NULL_AMOUNT_MESSAGE = "수량을 입려해주세요.";
     public static final String NULL_DISCOUNT_RATE_MESSAGE = "할인률을 입력해주세요.";
+    public static final String NULL_EXPIRATION_DATE_MESSAGE = "만료 기한을 입력해주세요.";
+    public static final String INVALID_EXPIRATION_DATE_MESSAGE = "만료 기한은 미래여야합니다.";
 
 }

@@ -5,9 +5,9 @@ import static com.example.book_your_seat.common.SessionConst.LOGIN_USER;
 import com.example.book_your_seat.coupon.controller.dto.CouponCreateRequest;
 import com.example.book_your_seat.coupon.controller.dto.CouponDetailResponse;
 import com.example.book_your_seat.coupon.controller.dto.CouponResponse;
+import com.example.book_your_seat.coupon.controller.dto.UserCouponIdResponse;
 import com.example.book_your_seat.coupon.service.CouponCommandService;
 import com.example.book_your_seat.coupon.service.CouponQueryService;
-import com.example.book_your_seat.coupon.service.NamedLockCouponFacade;
 import com.example.book_your_seat.user.controller.dto.UserResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -29,7 +29,6 @@ public class CouponController {
 
     private final CouponCommandService couponCommandService;
     private final CouponQueryService couponQueryService;
-    private final NamedLockCouponFacade namedLockCouponFacade;
 
     @PostMapping
     public ResponseEntity<CouponResponse> addCoupon(
@@ -41,22 +40,22 @@ public class CouponController {
     }
 
     @PostMapping("/{couponId}")
-    public ResponseEntity<CouponResponse> issueCoupon(
+    public ResponseEntity<UserCouponIdResponse> issueCoupon(
             @PathVariable("couponId") Long couponId,
             HttpServletRequest request
     ) {
 //        Long userId = getUserId(request);
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(namedLockCouponFacade.issueCouponWithNamedLock(1L, couponId));
+                .body(couponCommandService.issueCouponWithPessimistic(1L, couponId));
     }
 
     @GetMapping("/my")
     public ResponseEntity<List<CouponDetailResponse>> getCouponDetails(HttpServletRequest request) {
-//        Long userId = getUserId(request);
+        Long userId = getUserId(request);
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(couponQueryService.getCouponDetail(1L));
+                .body(couponQueryService.getCouponDetail(userId));
     }
 
     private Long getUserId(HttpServletRequest request) {

@@ -10,6 +10,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.Version;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.AccessLevel;
@@ -30,12 +32,18 @@ public class Coupon extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private DiscountRate discountRate;
 
+    private LocalDate expirationDate;
+
     @OneToMany(mappedBy = "coupon", cascade = CascadeType.ALL)
     private final List<UserCoupon> userCoupons = new ArrayList<>();
 
-    public Coupon(int amount, DiscountRate discountRate) {
+//    @Version
+//    private Long version;
+
+    public Coupon(int amount, DiscountRate discountRate, LocalDate expirationDate) {
         this.amount = amount;
         this.discountRate = discountRate;
+        this.expirationDate = expirationDate;
     }
 
     public void addUserCoupon(UserCoupon userCoupon) {

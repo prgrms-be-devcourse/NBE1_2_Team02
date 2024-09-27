@@ -19,7 +19,7 @@ public enum DiscountRate {
         this.value = value;
     }
 
-    public static DiscountRate findBy(int discountRate) {
+    public static DiscountRate findBy(final int discountRate) {
         return Arrays.stream(DiscountRate.values())
                 .filter(it -> it.value == discountRate)
                 .findFirst()

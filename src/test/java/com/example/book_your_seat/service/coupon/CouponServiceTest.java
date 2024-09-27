@@ -13,6 +13,7 @@ import com.example.book_your_seat.coupon.service.CouponCommandService;
 import com.example.book_your_seat.coupon.service.CouponQueryService;
 import com.example.book_your_seat.user.domain.User;
 import com.example.book_your_seat.user.repository.UserRepository;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.AfterEach;
@@ -55,7 +56,7 @@ public class CouponServiceTest extends IntegerTestSupport {
     @DisplayName("쿠폰 생성 성공")
     void createCouponTest() {
         // given
-        CouponCreateRequest couponCreateRequest = new CouponCreateRequest(100, 10);
+        CouponCreateRequest couponCreateRequest = new CouponCreateRequest(100, 10, LocalDate.now().plusDays(2));
 
         // when
         CouponResponse coupon = couponCommandService.createCoupon(couponCreateRequest);
@@ -73,7 +74,7 @@ public class CouponServiceTest extends IntegerTestSupport {
     @DisplayName("쿠폰 발급 성공")
     void issueCouponTest() {
         //given
-        CouponCreateRequest couponCreateRequest = new CouponCreateRequest(100, 10);
+        CouponCreateRequest couponCreateRequest = new CouponCreateRequest(100, 10, LocalDate.now().plusDays(2));
         CouponResponse coupon = couponCommandService.createCoupon(couponCreateRequest);
 
         //when
@@ -90,7 +91,7 @@ public class CouponServiceTest extends IntegerTestSupport {
     @DisplayName("쿠폰 중복 발급 시도시 예외 처리")
     void issueCouponFailTest() {
         //given
-        CouponCreateRequest couponCreateRequest = new CouponCreateRequest(100, 10);
+        CouponCreateRequest couponCreateRequest = new CouponCreateRequest(100, 10, LocalDate.now().plusDays(2));
         CouponResponse coupon = couponCommandService.createCoupon(couponCreateRequest);
 
         //when & then
@@ -106,10 +107,10 @@ public class CouponServiceTest extends IntegerTestSupport {
     @DisplayName("나의 쿠폰 조회 테스트")
     void getCouponDetailsTest() {
         //given
-        CouponCreateRequest couponCreateRequest = new CouponCreateRequest(100, 10);
+        CouponCreateRequest couponCreateRequest = new CouponCreateRequest(100, 10, LocalDate.now().plusDays(2));
         CouponResponse coupon = couponCommandService.createCoupon(couponCreateRequest);
 
-        CouponCreateRequest couponCreateRequest2 = new CouponCreateRequest(100, 5);
+        CouponCreateRequest couponCreateRequest2 = new CouponCreateRequest(100, 5, LocalDate.now().plusDays(2));
         CouponResponse coupon2 = couponCommandService.createCoupon(couponCreateRequest2);
 
         couponCommandService.issueCoupon(savedUser.getId(), coupon.couponId());

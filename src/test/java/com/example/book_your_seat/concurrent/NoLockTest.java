@@ -7,6 +7,7 @@ import com.example.book_your_seat.coupon.repository.CouponRepository;
 import com.example.book_your_seat.coupon.service.CouponCommandService;
 import com.example.book_your_seat.user.domain.User;
 import com.example.book_your_seat.user.repository.UserRepository;
+import java.time.LocalDate;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -31,7 +32,7 @@ public class NoLockTest extends IntegerTestSupport {
     void beforeEach() {
         User user = new User("nickname", "username", "email@email.com", "password123456789");
         userRepository.save(user);
-        couponRepository.save(new Coupon(100, DiscountRate.FIVE));
+        couponRepository.save(new Coupon(100, DiscountRate.FIVE, LocalDate.of(2024,11,01)));
     }
 
     @AfterEach
