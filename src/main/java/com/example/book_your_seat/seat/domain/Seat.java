@@ -23,7 +23,7 @@ public class Seat {
     private Concert concert;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "reservation_id", nullable = true)
+    @JoinColumn(name = "reservation_id")
     private Reservation reservation;
 
     public Seat(final Concert concert) {
