@@ -1,14 +1,8 @@
 package com.example.book_your_seat.seat.domain;
 
 import com.example.book_your_seat.concert.domain.Concert;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import com.example.book_your_seat.reservation.domain.Reservation;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -28,9 +22,17 @@ public class Seat {
     @JoinColumn(name = "concert_id")
     private Concert concert;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "reservation_id", nullable = true)
+    private Reservation reservation;
+
     public Seat(Concert concert) {
         this.isSold = false;
         this.concert = concert;
         concert.addSeat(this);
+    }
+
+    public void assignReservation(Reservation reservation) {
+        this.reservation = reservation;
     }
 }

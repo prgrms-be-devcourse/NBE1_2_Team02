@@ -1,6 +1,7 @@
 package com.example.book_your_seat.reservation.domain;
 
 import com.example.book_your_seat.payment.domain.Payment;
+import com.example.book_your_seat.seat.domain.Seat;
 import com.example.book_your_seat.user.domain.Address;
 import com.example.book_your_seat.user.domain.User;
 import jakarta.persistence.CascadeType;
@@ -47,9 +48,10 @@ public class Reservation {
     private Payment payment;
 
     @OneToMany(mappedBy = "reservation", cascade = CascadeType.ALL)
-    private final List<ConcertReservation> concertReservations = new ArrayList<>();
+    private List<Seat> seats = new ArrayList<>();
 
-    public void addConcertReservation(ConcertReservation reservation) {
-        this.concertReservations.add(reservation);
+    public void addSeat(Seat seat) {
+        seats.add(seat);
+        seat.assignReservation(this);
     }
 }
