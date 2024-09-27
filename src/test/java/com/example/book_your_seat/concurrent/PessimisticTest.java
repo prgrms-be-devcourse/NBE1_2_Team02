@@ -6,9 +6,9 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import com.example.book_your_seat.IntegerTestSupport;
 import com.example.book_your_seat.coupon.domain.Coupon;
 import com.example.book_your_seat.coupon.domain.DiscountRate;
+import com.example.book_your_seat.coupon.facade.CouponCommandFacade;
 import com.example.book_your_seat.coupon.repository.CouponRepository;
 import com.example.book_your_seat.coupon.repository.UserCouponRepository;
-import com.example.book_your_seat.coupon.service.CouponCommandServiceImpl;
 import com.example.book_your_seat.user.domain.User;
 import com.example.book_your_seat.user.repository.UserRepository;
 import java.time.LocalDate;
@@ -25,7 +25,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 public class PessimisticTest extends IntegerTestSupport {
     @Autowired
-    private CouponCommandServiceImpl couponCommandServiceImpl;
+    private CouponCommandFacade couponCommandServiceImpl;
 
     @Autowired
     private CouponRepository couponRepository;
@@ -48,7 +48,7 @@ public class PessimisticTest extends IntegerTestSupport {
         }
 
         userRepository.saveAll(testUsers);
-        testCoupon = couponRepository.saveAndFlush(new Coupon(100, DiscountRate.FIVE, LocalDate.of(2024,11,01)));
+        testCoupon = couponRepository.saveAndFlush(new Coupon(100, DiscountRate.FIVE, LocalDate.of(2024,11,1)));
     }
 
     @AfterEach

@@ -6,8 +6,8 @@ import com.example.book_your_seat.coupon.controller.dto.CouponCreateRequest;
 import com.example.book_your_seat.coupon.controller.dto.CouponDetailResponse;
 import com.example.book_your_seat.coupon.controller.dto.CouponResponse;
 import com.example.book_your_seat.coupon.controller.dto.UserCouponIdResponse;
-import com.example.book_your_seat.coupon.service.CouponCommandService;
-import com.example.book_your_seat.coupon.service.CouponQueryService;
+import com.example.book_your_seat.coupon.facade.CouponCommandService;
+import com.example.book_your_seat.coupon.facade.CouponQueryService;
 import com.example.book_your_seat.user.controller.dto.UserResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -44,10 +44,10 @@ public class CouponController {
             @PathVariable("couponId") Long couponId,
             HttpServletRequest request
     ) {
-//        Long userId = getUserId(request);
+        Long userId = getUserId(request);
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(couponCommandService.issueCouponWithPessimistic(1L, couponId));
+                .body(couponCommandService.issueCouponWithPessimistic(userId, couponId));
     }
 
     @GetMapping("/my")

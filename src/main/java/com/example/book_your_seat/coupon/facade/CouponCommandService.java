@@ -1,4 +1,4 @@
-package com.example.book_your_seat.coupon.service;
+package com.example.book_your_seat.coupon.facade;
 
 import com.example.book_your_seat.coupon.controller.dto.CouponCreateRequest;
 import com.example.book_your_seat.coupon.controller.dto.CouponResponse;
