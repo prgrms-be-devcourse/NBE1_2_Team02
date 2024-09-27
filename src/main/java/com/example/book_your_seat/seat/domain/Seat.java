@@ -1,6 +1,7 @@
 package com.example.book_your_seat.seat.domain;
 
 import com.example.book_your_seat.concert.domain.Concert;
+import com.example.book_your_seat.reservation.domain.Reservation;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -28,9 +29,14 @@ public class Seat {
     @JoinColumn(name = "concert_id")
     private Concert concert;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "reservation_id")
+    private Reservation reservation;
+
     public Seat(Concert concert) {
         this.isSold = false;
         this.concert = concert;
         concert.addSeat(this);
     }
+
 }
