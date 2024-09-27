@@ -10,7 +10,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.Version;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -36,9 +35,6 @@ public class Coupon extends BaseEntity {
 
     @OneToMany(mappedBy = "coupon", cascade = CascadeType.ALL)
     private final List<UserCoupon> userCoupons = new ArrayList<>();
-
-//    @Version
-//    private Long version;
 
     public Coupon(int amount, DiscountRate discountRate, LocalDate expirationDate) {
         this.amount = amount;

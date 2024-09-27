@@ -6,7 +6,9 @@ import com.example.book_your_seat.IntegerTestSupport;
 import com.example.book_your_seat.coupon.controller.dto.CouponCreateRequest;
 import com.example.book_your_seat.coupon.controller.dto.CouponDetailResponse;
 import com.example.book_your_seat.coupon.controller.dto.CouponResponse;
+import com.example.book_your_seat.coupon.controller.dto.UserCouponIdResponse;
 import com.example.book_your_seat.coupon.domain.Coupon;
+import com.example.book_your_seat.coupon.domain.UserCoupon;
 import com.example.book_your_seat.coupon.repository.CouponRepository;
 import com.example.book_your_seat.coupon.repository.UserCouponRepository;
 import com.example.book_your_seat.coupon.service.CouponCommandService;
@@ -50,6 +52,8 @@ public class CouponServiceTest extends IntegerTestSupport {
     @AfterEach
     void afterEach() {
         userRepository.deleteAll();
+        couponRepository.deleteAll();
+        userCouponRepository.deleteAll();
     }
 
     @Test
@@ -78,10 +82,12 @@ public class CouponServiceTest extends IntegerTestSupport {
         CouponResponse coupon = couponCommandService.createCoupon(couponCreateRequest);
 
         //when
-        CouponResponse couponResponse = couponCommandService.issueCoupon(savedUser.getId(), coupon.couponId());
+        UserCouponIdResponse userCouponIdResponse = couponCommandService.issueCouponWithPessimistic(savedUser.getId(),
+                coupon.couponId());
 
         //then
-        assertThat(couponResponse.couponId()).isEqualTo(coupon.couponId());
+        Optional<UserCoupon> byId = userCouponRepository.findById(userCouponIdResponse.userCouponId());
+        assertThat(byId.isPresent()).isTrue();
 
         boolean shouldBeTrue = userCouponRepository.existsByUserIdAndCouponId(savedUser.getId(), coupon.couponId());
         assertThat(shouldBeTrue).isTrue();
@@ -95,9 +101,9 @@ public class CouponServiceTest extends IntegerTestSupport {
         CouponResponse coupon = couponCommandService.createCoupon(couponCreateRequest);
 
         //when & then
-        couponCommandService.issueCoupon(savedUser.getId(), coupon.couponId());
+        couponCommandService.issueCouponWithPessimistic(savedUser.getId(), coupon.couponId());
 
-        assertThatThrownBy(() -> couponCommandService.issueCoupon(savedUser.getId(), coupon.couponId()))
+        assertThatThrownBy(() -> couponCommandService.issueCouponWithPessimistic(savedUser.getId(), coupon.couponId()))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("이미 쿠폰을 발급 받은 유저입니다.");
 
@@ -113,8 +119,8 @@ public class CouponServiceTest extends IntegerTestSupport {
         CouponCreateRequest couponCreateRequest2 = new CouponCreateRequest(100, 5, LocalDate.now().plusDays(2));
         CouponResponse coupon2 = couponCommandService.createCoupon(couponCreateRequest2);
 
-        couponCommandService.issueCoupon(savedUser.getId(), coupon.couponId());
-        couponCommandService.issueCoupon(savedUser.getId(), coupon2.couponId());
+        couponCommandService.issueCouponWithPessimistic(savedUser.getId(), coupon.couponId());
+        couponCommandService.issueCouponWithPessimistic(savedUser.getId(), coupon2.couponId());
 
         //when
         List<CouponDetailResponse> couponDetail = couponQueryService.getCouponDetail(savedUser.getId());

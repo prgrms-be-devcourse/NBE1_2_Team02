@@ -45,7 +45,7 @@ public class CouponCommandServiceImpl implements CouponCommandService {
         Coupon coupon = couponQueryService.findByIdWithPessimistic(couponId);
 
         //선착순 쿠폰 중복수령 방지
-//        checkAlreadyIssuedUser(userId, couponId);
+        checkAlreadyIssuedUser(userId, couponId);
 
         coupon.issue();
         couponRepository.saveAndFlush(coupon);

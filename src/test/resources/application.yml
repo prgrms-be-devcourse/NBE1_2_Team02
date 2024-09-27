@@ -4,3 +4,8 @@ spring:
     jpa:
       hibernate:
         ddl-auto: create-drop
+
+  redis:
+    host: localhost
+    port: 6379
+    password:
