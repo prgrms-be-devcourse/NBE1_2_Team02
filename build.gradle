@@ -35,6 +35,10 @@ dependencies {
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.2'	//Swagger 의존성 추가
+
+	// Redisson
+	implementation 'org.redisson:redisson-spring-boot-starter:3.33.0'
+
 }
 
 tasks.named('test') {
