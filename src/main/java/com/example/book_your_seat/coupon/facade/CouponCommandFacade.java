@@ -7,7 +7,7 @@ import com.example.book_your_seat.coupon.domain.Coupon;
 import com.example.book_your_seat.coupon.domain.UserCoupon;
 import com.example.book_your_seat.coupon.manager.CouponManager;
 import com.example.book_your_seat.coupon.manager.UserCouponManager;
-import com.example.book_your_seat.coupon.manager.UserManager;
+import com.example.book_your_seat.user.manager.UserManager;
 import com.example.book_your_seat.user.domain.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

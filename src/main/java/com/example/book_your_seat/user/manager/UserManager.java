@@ -1,4 +1,4 @@
-package com.example.book_your_seat.coupon.manager;
+package com.example.book_your_seat.user.manager;
 
 import static com.example.book_your_seat.coupon.CouponConst.USER_NOT_FOUND;
 

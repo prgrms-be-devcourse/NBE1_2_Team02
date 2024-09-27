@@ -5,13 +5,15 @@ import java.time.LocalDate;
 
 public record CouponDetailResponse(
         String discountRate,
-        LocalDate issuedAt
+        LocalDate issuedAt,
+        LocalDate expirationDate
 ) {
 
     public static CouponDetailResponse fromCoupon(Coupon coupon) {
         return new CouponDetailResponse(
                 coupon.getDiscountRate().getStringForm(),
-                coupon.getCreatedAt().toLocalDate()
+                coupon.getCreatedAt().toLocalDate(),
+                coupon.getExpirationDate()
         );
     }
 }
