@@ -1,5 +1,6 @@
 package com.example.book_your_seat.service.coupon;
 
+import static com.example.book_your_seat.coupon.CouponConst.ALREADY_ISSUED_USER;
 import static org.assertj.core.api.Assertions.*;
 
 import com.example.book_your_seat.IntegerTestSupport;
@@ -75,7 +76,7 @@ public class CouponServiceTest extends IntegerTestSupport {
     }
 
     @Test
-    @DisplayName("쿠폰 발급 성공")
+    @DisplayName("쿠폰을 한 개 생성한다.")
     void issueCouponTest() {
         //given
         CouponCreateRequest couponCreateRequest = new CouponCreateRequest(100, 10, LocalDate.now().plusDays(2));
@@ -105,12 +106,12 @@ public class CouponServiceTest extends IntegerTestSupport {
 
         assertThatThrownBy(() -> couponCommandService.issueCouponWithPessimistic(savedUser.getId(), coupon.couponId()))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("이미 쿠폰을 발급 받은 유저입니다.");
+                .hasMessage(ALREADY_ISSUED_USER);
 
     }
 
     @Test
-    @DisplayName("나의 쿠폰 조회 테스트")
+    @DisplayName("로그인한 유저의 보유 쿠폰 목록을 조회한다.")
     void getCouponDetailsTest() {
         //given
         CouponCreateRequest couponCreateRequest = new CouponCreateRequest(100, 10, LocalDate.now().plusDays(2));

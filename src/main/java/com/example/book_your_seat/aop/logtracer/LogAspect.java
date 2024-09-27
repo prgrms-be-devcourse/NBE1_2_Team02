@@ -20,7 +20,7 @@ public class LogAspect {
     @Pointcut("execution(* com.example.book_your_seat..*Controller.*(..)) || execution(* com.example.book_your_seat..*Service.*(..)) || execution(* com.example.book_your_seat..*Repository.*(..))")
     public void everyRequest() { }
 
-//    @Around("everyRequest()")
+    @Around("everyRequest()")
     public Object doLog(ProceedingJoinPoint joinPoint) throws Throwable {
         TraceStatus status = null;
         boolean hasException = false;
