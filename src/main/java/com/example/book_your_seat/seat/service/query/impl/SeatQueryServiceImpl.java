@@ -22,4 +22,5 @@ public class SeatQueryServiceImpl implements SeatQueryService {
                 .map(RemainSeatResponse::from)
                 .toList();
     }
+
 }

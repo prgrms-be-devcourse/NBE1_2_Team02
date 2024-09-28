@@ -6,4 +6,5 @@ import java.util.List;
 
 public interface SeatQueryService {
     List<RemainSeatResponse> findRemainSeats(Long concertId);
+
 }

@@ -32,6 +32,10 @@ public class Seat {
         concert.addSeat(this);
     }
 
+    public void selectSeat() {
+        isSold = true;
+    }
+
     public void assignReservation(final Reservation reservation) {
         this.reservation = reservation;
     }

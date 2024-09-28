@@ -3,6 +3,7 @@ package com.example.book_your_seat.seat.controller.dto;
 import com.example.book_your_seat.seat.domain.Seat;
 
 public record RemainSeatResponse(
+
         Long seatId,
 
         Integer price
