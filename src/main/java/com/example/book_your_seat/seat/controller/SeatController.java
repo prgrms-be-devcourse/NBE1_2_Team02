@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RequiredArgsConstructor
-@RequestMapping("api/v1/seat")
+@RequestMapping("/api/v1/seat")
 @RestController
 public class SeatController {
     private final SeatQueryService seatQueryService;
