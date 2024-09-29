@@ -38,5 +38,6 @@ public class Seat {
 
     public void assignReservation(final Reservation reservation) {
         this.reservation = reservation;
+        reservation.addSeat(this);
     }
 }

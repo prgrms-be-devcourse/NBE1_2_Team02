@@ -22,7 +22,7 @@ public class SeatCommandServiceImpl implements SeatCommandService {
 
 
     @Override
-    public SelectSeatResponse selectSeat(SelectSeatRequest request) {
+    public SelectSeatResponse selectSeat(final SelectSeatRequest request) {
         //seat를 가져옴
         List<Seat> seats = seatRepository.findAllByIdWithLock(request.seatIds());
 

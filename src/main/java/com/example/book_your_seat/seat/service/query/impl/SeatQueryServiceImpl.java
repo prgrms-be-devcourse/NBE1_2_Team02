@@ -17,7 +17,7 @@ public class SeatQueryServiceImpl implements SeatQueryService {
 
 
     @Override
-    public List<RemainSeatResponse> findRemainSeats(Long concertId) {
+    public List<RemainSeatResponse> findRemainSeats(final Long concertId) {
         return seatRepository.findByConcertIdAndNotSold(concertId).stream()
                 .map(RemainSeatResponse::from)
                 .toList();

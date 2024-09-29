@@ -29,7 +29,7 @@ public class SeatController {
     }
 
     @PostMapping("/selectSeat")
-    public ResponseEntity<SelectSeatResponse> selectSeat(@Valid @RequestBody SelectSeatRequest selectSeatRequest) {
+    public ResponseEntity<SelectSeatResponse> selectSeat(@Valid @RequestBody final SelectSeatRequest selectSeatRequest) {
         SelectSeatResponse selectSeatResponse = seatCommandService.selectSeat(selectSeatRequest);
         return ResponseEntity
                 .status(HttpStatus.OK)
