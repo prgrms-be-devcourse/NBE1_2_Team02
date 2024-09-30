@@ -1,5 +1,6 @@
 package com.example.book_your_seat.seat.domain;
 
+import com.example.book_your_seat.common.entity.BaseEntity;
 import com.example.book_your_seat.concert.domain.Concert;
 import com.example.book_your_seat.reservation.domain.Reservation;
 import jakarta.persistence.*;
@@ -10,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Seat {
+public class Seat extends BaseEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "seat_id")
@@ -39,5 +40,9 @@ public class Seat {
     public void assignReservation(final Reservation reservation) {
         this.reservation = reservation;
         reservation.addSeat(this);
+    }
+
+    public void releaseSeat() {
+        isSold = false;
     }
 }
