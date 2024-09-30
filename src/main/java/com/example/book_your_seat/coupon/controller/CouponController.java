@@ -44,10 +44,10 @@ public class CouponController {
             @PathVariable("couponId") Long couponId,
             HttpServletRequest request
     ) {
-        Long userId = getUserId(request);
+//        Long userId = getUserId(request);
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(couponCommandService.issueCouponWithPessimistic(userId, couponId));
+                .body(couponCommandService.issueCouponWithPessimistic(1L, couponId));
     }
 
     @GetMapping("/my")

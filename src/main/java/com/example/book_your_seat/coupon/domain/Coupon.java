@@ -53,4 +53,8 @@ public class Coupon extends BaseEntity {
         this.amount -= 1;
 
     }
+
+    public boolean noStock() {
+        return this.amount <= 0;
+    }
 }

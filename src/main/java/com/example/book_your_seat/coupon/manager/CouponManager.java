@@ -29,4 +29,9 @@ public class CouponManager {
     public void saveAndFlush(Coupon coupon) {
         couponRepository.saveAndFlush(coupon);
     }
+
+    public Coupon findById(Long couponId) {
+        return couponRepository.findById(couponId)
+                .orElseThrow(() -> new IllegalArgumentException(COUPON_NOT_FOUND));
+    }
 }

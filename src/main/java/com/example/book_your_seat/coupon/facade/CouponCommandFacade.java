@@ -7,9 +7,11 @@ import com.example.book_your_seat.coupon.domain.Coupon;
 import com.example.book_your_seat.coupon.domain.UserCoupon;
 import com.example.book_your_seat.coupon.manager.CouponManager;
 import com.example.book_your_seat.coupon.manager.UserCouponManager;
+import com.example.book_your_seat.kafak.event.UserCouponEvent;
 import com.example.book_your_seat.user.manager.UserManager;
 import com.example.book_your_seat.user.domain.User;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,6 +23,7 @@ public class CouponCommandFacade implements CouponCommandService {
     private final UserManager userManager;
     private final CouponManager couponManager;
     private final UserCouponManager userCouponManager;
+    private final ApplicationEventPublisher publisher;
 
     @Override
     public CouponResponse createCoupon(CouponCreateRequest couponCreateRequest) {
@@ -34,12 +37,18 @@ public class CouponCommandFacade implements CouponCommandService {
         User user = userManager.getUser(userId);
         Coupon coupon = couponManager.findByIdWithPessimistic(couponId);
 
-        userCouponManager.checkAlreadyIssuedUser(userId, couponId);
+        if (coupon.noStock()) {
+            throw new IllegalArgumentException("재고 부족");
+        }
 
-        coupon.issue();
-        couponManager.saveAndFlush(coupon);
+//        userCouponManager.checkAlreadyIssuedUser(userId, couponId);
+
+        publisher.publishEvent(new UserCouponEvent(userId, couponId));
+
+//        coupon.issue();
+//        couponManager.saveAndFlush(coupon);
         return new UserCouponIdResponse(
-                userCouponManager.save(new UserCoupon(user, coupon)).getId()
+                1L
         );
     }
 

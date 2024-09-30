@@ -39,6 +39,8 @@ dependencies {
 	// Redisson
 	implementation 'org.redisson:redisson-spring-boot-starter:3.33.0'
 
+	implementation 'org.springframework.kafka:spring-kafka'
+
 }
 
 tasks.named('test') {
