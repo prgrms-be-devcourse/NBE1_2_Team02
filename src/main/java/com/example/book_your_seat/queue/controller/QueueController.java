@@ -1,5 +1,7 @@
 package com.example.book_your_seat.queue.controller;
 
+import com.example.book_your_seat.queue.controller.dto.QueueToken;
+import com.example.book_your_seat.queue.service.QueueService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -14,19 +16,27 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class QueueController {
 
+    private final QueueService queueService;
+
     @PostMapping("/users/{userId}")
-    public ResponseEntity<Void> issueQueueToken(@PathVariable("userId") Long userId) {
-        return ResponseEntity.ok().build();
+    public ResponseEntity<QueueToken> issueQueueToken(@PathVariable("userId") Long userId) {
+        return ResponseEntity
+                .ok()
+                .body(queueService.issueQueueToken(userId));
     }
 
     @GetMapping("/users")
     public ResponseEntity<Void> getTokenStatus(String token) {
-        return ResponseEntity.ok().build();
+        return ResponseEntity
+                .ok()
+                .build();
     }
 
     @DeleteMapping("/users")
     public ResponseEntity<Void> deleteQueueToken(String token) {
-        return ResponseEntity.ok().build();
+        return ResponseEntity
+                .ok()
+                .build();
     }
 
 }

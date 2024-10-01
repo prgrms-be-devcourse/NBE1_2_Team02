@@ -25,4 +25,9 @@ public class UserManager {
                 .orElseThrow(() -> new IllegalArgumentException(USER_NOT_FOUND));
     }
 
+    public void checkUser(Long userId) {
+        if (!userRepository.existsById(userId)) {
+            throw new IllegalArgumentException("User not found");
+        }
+    }
 }
