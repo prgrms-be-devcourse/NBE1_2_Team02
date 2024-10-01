@@ -34,4 +34,8 @@ public class QueueService {
 
         return QueueResponse.waiting(position, estimatedWaitTime);
     }
+
+    public void deleteQueueToken(String token) {
+        queueManager.removeToken(token);
+    }
 }

@@ -49,4 +49,8 @@ public class QueueManager {
         return batches * batchInterval;
     }
 
+    public void removeToken(String token) {
+        redisQueueRepository.removeWaitingToken(token);
+        redisQueueRepository.removeProcessingToken(token);
+    }
 }

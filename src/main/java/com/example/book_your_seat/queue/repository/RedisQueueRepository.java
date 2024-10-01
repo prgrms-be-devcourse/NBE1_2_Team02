@@ -68,4 +68,24 @@ public class RedisQueueRepository {
         Long size = redisTemplate.opsForZSet().size("PROCESSING_QUEUE");
         return size != null ? size : 0L;
     }
+
+    public void removeProcessingToken(String token) {
+        Set<String> members = redisTemplate.opsForSet().members("PROCESSING_QUEUE");
+        if (members != null) {
+            members.stream()
+                    .filter(entry -> entry.startsWith(token))
+                    .findFirst()
+                    .ifPresent(entry -> redisTemplate.opsForSet().remove("PROCESSING_QUEUE", entry));
+        }
+    }
+
+    public void removeWaitingToken(String token) {
+        Set<String> members = redisTemplate.opsForSet().members("WAITING_QUEUE");
+        if (members != null) {
+            members.stream()
+                    .filter(entry -> entry.startsWith(token))
+                    .findFirst()
+                    .ifPresent(entry -> redisTemplate.opsForSet().remove("WAITING_QUEUE", entry));
+        }
+    }
 }

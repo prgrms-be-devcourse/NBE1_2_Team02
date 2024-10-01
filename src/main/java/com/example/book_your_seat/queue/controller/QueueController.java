@@ -36,6 +36,7 @@ public class QueueController {
 
     @DeleteMapping("/users")
     public ResponseEntity<Void> deleteQueueToken(String token) {
+        queueService.deleteQueueToken(token);
         return ResponseEntity
                 .ok()
                 .build();
