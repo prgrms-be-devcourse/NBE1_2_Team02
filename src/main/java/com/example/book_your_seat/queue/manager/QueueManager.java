@@ -14,17 +14,21 @@ public class QueueManager {
     private final RedisQueueRepository redisQueueRepository;
 
     public String enqueueToken(Long userId) {
+        if (redisQueueRepository.alreadyEnQueued(userId)) {
+            throw new IllegalArgumentException("이미 대기열에 있습니다.");
+        }
+
         String token = jwtUtil.generateToken(userId);
         Long score = System.currentTimeMillis();
 
-        redisQueueRepository.addToWaitingQueue(token, score);
+        redisQueueRepository.addToWaitingQueue(token, userId, score);
         return token;
     }
 
     public QueueStatus getQueueStatus(String token) {
         Long userIdFromToken = jwtUtil.getUserIdFromToken(token);
 
-        if (redisQueueRepository.isProcessingQueue(token)) {
+        if (redisQueueRepository.isProcessingQueue(token, userIdFromToken)) {
             return QueueStatus.PROCESSING;
         }
         if (redisQueueRepository.getWaitingQueuePosition(token, userIdFromToken.toString()) > 0L) {
