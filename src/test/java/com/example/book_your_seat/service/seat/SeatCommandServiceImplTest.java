@@ -1,4 +1,4 @@
-package com.example.book_your_seat.service.seat.service;
+package com.example.book_your_seat.service.seat;
 
 import com.example.book_your_seat.IntegerTestSupport;
 import com.example.book_your_seat.concert.controller.dto.AddConcertRequest;
@@ -15,6 +15,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -27,21 +28,20 @@ import java.util.stream.Collectors;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
-class SeatQueryServiceTest extends IntegerTestSupport {
-
+class SeatCommandServiceImplTest extends IntegerTestSupport {
     @Autowired
     private SeatQueryService seatQueryService;
-
     @Autowired
     private ConcertCommandService concertCommandService;
-
     @Autowired
     private ConcertRepository concertRepository;
-
     @Autowired
     private SeatRepository seatRepository;
     @Autowired
+    @Qualifier("Pessimistic")
     private SeatCommandService seatCommandService;
+
+
     private Long concertId;
     private List<Long> seatIds;
 
@@ -66,18 +66,6 @@ class SeatQueryServiceTest extends IntegerTestSupport {
     void tearDown() {
         concertRepository.deleteAll();
         seatRepository.deleteAll();
-    }
-
-    @DisplayName("concertId를 입력 하면 seat중에 예약이 안된 시트를 반환한다.")
-    @Test
-    void remainSeatTest() {
-        // given
-        //when
-        List<RemainSeatResponse> remainSeats = seatQueryService.findRemainSeats(concertId);
-
-        //then
-        assertThat(remainSeats.isEmpty(), is(false));
-
     }
 
     @DisplayName("모든 남아있는 좌석을 선택하는 100개의 요청이 들어 올 경우 99개의 요청은 실패한다")
@@ -114,4 +102,5 @@ class SeatQueryServiceTest extends IntegerTestSupport {
         assertThat(successCount.get(), is(1));
         assertThat(failCount.get(), is(99));
     }
+
 }

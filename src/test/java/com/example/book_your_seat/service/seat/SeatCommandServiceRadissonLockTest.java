@@ -1,4 +1,4 @@
-package com.example.book_your_seat.service.seat.service;
+package com.example.book_your_seat.service.seat;
 
 import com.example.book_your_seat.IntegerTestSupport;
 import com.example.book_your_seat.concert.controller.dto.AddConcertRequest;
@@ -15,6 +15,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -27,7 +28,7 @@ import java.util.stream.Collectors;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
-class SeatCommandServiceImplTest extends IntegerTestSupport {
+class SeatCommandServiceRadissonLockTest extends IntegerTestSupport {
     @Autowired
     private SeatQueryService seatQueryService;
     @Autowired
@@ -37,8 +38,9 @@ class SeatCommandServiceImplTest extends IntegerTestSupport {
     @Autowired
     private SeatRepository seatRepository;
     @Autowired
+    @Qualifier("Radisson")
     private SeatCommandService seatCommandService;
-    
+
     private Long concertId;
     private List<Long> seatIds;
 
@@ -99,5 +101,4 @@ class SeatCommandServiceImplTest extends IntegerTestSupport {
         assertThat(successCount.get(), is(1));
         assertThat(failCount.get(), is(99));
     }
-
 }

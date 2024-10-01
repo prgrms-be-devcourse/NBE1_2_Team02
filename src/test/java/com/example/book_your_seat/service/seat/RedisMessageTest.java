@@ -1,4 +1,4 @@
-package com.example.book_your_seat.service.seat.service;
+package com.example.book_your_seat.service.seat;
 
 import com.example.book_your_seat.IntegerTestSupport;
 import com.example.book_your_seat.seat.domain.Seat;

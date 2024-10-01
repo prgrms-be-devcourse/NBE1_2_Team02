@@ -1,17 +1,16 @@
 package com.example.book_your_seat.seat.service.command.Impl;
 
+import com.example.book_your_seat.aop.seatLock.SeatLock;
 import com.example.book_your_seat.seat.controller.dto.SelectSeatRequest;
 import com.example.book_your_seat.seat.controller.dto.SelectSeatResponse;
 import com.example.book_your_seat.seat.domain.Seat;
 import com.example.book_your_seat.seat.repository.SeatRepository;
 import com.example.book_your_seat.seat.service.command.SeatCommandService;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.annotation.Primary;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -19,15 +18,13 @@ import java.util.concurrent.TimeUnit;
 import static com.example.book_your_seat.seat.SeatConst.SEAT_SOLD;
 
 @Service
-@RequiredArgsConstructor
 @Transactional
-@Primary
-@Qualifier("Pessimistic")
-public class SeatCommandServiceImpl implements SeatCommandService {
-
+@RequiredArgsConstructor
+@Qualifier("Radisson")
+public class SeatCommandServiceRadissonLock implements SeatCommandService {
     private final SeatRepository seatRepository;
     private final RedisTemplate<String, Object> redisTemplate;
-    private final RedissonClient redissonClient;
+
     @Override
     public SelectSeatResponse selectSeat(final SelectSeatRequest request) {
         //seat를 가져옴
@@ -39,7 +36,9 @@ public class SeatCommandServiceImpl implements SeatCommandService {
 
         return SelectSeatResponse.fromSeats(seats);
     }
+
     //좌석 isSold = true로 변환
+    @SeatLock
     private void validateAndSelectSeats (final List<Seat> seats) {
         seats.forEach(seat -> {
             if (seat.isSold()) {

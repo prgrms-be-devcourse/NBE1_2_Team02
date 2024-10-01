@@ -16,10 +16,13 @@ public interface SeatRepository extends JpaRepository<Seat, Long> {
     @Query("SELECT s FROM Seat s WHERE s.concert.id = :concertId AND s.isSold = false")
     List<Seat> findByConcertIdAndNotSold(Long concertId);
 
-    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    @Lock(LockModeType.PESSIMISTIC_READ)
     @QueryHints({@QueryHint(name = "javax.persistence.lock.timeout", value = "3000")})
     @Query("SELECT s FROM Seat s WHERE s.id IN :seatIds")
     List<Seat> findAllByIdWithLock(List<Long> seatIds);
+
+    @Query("SELECT s FROM Seat  s WHERE s.id IN :seatIds")
+    List<Seat> findAllById(List<Long> seatIds);
 
     @Query("SELECT s FROM Seat s WHERE s.isSold = true AND s.reservation IS NULL AND s.lastModifiedAt < :time")
     List<Seat> findSeatsToRelease(@Param("time") LocalDateTime time);

@@ -14,4 +14,5 @@ public final class SeatConst {
 
     public static final String SEAT_SOLD = "이미 예약된 좌석 입니다.";
     public static final String SEAT_NOT_FOUND = "해당하는 좌석이 없습니다.";
+    public static final String REDISSON_LOCK_KEY = "LOCK_SEAT:";
 }
