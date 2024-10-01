@@ -1,6 +1,7 @@
 package com.example.book_your_seat.common.util;
 
 public final class JwtConst {
+    private JwtConst() {}
     public static final String INVALID_JWT = "유효하지 않은 JWT 토큰입니다.";
     public static final String EXPIRED_JWT = "만료된 JWT 토큰입니다.";
     public static final String UNSUPPORTED_JWT = "지원하지 않는 JWT 토큰 형식입니다.";
