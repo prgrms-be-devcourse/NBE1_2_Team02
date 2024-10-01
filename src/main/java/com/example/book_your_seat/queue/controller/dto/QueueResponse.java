@@ -1,6 +1,8 @@
 package com.example.book_your_seat.queue.controller.dto;
 
-import com.example.book_your_seat.queue.domain.QueueStatus;
+import static com.example.book_your_seat.queue.QueueConst.ZERO;
+
+import com.example.book_your_seat.queue.util.QueueStatus;
 
 public record QueueResponse(
         QueueStatus status,
@@ -8,7 +10,7 @@ public record QueueResponse(
         Long estimatedWaitTime
 ) {
     public static QueueResponse processing() {
-        return new QueueResponse(QueueStatus.PROCESSING, 0L, 0L);
+        return new QueueResponse(QueueStatus.PROCESSING, ZERO, ZERO);
     }
 
     public static QueueResponse waiting(Long position, Long estimatedWaitTime) {

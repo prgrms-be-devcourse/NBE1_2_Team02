@@ -1,12 +1,18 @@
 package com.example.book_your_seat.queue.service;
 
+import static com.example.book_your_seat.queue.QueueConst.ALLOWED_PROCESSING_SIZE;
+import static com.example.book_your_seat.queue.QueueConst.FIFTEEN_MINUTE;
+import static com.example.book_your_seat.queue.QueueConst.ZERO;
+
 import com.example.book_your_seat.queue.repository.RedisQueueRepository;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 @Component
+@Slf4j
 @RequiredArgsConstructor
 public class QueueScheduler {
 
@@ -15,7 +21,7 @@ public class QueueScheduler {
     @Scheduled(fixedRate = 30000)
     public void updateQueueStatus() {
         Long availableProcessingRoom = calculateAvailableProcessingRoom();
-        if (availableProcessingRoom <= 0) return;
+        if (availableProcessingRoom <= ZERO) return;
 
         Set<String> tokensNeedToUpdateToProcessing =
                 redisQueueRepository.getWaitingQueueNeedToUpdateToProcessing(availableProcessingRoom.intValue());
@@ -24,17 +30,17 @@ public class QueueScheduler {
             try {
                 redisQueueRepository.updateToProcessingQueue(
                         token,
-                        System.currentTimeMillis() + 900000
+                        System.currentTimeMillis() + FIFTEEN_MINUTE
                 );
             } catch (Exception e) {
-                System.err.println("Error updating token to processing: " + e.getMessage());
+                log.error(e.getMessage());
             }
         }
     }
 
     private Long calculateAvailableProcessingRoom() {
         Long currentProcessingCount = redisQueueRepository.getProcessingQueueCount();
-        return 1000 - currentProcessingCount;
+        return ALLOWED_PROCESSING_SIZE - currentProcessingCount;
     }
 
 }

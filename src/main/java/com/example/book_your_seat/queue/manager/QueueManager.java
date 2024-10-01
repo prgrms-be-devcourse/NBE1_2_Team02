@@ -1,7 +1,13 @@
 package com.example.book_your_seat.queue.manager;
 
+import static com.example.book_your_seat.queue.QueueConst.ALLOWED_PROCESSING_SIZE;
+import static com.example.book_your_seat.queue.QueueConst.ALREADY_IN_QUEUE_KEY;
+import static com.example.book_your_seat.queue.QueueConst.FIVE;
+import static com.example.book_your_seat.queue.QueueConst.MINUTE;
+import static com.example.book_your_seat.queue.QueueConst.ZERO;
+
 import com.example.book_your_seat.common.JwtUtil;
-import com.example.book_your_seat.queue.domain.QueueStatus;
+import com.example.book_your_seat.queue.util.QueueStatus;
 import com.example.book_your_seat.queue.repository.RedisQueueRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -15,7 +21,7 @@ public class QueueManager {
 
     public String enqueueToken(Long userId) {
         if (redisQueueRepository.alreadyEnQueued(userId)) {
-            throw new IllegalArgumentException("이미 대기열에 있습니다.");
+            throw new IllegalArgumentException(ALREADY_IN_QUEUE_KEY);
         }
 
         String token = jwtUtil.generateToken(userId);
@@ -31,7 +37,7 @@ public class QueueManager {
         if (redisQueueRepository.isProcessingQueue(token, userIdFromToken)) {
             return QueueStatus.PROCESSING;
         }
-        if (redisQueueRepository.getWaitingQueuePosition(token, userIdFromToken.toString()) > 0L) {
+        if (redisQueueRepository.getWaitingQueuePosition(token, userIdFromToken) > ZERO) {
             return QueueStatus.WAITING;
         }
         return QueueStatus.CANCELED;
@@ -39,12 +45,12 @@ public class QueueManager {
 
     public Long getPositionInWaitingStatus(String token) {
         Long userIdFromToken = jwtUtil.getUserIdFromToken(token);
-        return redisQueueRepository.getWaitingQueuePosition(token, userIdFromToken.toString());
+        return redisQueueRepository.getWaitingQueuePosition(token, userIdFromToken);
     }
 
     public long calculateEstimatedWaitSeconds(long position) {
-        long batchSize = 1000L;
-        long batchInterval = 60L * 5;
+        long batchSize = ALLOWED_PROCESSING_SIZE;
+        long batchInterval = FIVE * MINUTE;
         long batches = position / batchSize;
         return batches * batchInterval;
     }

@@ -2,7 +2,7 @@ package com.example.book_your_seat.queue.service;
 
 import com.example.book_your_seat.queue.controller.dto.QueueResponse;
 import com.example.book_your_seat.queue.controller.dto.QueueToken;
-import com.example.book_your_seat.queue.domain.QueueStatus;
+import com.example.book_your_seat.queue.util.QueueStatus;
 import com.example.book_your_seat.queue.manager.QueueManager;
 import com.example.book_your_seat.user.manager.UserManager;
 import lombok.RequiredArgsConstructor;
