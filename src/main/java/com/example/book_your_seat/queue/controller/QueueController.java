@@ -31,7 +31,7 @@ public class QueueController {
     public ResponseEntity<QueueResponse> getQueueInfoWithToken(@SessionAttribute(LOGIN_USER) User user,
                                                                @RequestParam("token") String token)  {
         return ResponseEntity.ok()
-                .body(queueQueryService.findQueueStatusByToken(user.getId(), token));
+                .body(queueQueryService.findQueueStatus(user.getId(), token));
     }
 
     @PostMapping("/quit")

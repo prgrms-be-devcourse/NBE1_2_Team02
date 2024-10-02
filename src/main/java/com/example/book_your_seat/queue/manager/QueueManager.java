@@ -39,7 +39,7 @@ public class QueueManager {
     /*
     유저의 현재 큐 상태 확인
      */
-    public QueueResponse findQueueStatusByToken(Long userId, String token) {
+    public QueueResponse findQueueStatus(Long userId, String token) {
         if (queueRedisRepository.isInProcessingQueue(userId)) {
             return new QueueResponse(PROCESSING, 0);
         }
@@ -67,8 +67,8 @@ public class QueueManager {
         int count = calculateAvailableProcessingCount();
         if (count == 0) return;
 
-        List<String> tokens = queueRedisRepository.getFrontTokensFromWaitingQueue(count);
-        tokens.forEach(token -> queueRedisRepository.updateWaitingToProcessing(jwtUtil.getUserIdByToken(token), token));
+        List<String> values = queueRedisRepository.getFrontTokensFromWaitingQueue(count);
+        values.forEach(queueRedisRepository::updateWaitingToProcessing);
     }
 
     /*
@@ -88,8 +88,8 @@ public class QueueManager {
     /*
     진행 완료된 토큰 제거
      */
-    public void completeProcessingToken(String token) {
-        queueRedisRepository.removeProcessingToken(jwtUtil.getUserIdByToken(token), token);
+    public void completeProcessingToken(Long userId) {
+        queueRedisRepository.removeProcessingToken(userId);
     }
 
     /*

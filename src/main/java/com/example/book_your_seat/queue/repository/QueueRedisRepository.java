@@ -21,13 +21,13 @@ public class QueueRedisRepository implements Serializable {
 
     // userId와 token을 함께 저장
     public void enqueueProcessingQueue(Long userId, String token) {
-        String key = generateKey(userId, token);
-        zSet.add(PROCESSING_QUEUE_KEY, key, System.currentTimeMillis() + PROCESSING_TOKEN_EXPIRATION_TIME);
+        String value = generateValue(userId, token);
+        zSet.add(PROCESSING_QUEUE_KEY, value, System.currentTimeMillis() + PROCESSING_TOKEN_EXPIRATION_TIME);
     }
 
     public void enqueueWaitingQueue(Long userId, String token) {
-        String key = generateKey(userId, token);
-        zSet.add(WAITING_QUEUE_KEY, key, System.currentTimeMillis());
+        String value = generateValue(userId, token);
+        zSet.add(WAITING_QUEUE_KEY, value, System.currentTimeMillis() + WAITING_TOKEN_EXPIRATION_TIME);
     }
 
     public boolean isProcessableNow() {
@@ -40,18 +40,22 @@ public class QueueRedisRepository implements Serializable {
     }
 
     public boolean isInProcessingQueue(Long userId) {
-        Set<String> members = zSet.range(PROCESSING_QUEUE_KEY, 0, -1);
-        return members.stream().anyMatch(member -> member.matches(userId + ":.*"));
+        Set<String> values = zSet.range(PROCESSING_QUEUE_KEY, 0, -1);
+        return values.stream().anyMatch(
+                value -> value.matches(userId + ":.*")
+        );
     }
 
     public boolean isInWaitingQueue(Long userId) {
-        Set<String> members = zSet.range(WAITING_QUEUE_KEY, 0, -1);
-        return members.stream().anyMatch(member -> member.matches(userId + ":.*"));
+        Set<String> values = zSet.range(WAITING_QUEUE_KEY, 0, -1);
+        return values.stream().anyMatch(
+                value -> value.matches(userId + ":.*")
+        );
     }
 
     public Integer getWaitingQueuePosition(Long userId, String token) {
-        String key = generateKey(userId, token);
-        Long rank = zSet.rank(WAITING_QUEUE_KEY, key);
+        String value = generateValue(userId, token);
+        Long rank = zSet.rank(WAITING_QUEUE_KEY, value);
         return (rank == null) ? null : rank.intValue() + 1;
     }
 
@@ -71,29 +75,32 @@ public class QueueRedisRepository implements Serializable {
     }
 
     // userId와 token을 함께 처리하여 대기열에서 처리열로 이동
-    public void updateWaitingToProcessing(Long userId, String token) {
-        String key = generateKey(userId, token);
-        zSet.remove(WAITING_QUEUE_KEY, key);
-        zSet.add(PROCESSING_QUEUE_KEY, key, System.currentTimeMillis() + PROCESSING_TOKEN_EXPIRATION_TIME);
+    public void updateWaitingToProcessing(String value) {
+        zSet.remove(WAITING_QUEUE_KEY, value);
+        zSet.add(PROCESSING_QUEUE_KEY, value, System.currentTimeMillis() + PROCESSING_TOKEN_EXPIRATION_TIME);
     }
 
     public void removeTokenInWaitingQueue(Long userId, String token) {
-        String key = generateKey(userId, token);
-        zSet.remove(WAITING_QUEUE_KEY, key);
+        String value = generateValue(userId, token);
+        zSet.remove(WAITING_QUEUE_KEY, value);
     }
 
-    public void removeExpiredToken(long currentTime) {
+    public void removeExpiredToken(Long currentTime) {
         zSet.removeRangeByScore(PROCESSING_QUEUE_KEY, Double.NEGATIVE_INFINITY, (double) currentTime);
         zSet.removeRangeByScore(WAITING_QUEUE_KEY, Double.NEGATIVE_INFINITY, (double) currentTime);
     }
 
-    public void removeProcessingToken(Long userId, String token) {
-        String key = generateKey(userId, token);
-        zSet.remove(PROCESSING_QUEUE_KEY, key);
+    public void removeProcessingToken(Long userId) {
+        Set<String> values = zSet.range(PROCESSING_QUEUE_KEY, 0, -1);
+
+        values.stream()
+                .filter(value -> value.matches(userId + ":.*"))
+                .findFirst()
+                .ifPresent(value -> zSet.remove(PROCESSING_QUEUE_KEY, value));
     }
 
     // userId와 token을 조합한 키 생성 메소드
-    private String generateKey(Long userId, String token) {
+    private String generateValue(Long userId, String token) {
         return userId.toString() + ":" + token;
     }
 }

@@ -13,7 +13,7 @@ public class QueueQueryFacade implements QueueQueryService {
     private final QueueManager queueManager;
 
     @Override
-    public QueueResponse findQueueStatusByToken(Long userId, String token) {
-        return queueManager.findQueueStatusByToken(userId, token);
+    public QueueResponse findQueueStatus(Long userId, String token) {
+        return queueManager.findQueueStatus(userId, token);
     }
 }
