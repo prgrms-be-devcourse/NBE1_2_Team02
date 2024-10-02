@@ -5,8 +5,12 @@ import com.example.book_your_seat.coupon.controller.dto.UserCouponResponse;
 import com.example.book_your_seat.coupon.domain.Coupon;
 import com.example.book_your_seat.coupon.domain.DiscountRate;
 import com.example.book_your_seat.coupon.domain.UserCoupon;
+import com.example.book_your_seat.coupon.repository.CouponRepository;
+import com.example.book_your_seat.coupon.repository.UserCouponRepository;
 import com.example.book_your_seat.user.domain.User;
+import com.example.book_your_seat.user.repository.UserRepository;
 import jakarta.persistence.EntityManager;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -22,39 +26,51 @@ import java.time.LocalDate;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
-@Transactional
-@Rollback(value = false)
 class UserCouponServiceImplTest{
 
     @Autowired
-    private EntityManager em;
+    private UserCouponRepository userCouponRepository;
+
+    @Autowired
+    private CouponRepository couponRepository;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @Autowired
     private UserCouponService userCouponService;
 
+    User user;
+
     @BeforeEach
     void beforeEach() {
         // 유저 저장
-        User user = new User("nickname", "username", "email@email.com", "password123456789");
-        em.persist(user);
+        user = new User("nickname", "username", "email@email.com", "password123456789");
+        userRepository.save(user);
 
         // 쿠폰 저장
         for(int i =0; i < 30; i++){
             Coupon coupon = new Coupon(100, DiscountRate.FIFTEEN, LocalDate.now());
-            em.persist(coupon);
+            couponRepository.save(coupon);
 
             UserCoupon userCoupon = new UserCoupon(user, coupon);
 
             if(i % 2 == 0){
                 userCoupon.setUsed();
             }
-            em.persist(userCoupon);
+            userCouponRepository.save(userCoupon);
 
         }
 
 
-        em.flush();
-        em.clear();
+
+    }
+
+    @AfterEach
+    void removeAll(){
+        userCouponRepository.deleteAll();
+        couponRepository.deleteAll();
+        userRepository.deleteAll();
     }
 
 
@@ -66,7 +82,7 @@ class UserCouponServiceImplTest{
 
         UserCouponRequest userCouponRequest = new UserCouponRequest(false);
         //when
-        Slice<UserCouponResponse> userCoupons = userCouponService.getUserCoupons(userCouponRequest, 1L, pageRequest);
+        Slice<UserCouponResponse> userCoupons = userCouponService.getUserCoupons(userCouponRequest, user.getId(), pageRequest);
 
         System.out.println("userCoupons.getSize() = " + userCoupons.getSize());
         System.out.println("userCoupons.getContent() = " + userCoupons.getContent());
@@ -89,7 +105,7 @@ class UserCouponServiceImplTest{
 
         UserCouponRequest userCouponRequest = new UserCouponRequest(true);
         //when
-        Slice<UserCouponResponse> userCoupons = userCouponService.getUserCoupons(userCouponRequest, 1L, pageRequest);
+        Slice<UserCouponResponse> userCoupons = userCouponService.getUserCoupons(userCouponRequest, user.getId(), pageRequest);
 
         //then
         for(UserCouponResponse userCouponResponse : userCoupons){
@@ -109,7 +125,7 @@ class UserCouponServiceImplTest{
 
         PageRequest pageRequest1 = PageRequest.of(0, 5);  // 총 쿠폰 30장이고 사용한 한 쿠폰 15 이므로
 
-        Slice<UserCouponResponse> userCoupons = userCouponService.getUserCoupons(userCouponRequest, 1L, pageRequest1);
+        Slice<UserCouponResponse> userCoupons = userCouponService.getUserCoupons(userCouponRequest, user.getId(), pageRequest1);
 
         assertThat(userCoupons.getSize()).isEqualTo(5);
         assertThat(userCoupons.hasNext()).isTrue();
