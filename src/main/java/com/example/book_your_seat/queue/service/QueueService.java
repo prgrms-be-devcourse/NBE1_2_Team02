@@ -29,6 +29,10 @@ public class QueueService {
             return QueueResponse.processing();
         }
 
+        if (status == QueueStatus.CANCELED) {
+            return QueueResponse.cancel();
+        }
+
         Long position = queueManager.getPositionInWaitingStatus(token);
         Long estimatedWaitTime = queueManager.calculateEstimatedWaitSeconds(position);
 
@@ -36,6 +40,7 @@ public class QueueService {
     }
 
     public void deleteQueueToken(String token) {
-        queueManager.removeToken(token);
+        QueueStatus status = queueManager.getQueueStatus(token);
+        queueManager.removeToken(status, token);
     }
 }

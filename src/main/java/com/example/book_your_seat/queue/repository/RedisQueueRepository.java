@@ -18,13 +18,12 @@ public class RedisQueueRepository {
 
     private final RedisTemplate<String, String> redisTemplate;
 
-    public void addToWaitingQueue(String token, Long userId, Long score) {
-
+    public void addToWaitingQueue(String token, Long score) {
         if (haveSpaceInProcessingQueue()) {
-            redisTemplate.opsForZSet().add(PROCESSING_QUEUE_KEY, makeValue(token, userId), score.doubleValue());
+            redisTemplate.opsForZSet().add(PROCESSING_QUEUE_KEY, token, score.doubleValue());
             return;
         }
-        redisTemplate.opsForZSet().add(WAITING_QUEUE_KEY, makeValue(token, userId), score.doubleValue());
+        redisTemplate.opsForZSet().add(WAITING_QUEUE_KEY, token, score.doubleValue());
     }
 
     private boolean haveSpaceInProcessingQueue() {
@@ -35,18 +34,14 @@ public class RedisQueueRepository {
         return size < ALLOWED_PROCESSING_SIZE;
     }
 
-    public boolean isProcessingQueue(String token, Long userId) {
-        Double score = redisTemplate.opsForZSet().score(PROCESSING_QUEUE_KEY, makeValue(token, userId));
+    public boolean isProcessingQueue(String token) {
+        Double score = redisTemplate.opsForZSet().score(PROCESSING_QUEUE_KEY, token);
         return score != null;
     }
 
-    public long getWaitingQueuePosition(String token, Long userId) {
-        Long rank = redisTemplate.opsForZSet().rank(WAITING_QUEUE_KEY, makeValue(token, userId));
+    public long getWaitingQueuePosition(String token) {
+        Long rank = redisTemplate.opsForZSet().rank(WAITING_QUEUE_KEY, token);
         return rank != null ? rank : -1;
-    }
-
-    private String makeValue(String token, Long userId) {
-        return token + DELIMITER + userId;
     }
 
     public boolean alreadyEnQueued(Long userId) {
@@ -78,22 +73,10 @@ public class RedisQueueRepository {
     }
 
     public void removeProcessingToken(String token) {
-        Set<String> members = redisTemplate.opsForSet().members(PROCESSING_QUEUE_KEY);
-        if (members != null) {
-            members.stream()
-                    .filter(entry -> entry.startsWith(token))
-                    .findFirst()
-                    .ifPresent(entry -> redisTemplate.opsForSet().remove(PROCESSING_QUEUE_KEY, entry));
-        }
+        redisTemplate.opsForZSet().remove(PROCESSING_QUEUE_KEY, token);
     }
 
     public void removeWaitingToken(String token) {
-        Set<String> members = redisTemplate.opsForSet().members(WAITING_QUEUE_KEY);
-        if (members != null) {
-            members.stream()
-                    .filter(entry -> entry.startsWith(token))
-                    .findFirst()
-                    .ifPresent(entry -> redisTemplate.opsForSet().remove(WAITING_QUEUE_KEY, entry));
-        }
+        redisTemplate.opsForZSet().remove(WAITING_QUEUE_KEY, token);
     }
 }

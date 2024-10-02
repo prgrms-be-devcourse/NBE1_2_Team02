@@ -27,25 +27,22 @@ public class QueueManager {
         String token = jwtUtil.generateToken(userId);
         Long score = System.currentTimeMillis();
 
-        redisQueueRepository.addToWaitingQueue(token, userId, score);
+        redisQueueRepository.addToWaitingQueue(token, score);
         return token;
     }
 
     public QueueStatus getQueueStatus(String token) {
-        Long userIdFromToken = jwtUtil.getUserIdFromToken(token);
-
-        if (redisQueueRepository.isProcessingQueue(token, userIdFromToken)) {
+        if (redisQueueRepository.isProcessingQueue(token)) {
             return QueueStatus.PROCESSING;
         }
-        if (redisQueueRepository.getWaitingQueuePosition(token, userIdFromToken) > ZERO) {
+        if (redisQueueRepository.getWaitingQueuePosition(token) > ZERO) {
             return QueueStatus.WAITING;
         }
         return QueueStatus.CANCELED;
     }
 
     public Long getPositionInWaitingStatus(String token) {
-        Long userIdFromToken = jwtUtil.getUserIdFromToken(token);
-        return redisQueueRepository.getWaitingQueuePosition(token, userIdFromToken);
+        return redisQueueRepository.getWaitingQueuePosition(token);
     }
 
     public long calculateEstimatedWaitSeconds(long position) {
@@ -55,8 +52,11 @@ public class QueueManager {
         return batches * batchInterval;
     }
 
-    public void removeToken(String token) {
-        redisQueueRepository.removeWaitingToken(token);
+    public void removeToken(QueueStatus status, String token) {
+        if (status == QueueStatus.WAITING) {
+            redisQueueRepository.removeWaitingToken(token);
+            return;
+        }
         redisQueueRepository.removeProcessingToken(token);
     }
 }

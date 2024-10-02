@@ -16,4 +16,8 @@ public record QueueResponse(
     public static QueueResponse waiting(Long position, Long estimatedWaitTime) {
         return new QueueResponse(QueueStatus.WAITING, position, estimatedWaitTime);
     }
+
+    public static QueueResponse cancel() {
+        return new QueueResponse(QueueStatus.CANCELED, ZERO, ZERO);
+    }
 }
