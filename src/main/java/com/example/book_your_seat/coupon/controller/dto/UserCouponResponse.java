@@ -6,14 +6,19 @@ import lombok.Getter;
 @Getter
 public class UserCouponResponse {
 
+    private Long couponId;
+
     private boolean isUsed;
 
     private String expirationDate;
 
     private String discountRate;
 
+
+
     @QueryProjection
-    public UserCouponResponse(boolean isUsed, String expirationDate, String discountRate) {
+    public UserCouponResponse(Long couponId, boolean isUsed, String expirationDate, String discountRate) {
+        this.couponId = couponId;
         this.isUsed = isUsed;
         this.expirationDate = expirationDate;
         this.discountRate = discountRate;

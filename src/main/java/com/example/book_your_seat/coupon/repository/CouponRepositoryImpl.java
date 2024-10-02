@@ -13,6 +13,7 @@ import org.springframework.data.domain.SliceImpl;
 
 import java.util.List;
 
+import static com.example.book_your_seat.coupon.domain.QCoupon.coupon;
 import static com.example.book_your_seat.coupon.domain.QUserCoupon.userCoupon;
 import static com.example.book_your_seat.user.domain.QUser.user;
 
@@ -27,11 +28,11 @@ public class CouponRepositoryImpl implements CouponRepositoryCustom{
     @Override
     public Slice<UserCouponResponse> selectUserCoupons(UserCouponRequest userCouponRequest,Long memberId, Pageable pageable) {
         List<UserCouponResponse> result = queryFactory
-                .select(new QUserCouponResponse(userCoupon.isUsed, userCoupon.coupon.expirationDate.stringValue(), userCoupon.coupon.discountRate.stringValue()))
+                .select(new QUserCouponResponse(coupon.id,userCoupon.isUsed, coupon.expirationDate.stringValue(), coupon.discountRate.stringValue()))
                 .from(userCoupon)
                 .join(userCoupon.user, user)
-                .join(userCoupon.coupon, QCoupon.coupon)   //inner join을 사용함
-                .where(isUsed(userCouponRequest.isUsed()), isMember(memberId))
+                .join(userCoupon.coupon, coupon)   //inner join을 사용함
+                .where(isUsed(userCouponRequest.used()), isMember(memberId))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize() + 1) // 한개를 더 반환
                 .fetch();
