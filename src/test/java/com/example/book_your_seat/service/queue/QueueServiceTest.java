@@ -63,7 +63,7 @@ public class QueueServiceTest extends IntegerTestSupport {
     }
 
     @Test
-    @DisplayName("PROCESSING QUEUE가 가득 차기 전까지 PROCESSING QUEUE에 저장된다.")
+    @DisplayName("processing queue가 가득 차기 전까지 processing queue에 저장된다.")
     void issueTokenInProcessingQueueTest() {
         //given
         Long userId = savedUser.getId();
@@ -80,7 +80,7 @@ public class QueueServiceTest extends IntegerTestSupport {
     }
 
     @Test
-    @DisplayName("PROCESSING QUEUE가 가득 차면 WAITING QUEUE에 저장된다.")
+    @DisplayName("processing queue가 가득 차면 waiting queue에 저장된다.")
     void issueTokenWaitingQueueTest() {
         //given
         List<User> all = userRepository.findAll();
@@ -122,7 +122,7 @@ public class QueueServiceTest extends IntegerTestSupport {
     }
 
     @Test
-    @DisplayName("Processing queue에 빈자리 만큼 waiting queue에서 채워준다.")
+    @DisplayName("processing queue에 빈자리 만큼 waiting queue에서 채워준다.")
     void updateQueueTest() {
         //given
         List<User> all = userRepository.findAll();
@@ -163,6 +163,51 @@ public class QueueServiceTest extends IntegerTestSupport {
         assertThat(queueResponse2).isNotNull();
         assertThat(queueResponse2.status()).isEqualTo(QueueStatus.WAITING);
         assertThat(queueResponse2.remainingWaitingCount()).isEqualTo(90L);
+        assertThat(queueResponse2.estimatedWaitTime()).isEqualTo(0L);
+    }
+
+    @Test
+    @DisplayName("processing queue 충분한 자라가 있으면 waiting queue에서 processing queue로 옮겨진다.")
+    void updateQueueTest2() {
+        //given
+        List<User> all = userRepository.findAll();
+
+        // 작업을 마치고 나갈 10명 기록
+        List<QueueToken> tokens = new ArrayList<>();
+        for (int i = 0; i < 200; i++) {
+            Long userId = all.get(i).getId();
+            tokens.add(queueService.issueQueueToken(userId));
+        }
+
+        for (int i = 200; i < all.size() - 1; i++) {
+            Long userId = all.get(i).getId();
+            queueService.issueQueueToken(userId);
+        }
+
+        // 마지막에 접근한 1명을 기록
+        Long id = all.get(all.size() - 1).getId();
+        QueueToken queueToken = queueService.issueQueueToken(id);
+
+        //when
+        QueueResponse queueResponse1 = queueService.findQueueByToken(queueToken.token());
+
+        // 초반 10명을 processing queue에서 삭제
+        for (QueueToken token : tokens) {
+            queueService.deleteQueueToken(token.token());
+        }
+        queueScheduler.updateQueueStatus();
+
+        QueueResponse queueResponse2 = queueService.findQueueByToken(queueToken.token());
+
+        //then
+        assertThat(queueResponse1).isNotNull();
+        assertThat(queueResponse1.status()).isEqualTo(QueueStatus.WAITING);
+        assertThat(queueResponse1.remainingWaitingCount()).isEqualTo(100L);
+        assertThat(queueResponse1.estimatedWaitTime()).isEqualTo(0L);
+
+        assertThat(queueResponse2).isNotNull();
+        assertThat(queueResponse2.status()).isEqualTo(QueueStatus.PROCESSING);
+        assertThat(queueResponse2.remainingWaitingCount()).isEqualTo(0L);
         assertThat(queueResponse2.estimatedWaitTime()).isEqualTo(0L);
     }
 
