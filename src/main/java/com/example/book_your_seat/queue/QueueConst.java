@@ -7,6 +7,7 @@ public final class QueueConst {
 
     public static final Integer PROCESSING_QUEUE_SIZE = 1000;
     public static final Integer PROCESSING_TOKEN_EXPIRATION_TIME = 30 * 60 * 1000; //30분
+    public static final Integer WAITING_TOKEN_EXPIRATION_TIME = 60 * 60 * 1000; //1시간
 
     public static final String PROCESSING_QUEUE_KEY = "processing_queue_key";
     public static final String WAITING_QUEUE_KEY = "waiting_queue_key";
