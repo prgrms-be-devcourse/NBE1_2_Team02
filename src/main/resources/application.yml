@@ -12,8 +12,21 @@ spring:
         format_sql: true
     hibernate:
       ddl-auto: create
+  redis:
+    host: localhost
+    port: 6379
+    password:
+
+server:
+  tomcat:
+    threads:
+      min-spare: 50
 
 logging:
   level:
     ROOT: INFO
     org.springframework.web.filter.CommonsRequestLoggingFilter: DEBUG
+
+jwt:
+  secretKey: concert_jwt_secretconcert_jwt_secretconcert_jwt_secretconcert_jwt_secretconcert_jwt_secret
+  expiration: 1800000
