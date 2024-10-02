@@ -1,10 +1,11 @@
 package com.example.book_your_seat.queue.repository;
 
+import jakarta.annotation.Resource;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.stereotype.Repository;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -13,16 +14,20 @@ import static com.example.book_your_seat.queue.QueueConst.*;
 
 @Repository
 @RequiredArgsConstructor
-public class QueueRedisRepository {
-    private final RedisTemplate<String, String> redisTemplate;
-    private final ZSetOperations<String, String> zSet = redisTemplate.opsForZSet();
+public class QueueRedisRepository implements Serializable {
 
-    public void enqueueProcessingQueue(String token) {
-        zSet.add(PROCESSING_QUEUE_KEY, token, System.currentTimeMillis() + PROCESSING_TOKEN_EXPIRATION_TIME);
+    @Resource(name = "redisTemplate")
+    private ZSetOperations<String, String> zSet;
+
+    // userId와 token을 함께 저장
+    public void enqueueProcessingQueue(Long userId, String token) {
+        String key = generateKey(userId, token);
+        zSet.add(PROCESSING_QUEUE_KEY, key, System.currentTimeMillis() + PROCESSING_TOKEN_EXPIRATION_TIME);
     }
 
-    public void enqueueWaitingQueue(String token) {
-        zSet.add(WAITING_QUEUE_KEY, token, System.currentTimeMillis());
+    public void enqueueWaitingQueue(Long userId, String token) {
+        String key = generateKey(userId, token);
+        zSet.add(WAITING_QUEUE_KEY, key, System.currentTimeMillis());
     }
 
     public boolean isProcessableNow() {
@@ -34,16 +39,19 @@ public class QueueRedisRepository {
         return pqSize < PROCESSING_QUEUE_SIZE && wqSize == 0;
     }
 
-    public boolean isInProcessingQueue(String token) {
-        return zSet.score(PROCESSING_QUEUE_KEY, token) != null;
+    public boolean isInProcessingQueue(Long userId) {
+        Set<String> members = zSet.range(PROCESSING_QUEUE_KEY, 0, -1);
+        return members.stream().anyMatch(member -> member.matches(userId + ":.*"));
     }
 
-    public boolean isInWaitingQueue(String token) {
-        return zSet.score(WAITING_QUEUE_KEY, token) != null;
+    public boolean isInWaitingQueue(Long userId) {
+        Set<String> members = zSet.range(WAITING_QUEUE_KEY, 0, -1);
+        return members.stream().anyMatch(member -> member.matches(userId + ":.*"));
     }
 
-    public Integer getWaitingQueuePosition(String token) {
-        Long rank = zSet.rank(WAITING_QUEUE_KEY, token);
+    public Integer getWaitingQueuePosition(Long userId, String token) {
+        String key = generateKey(userId, token);
+        Long rank = zSet.rank(WAITING_QUEUE_KEY, key);
         return (rank == null) ? null : rank.intValue() + 1;
     }
 
@@ -53,7 +61,7 @@ public class QueueRedisRepository {
     }
 
     public List<String> getFrontTokensFromWaitingQueue(int count) {
-        Set<String> tokens = redisTemplate.opsForZSet().range(WAITING_QUEUE_KEY, 0, count - 1);
+        Set<String> tokens = zSet.range(WAITING_QUEUE_KEY, 0, count - 1);
 
         if (tokens == null || tokens.isEmpty()) {
             return new ArrayList<>();
@@ -62,21 +70,30 @@ public class QueueRedisRepository {
         }
     }
 
-    public void updateWaitingToProcessing(String token) {
-        zSet.remove(WAITING_QUEUE_KEY, token);
-        zSet.add(PROCESSING_QUEUE_KEY, token, System.currentTimeMillis() + PROCESSING_TOKEN_EXPIRATION_TIME);
+    // userId와 token을 함께 처리하여 대기열에서 처리열로 이동
+    public void updateWaitingToProcessing(Long userId, String token) {
+        String key = generateKey(userId, token);
+        zSet.remove(WAITING_QUEUE_KEY, key);
+        zSet.add(PROCESSING_QUEUE_KEY, key, System.currentTimeMillis() + PROCESSING_TOKEN_EXPIRATION_TIME);
     }
 
-    public void removeTokenInWaitingQueue(String token) {
-        zSet.remove(WAITING_QUEUE_KEY, token);
+    public void removeTokenInWaitingQueue(Long userId, String token) {
+        String key = generateKey(userId, token);
+        zSet.remove(WAITING_QUEUE_KEY, key);
     }
 
     public void removeExpiredToken(long currentTime) {
-        redisTemplate.opsForZSet().removeRangeByScore(PROCESSING_QUEUE_KEY, Double.NEGATIVE_INFINITY, (double) currentTime);
-        redisTemplate.opsForZSet().removeRangeByScore(WAITING_QUEUE_KEY, Double.NEGATIVE_INFINITY, (double) currentTime);
+        zSet.removeRangeByScore(PROCESSING_QUEUE_KEY, Double.NEGATIVE_INFINITY, (double) currentTime);
+        zSet.removeRangeByScore(WAITING_QUEUE_KEY, Double.NEGATIVE_INFINITY, (double) currentTime);
     }
 
-    public void removeProcessingToken(String token) {
-        redisTemplate.opsForSet().remove(PROCESSING_QUEUE_KEY, token);
+    public void removeProcessingToken(Long userId, String token) {
+        String key = generateKey(userId, token);
+        zSet.remove(PROCESSING_QUEUE_KEY, key);
+    }
+
+    // userId와 token을 조합한 키 생성 메소드
+    private String generateKey(Long userId, String token) {
+        return userId.toString() + ":" + token;
     }
 }

@@ -24,13 +24,13 @@ public class QueueManager {
     public String issueTokenAndEnqueue(Long userId) {
         String token = jwtUtil.createJwt(userId);
 
-        checkAlreadyIssuedUser(token);
+        checkAlreadyIssuedUser(userId);
 
         //waiting queue가 비어있고, processing queue가 다 차지 않았으면 바로 processing queue에 넣어주기
         if (queueRedisRepository.isProcessableNow()) {
-            queueRedisRepository.enqueueProcessingQueue(token);
+            queueRedisRepository.enqueueProcessingQueue(userId, token);
         } else {
-            queueRedisRepository.enqueueWaitingQueue(token);
+            queueRedisRepository.enqueueWaitingQueue(userId, token);
         }
 
         return token;
@@ -39,12 +39,12 @@ public class QueueManager {
     /*
     유저의 현재 큐 상태 확인
      */
-    public QueueResponse findQueueStatusByToken(String token) {
-        if (queueRedisRepository.isInProcessingQueue(token)) {
+    public QueueResponse findQueueStatusByToken(Long userId, String token) {
+        if (queueRedisRepository.isInProcessingQueue(userId)) {
             return new QueueResponse(PROCESSING, 0);
         }
 
-        Integer position = queueRedisRepository.getWaitingQueuePosition(token);
+        Integer position = queueRedisRepository.getWaitingQueuePosition(userId, token);
         if (position != null) {
             return new QueueResponse(WAITING, position);
         } else {
@@ -68,7 +68,7 @@ public class QueueManager {
         if (count == 0) return;
 
         List<String> tokens = queueRedisRepository.getFrontTokensFromWaitingQueue(count);
-        tokens.forEach(queueRedisRepository::updateWaitingToProcessing);
+        tokens.forEach(token -> queueRedisRepository.updateWaitingToProcessing(jwtUtil.getUserIdByToken(token), token));
     }
 
     /*
@@ -81,23 +81,23 @@ public class QueueManager {
     /*
     웨이팅 큐에서 삭제
      */
-    public void removeTokenInWaitingQueue(String token) {
-        queueRedisRepository.removeTokenInWaitingQueue(token);
+    public void removeTokenInWaitingQueue(Long userId, String token) {
+        queueRedisRepository.removeTokenInWaitingQueue(userId, token);
     }
 
     /*
     진행 완료된 토큰 제거
      */
     public void completeProcessingToken(String token) {
-        queueRedisRepository.removeProcessingToken(token);
+        queueRedisRepository.removeProcessingToken(jwtUtil.getUserIdByToken(token), token);
     }
 
     /*
     이미 토큰이 발급된 유저인지 확인
      */
-    private void checkAlreadyIssuedUser(String token) {
-        if (queueRedisRepository.isInWaitingQueue(token)
-                || queueRedisRepository.isInProcessingQueue(token)) {
+    private void checkAlreadyIssuedUser(Long userId) {
+        if (queueRedisRepository.isInWaitingQueue(userId)
+                || queueRedisRepository.isInProcessingQueue(userId)) {
             throw new IllegalArgumentException(ALREADY_ISSUED_USER);
         }
     }

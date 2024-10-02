@@ -19,7 +19,7 @@ public class QueueCommandFacade implements QueueCommandService {
     }
 
     @Override
-    public void dequeueWaitingQueue(String token) {
-        queueManager.removeTokenInWaitingQueue(token);
+    public void dequeueWaitingQueue(Long userId, String token) {
+        queueManager.removeTokenInWaitingQueue(userId, token);
     }
 }

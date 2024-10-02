@@ -4,5 +4,5 @@ import com.example.book_your_seat.queue.controller.dto.TokenResponse;
 
 public interface QueueCommandService {
     TokenResponse issueTokenAndEnqueue(Long userId);
-    void dequeueWaitingQueue(String token);
+    void dequeueWaitingQueue(Long userId, String token);
 }

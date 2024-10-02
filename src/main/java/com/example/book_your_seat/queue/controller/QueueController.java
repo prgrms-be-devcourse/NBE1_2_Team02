@@ -28,14 +28,16 @@ public class QueueController {
     }
 
     @GetMapping("/queue")
-    public ResponseEntity<QueueResponse> getQueueInfoWithToken(@RequestParam("token") String token)  {
+    public ResponseEntity<QueueResponse> getQueueInfoWithToken(@SessionAttribute(LOGIN_USER) User user,
+                                                               @RequestParam("token") String token)  {
         return ResponseEntity.ok()
-                .body(queueQueryService.findQueueStatusByToken(token));
+                .body(queueQueryService.findQueueStatusByToken(user.getId(), token));
     }
 
     @PostMapping("/quit")
-    public ResponseEntity<Void> dequeueWaitingQueue(@RequestParam("token") String token) {
-        queueCommandService.dequeueWaitingQueue(token);
+    public ResponseEntity<Void> dequeueWaitingQueue(@SessionAttribute(LOGIN_USER) User user,
+                                                    @RequestParam("token") String token) {
+        queueCommandService.dequeueWaitingQueue(user.getId(), token);
         return ResponseEntity.ok(null);
     }
 }
