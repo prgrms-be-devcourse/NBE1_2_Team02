@@ -3,6 +3,7 @@ package com.example.book_your_seat.seat.service.command.Impl;
 import com.example.book_your_seat.seat.controller.dto.SelectSeatRequest;
 import com.example.book_your_seat.seat.controller.dto.SelectSeatResponse;
 import com.example.book_your_seat.seat.domain.Seat;
+import com.example.book_your_seat.seat.mager.SeatManager;
 import com.example.book_your_seat.seat.repository.SeatRepository;
 import com.example.book_your_seat.seat.service.command.SeatCommandService;
 import jakarta.transaction.Transactional;
@@ -25,41 +26,14 @@ import static com.example.book_your_seat.seat.SeatConst.SEAT_SOLD;
 @Qualifier("Pessimistic")
 public class SeatCommandServiceImpl implements SeatCommandService {
 
-    private final SeatRepository seatRepository;
-    private final RedisTemplate<String, Object> redisTemplate;
-    private final RedissonClient redissonClient;
+    private final SeatManager seatManager;
+
     @Override
     public SelectSeatResponse selectSeat(final SelectSeatRequest request) {
-        //seat를 가져옴
-        List<Seat> seats = seatRepository.findAllByIdWithLock(request.seatIds());
+        List<Seat> seats = seatManager.selectSeat(request);
 
-        validateAndSelectSeats(seats);
-
-        cacheSeatIds(seats);
+        seatManager.cacheSeatIds(seats);
 
         return SelectSeatResponse.fromSeats(seats);
-    }
-    //좌석 isSold = true로 변환
-    private void validateAndSelectSeats (final List<Seat> seats) {
-        seats.forEach(seat -> {
-            if (seat.isSold()) {
-                throw new IllegalArgumentException(SEAT_SOLD);
-            }
-            seat.selectSeat();
-        });
-
-        seatRepository.saveAll(seats);
-    }
-
-    //redis에 캐싱 TTL 설정
-    private void cacheSeatIds(final List<Seat> seats) {
-        seats.forEach(seat -> {
-            String redisKey = "seat:" + seat.getId();
-            try {
-                redisTemplate.opsForValue().set(redisKey, seat.getId(), 30, TimeUnit.MINUTES);
-            } catch (Exception e) {
-                throw new IllegalArgumentException(SEAT_SOLD,e);
-            }
-        });
     }
 }
