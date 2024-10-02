@@ -1,22 +1,20 @@
-package com.example.book_your_seat.queue.manager;
+package com.example.book_your_seat.queue.service;
 
 import com.example.book_your_seat.common.util.JwtUtil;
-import com.example.book_your_seat.queue.controller.dto.QueueResponse;
 import com.example.book_your_seat.queue.repository.QueueRedisRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-import static com.example.book_your_seat.queue.QueueConst.*;
+import static com.example.book_your_seat.queue.QueueConst.ALREADY_ISSUED_USER;
+import static com.example.book_your_seat.queue.QueueConst.PROCESSING_QUEUE_SIZE;
 
-
-@Component
+@Service
 @RequiredArgsConstructor
-public class QueueManager {
-    public final QueueRedisRepository queueRedisRepository;
+public class QueueCommandServiceImpl implements QueueCommandService {
+    private final QueueRedisRepository queueRedisRepository;
     public final JwtUtil jwtUtil;
-
 
     /*
     토큰을 발급하고, Waiting Queue에 등록
@@ -34,30 +32,6 @@ public class QueueManager {
         }
 
         return token;
-    }
-
-    /*
-    유저의 현재 큐 상태 확인
-     */
-    public QueueResponse findQueueStatus(Long userId, String token) {
-        if (queueRedisRepository.isInProcessingQueue(userId)) {
-            return new QueueResponse(PROCESSING, 0);
-        }
-
-        Integer position = queueRedisRepository.getWaitingQueuePosition(userId, token);
-        if (position != null) {
-            return new QueueResponse(WAITING, position);
-        } else {
-            return new QueueResponse(NOT_IN_QUEUE, 0);
-        }
-    }
-
-    /*
-    update 가능한 queue Size 계산
-     */
-    public int calculateAvailableProcessingCount() {
-        int size = queueRedisRepository.getProcessingQueueCount();
-        return PROCESSING_QUEUE_SIZE - size;
     }
 
     /*
@@ -100,5 +74,13 @@ public class QueueManager {
                 || queueRedisRepository.isInProcessingQueue(userId)) {
             throw new IllegalArgumentException(ALREADY_ISSUED_USER);
         }
+    }
+
+    /*
+    update 가능한 queue Size 계산
+     */
+    private int calculateAvailableProcessingCount() {
+        int size = queueRedisRepository.getProcessingQueueCount();
+        return PROCESSING_QUEUE_SIZE - size;
     }
 }

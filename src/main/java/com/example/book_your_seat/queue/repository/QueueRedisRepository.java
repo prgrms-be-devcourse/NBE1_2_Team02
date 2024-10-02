@@ -19,7 +19,7 @@ public class QueueRedisRepository implements Serializable {
     @Resource(name = "redisTemplate")
     private ZSetOperations<String, String> zSet;
 
-    // userId와 token을 함께 저장
+
     public void enqueueProcessingQueue(Long userId, String token) {
         String value = generateValue(userId, token);
         zSet.add(PROCESSING_QUEUE_KEY, value, System.currentTimeMillis() + PROCESSING_TOKEN_EXPIRATION_TIME);
@@ -30,6 +30,9 @@ public class QueueRedisRepository implements Serializable {
         zSet.add(WAITING_QUEUE_KEY, value, System.currentTimeMillis() + WAITING_TOKEN_EXPIRATION_TIME);
     }
 
+    /*
+    바로 Processing 가능한지 여부 반환
+     */
     public boolean isProcessableNow() {
         Long pqSize = zSet.zCard(PROCESSING_QUEUE_KEY);
         Long wqSize = zSet.zCard(WAITING_QUEUE_KEY);
@@ -53,43 +56,58 @@ public class QueueRedisRepository implements Serializable {
         );
     }
 
+    /*
+    몇번째로 대기하고 있는지를 반환
+     */
     public Integer getWaitingQueuePosition(Long userId, String token) {
         String value = generateValue(userId, token);
         Long rank = zSet.rank(WAITING_QUEUE_KEY, value);
         return (rank == null) ? null : rank.intValue() + 1;
     }
 
+    /*
+    대기열에 존재 인원 수 반환
+     */
     public Integer getProcessingQueueCount() {
         Long count = zSet.zCard(PROCESSING_QUEUE_KEY);
         return (count == null) ? 0 : count.intValue();
     }
 
+    /*
+    업데이트 되어야 하는 인원을 반환
+     */
     public List<String> getFrontTokensFromWaitingQueue(int count) {
         Set<String> tokens = zSet.range(WAITING_QUEUE_KEY, 0, count - 1);
-
-        if (tokens == null || tokens.isEmpty()) {
-            return new ArrayList<>();
-        } else {
-            return new ArrayList<>(tokens);
-        }
+        return new ArrayList<>(tokens);
     }
 
-    // userId와 token을 함께 처리하여 대기열에서 처리열로 이동
+    /*
+    대기열에서 처리열로 이동
+     */
     public void updateWaitingToProcessing(String value) {
         zSet.remove(WAITING_QUEUE_KEY, value);
         zSet.add(PROCESSING_QUEUE_KEY, value, System.currentTimeMillis() + PROCESSING_TOKEN_EXPIRATION_TIME);
     }
 
+    /*
+    웨이팅 취소
+     */
     public void removeTokenInWaitingQueue(Long userId, String token) {
         String value = generateValue(userId, token);
         zSet.remove(WAITING_QUEUE_KEY, value);
     }
 
+    /*
+    유효시간 만료 토큰 삭제
+     */
     public void removeExpiredToken(Long currentTime) {
         zSet.removeRangeByScore(PROCESSING_QUEUE_KEY, Double.NEGATIVE_INFINITY, (double) currentTime);
         zSet.removeRangeByScore(WAITING_QUEUE_KEY, Double.NEGATIVE_INFINITY, (double) currentTime);
     }
 
+    /*
+    처리 완료된 토큰 삭제
+     */
     public void removeProcessingToken(Long userId) {
         Set<String> values = zSet.range(PROCESSING_QUEUE_KEY, 0, -1);
 
@@ -99,7 +117,6 @@ public class QueueRedisRepository implements Serializable {
                 .ifPresent(value -> zSet.remove(PROCESSING_QUEUE_KEY, value));
     }
 
-    // userId와 token을 조합한 키 생성 메소드
     private String generateValue(Long userId, String token) {
         return userId.toString() + ":" + token;
     }

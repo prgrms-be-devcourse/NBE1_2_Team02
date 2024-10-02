@@ -2,12 +2,15 @@ package com.example.book_your_seat.service.queue;
 
 import com.example.book_your_seat.IntegralTestSupport;
 import com.example.book_your_seat.queue.controller.dto.QueueResponse;
-import com.example.book_your_seat.queue.facade.QueueCommandService;
-import com.example.book_your_seat.queue.facade.QueueQueryService;
-import com.example.book_your_seat.queue.manager.QueueManager;
+import com.example.book_your_seat.queue.service.QueueCommandService;
+import com.example.book_your_seat.queue.service.QueueQueryService;
+import com.example.book_your_seat.queue.service.facade.QueueService;
 import com.example.book_your_seat.user.domain.User;
 import com.example.book_your_seat.user.repository.UserRepository;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ZSetOperations;
@@ -24,16 +27,17 @@ public class QueueServiceTest extends IntegralTestSupport {
     private UserRepository userRepository;
 
     @Autowired
+    private QueueService queueService;
+
+    @Autowired
     private QueueCommandService queueCommandService;
 
     @Autowired
     private QueueQueryService queueQueryService;
 
-    @Autowired
-    private QueueManager queueManager;
+    private ZSetOperations<String, String> zSet;
 
     private User testUser;
-    private ZSetOperations<String, String> zSet;
 
     @BeforeEach
     void beforeEach() {
@@ -66,11 +70,10 @@ public class QueueServiceTest extends IntegralTestSupport {
     @DisplayName("토큰을 발급하고 진행열이 다 차지 않은 경우 진행열에 넣는다.")
     void issueTokenAndEnqueueProcessingQueueTest() {
         //when
-        String token = queueCommandService.issueTokenAndEnqueue(testUser.getId()).token();
+        String token = queueService.issueTokenAndEnqueue(testUser.getId()).token();
 
         //then
         String value = testUser.getId() + ":" + token;
-
         assertNotNull(zSet.score(PROCESSING_QUEUE_KEY, value));
         assertEquals(1L, zSet.zCard(PROCESSING_QUEUE_KEY));
     }
@@ -79,15 +82,15 @@ public class QueueServiceTest extends IntegralTestSupport {
     @DisplayName("토큰을 발급하고 진행열이 다 찬 경우 대기열에 넣는다.")
     void issueTokenAndEnqueueWaitingQueueTest() {
         //given
-        for (int i = 0; i < 1000; i++) {
+        for (int i = 1000; i < 2000; i++) {
             queueCommandService.issueTokenAndEnqueue((long) i);
         }
 
         //when
-        String token = queueCommandService.issueTokenAndEnqueue(1001L).token();
+        String token = queueService.issueTokenAndEnqueue(testUser.getId()).token();
 
         //then
-        String value = "1001:" + token;
+        String value = testUser.getId() + ":" + token;
         assertNotNull(zSet.score(WAITING_QUEUE_KEY, value));
         assertEquals(1, zSet.zCard(WAITING_QUEUE_KEY));
     }
@@ -100,10 +103,10 @@ public class QueueServiceTest extends IntegralTestSupport {
             queueCommandService.issueTokenAndEnqueue((long) i);
         }
 
-        String token = queueCommandService.issueTokenAndEnqueue(testUser.getId()).token();
+        String token = queueService.issueTokenAndEnqueue(testUser.getId()).token();
 
         //when
-        queueCommandService.dequeueWaitingQueue(testUser.getId(), token);
+        queueService.dequeueWaitingQueue(testUser.getId(), token);
 
         //then
         String value = testUser.getId().toString() + ":" + token;
@@ -116,10 +119,10 @@ public class QueueServiceTest extends IntegralTestSupport {
     @DisplayName("현재 나의 대기열 상태를 조회한다.(진행열에 들어온 상황)")
     void findQueueStatusTest1() {
         //given
-        String token = queueCommandService.issueTokenAndEnqueue(testUser.getId()).token();
+        String token = queueService.issueTokenAndEnqueue(testUser.getId()).token();
 
         //when
-        QueueResponse queueResponse = queueQueryService.findQueueStatus(testUser.getId(), token);
+        QueueResponse queueResponse = queueService.findQueueStatus(testUser.getId(), token);
 
         //then
         assertEquals(PROCESSING, queueResponse.status());
@@ -134,7 +137,7 @@ public class QueueServiceTest extends IntegralTestSupport {
             queueCommandService.issueTokenAndEnqueue((long) i);
         }
 
-        String token = queueCommandService.issueTokenAndEnqueue(testUser.getId()).token();
+        String token = queueService.issueTokenAndEnqueue(testUser.getId()).token();
 
         //when
         QueueResponse queueResponse = queueQueryService.findQueueStatus(testUser.getId(), token);
@@ -151,13 +154,18 @@ public class QueueServiceTest extends IntegralTestSupport {
         for (int i = 1000; i < 1500; i++) {
             queueCommandService.issueTokenAndEnqueue((long) i);
         }
-        queueCommandService.issueTokenAndEnqueue(testUser.getId());
 
         //when
-        queueManager.completeProcessingToken(testUser.getId());
+        queueCommandService.issueTokenAndEnqueue(testUser.getId());
 
         //then
-        assertEquals(400, zSet.zCard(PROCESSING_QUEUE_KEY));
+        assertEquals(501, zSet.zCard(PROCESSING_QUEUE_KEY));
+
+        //when
+        queueCommandService.completeProcessingToken(testUser.getId());
+
+        //then
+        assertEquals(500, zSet.zCard(PROCESSING_QUEUE_KEY));
     }
 
     @Test
@@ -172,10 +180,10 @@ public class QueueServiceTest extends IntegralTestSupport {
 
         //when 500개 완료했을 때 스케줄러를 실행하면
         for (int i = 1000; i <= 1500; i++) {
-            queueManager.completeProcessingToken((long) i);
+            queueCommandService.completeProcessingToken((long) i);
         }
 
-        queueManager.updateWaitingToProcessing();
+        queueCommandService.updateWaitingToProcessing();
 
         //then 대기열에서 진행열으로 500개 당겨져와야한다.
         assertEquals(zSet.zCard(PROCESSING_QUEUE_KEY),1000);

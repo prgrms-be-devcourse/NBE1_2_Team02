@@ -2,8 +2,9 @@ package com.example.book_your_seat.queue.controller;
 
 import com.example.book_your_seat.queue.controller.dto.QueueResponse;
 import com.example.book_your_seat.queue.controller.dto.TokenResponse;
-import com.example.book_your_seat.queue.facade.QueueCommandService;
-import com.example.book_your_seat.queue.facade.QueueQueryService;
+import com.example.book_your_seat.queue.service.QueueCommandService;
+import com.example.book_your_seat.queue.service.QueueQueryService;
+import com.example.book_your_seat.queue.service.facade.QueueService;
 import com.example.book_your_seat.user.domain.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -17,27 +18,26 @@ import static com.example.book_your_seat.common.SessionConst.LOGIN_USER;
 @RequiredArgsConstructor
 public class QueueController {
 
-    private final QueueCommandService queueCommandService;
-    private final QueueQueryService queueQueryService;
+    private final QueueService queueService;
 
     @PostMapping("/token")
     public ResponseEntity<TokenResponse> issueTokenAndEnqueue(@SessionAttribute(LOGIN_USER) User user) {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(queueCommandService.issueTokenAndEnqueue(user.getId()));
+                .body(queueService.issueTokenAndEnqueue(user.getId()));
     }
 
     @GetMapping("/queue")
     public ResponseEntity<QueueResponse> getQueueInfoWithToken(@SessionAttribute(LOGIN_USER) User user,
                                                                @RequestParam("token") String token)  {
         return ResponseEntity.ok()
-                .body(queueQueryService.findQueueStatus(user.getId(), token));
+                .body(queueService.findQueueStatus(user.getId(), token));
     }
 
     @PostMapping("/quit")
     public ResponseEntity<Void> dequeueWaitingQueue(@SessionAttribute(LOGIN_USER) User user,
                                                     @RequestParam("token") String token) {
-        queueCommandService.dequeueWaitingQueue(user.getId(), token);
+        queueService.dequeueWaitingQueue(user.getId(), token);
         return ResponseEntity.ok(null);
     }
 }
