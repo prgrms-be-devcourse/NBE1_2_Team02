@@ -22,11 +22,9 @@ public class QueueScheduler {
     public void updateQueueStatus() {
         Long availableProcessingRoom = calculateAvailableProcessingRoom();
         if (availableProcessingRoom <= ZERO) return;
-        System.out.println("availableProcessingRoom: "+availableProcessingRoom);
 
         Set<String> tokensNeedToUpdateToProcessing =
                 redisQueueRepository.getWaitingQueueNeedToUpdateToProcessing(availableProcessingRoom.intValue());
-        System.out.println(tokensNeedToUpdateToProcessing.size());
         for (String token : tokensNeedToUpdateToProcessing) {
             try {
                 redisQueueRepository.updateToProcessingQueue(
