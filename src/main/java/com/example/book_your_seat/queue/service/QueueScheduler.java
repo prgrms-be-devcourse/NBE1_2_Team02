@@ -4,6 +4,7 @@ import static com.example.book_your_seat.queue.QueueConst.ALLOWED_PROCESSING_SIZ
 import static com.example.book_your_seat.queue.QueueConst.FIFTEEN_MINUTE;
 import static com.example.book_your_seat.queue.QueueConst.ZERO;
 
+import com.example.book_your_seat.common.JwtUtil;
 import com.example.book_your_seat.queue.repository.RedisQueueRepository;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
@@ -17,15 +18,17 @@ import org.springframework.stereotype.Component;
 public class QueueScheduler {
 
     private final RedisQueueRepository redisQueueRepository;
+    private final JwtUtil jwtUtil;
 
     @Scheduled(fixedRate = 30000)
     public void updateQueueStatus() {
         Long availableProcessingRoom = calculateAvailableProcessingRoom();
         if (availableProcessingRoom <= ZERO) return;
+        System.out.println("availableProcessingRoom: "+availableProcessingRoom);
 
         Set<String> tokensNeedToUpdateToProcessing =
                 redisQueueRepository.getWaitingQueueNeedToUpdateToProcessing(availableProcessingRoom.intValue());
-
+        System.out.println(tokensNeedToUpdateToProcessing.size());
         for (String token : tokensNeedToUpdateToProcessing) {
             try {
                 redisQueueRepository.updateToProcessingQueue(

@@ -172,6 +172,7 @@ public class QueueServiceTest extends IntegerTestSupport {
         //given
         List<User> all = userRepository.findAll();
 
+        System.out.println("all = " + all.size());
         // 작업을 마치고 나갈 10명 기록
         List<QueueToken> tokens = new ArrayList<>();
         for (int i = 0; i < 200; i++) {
@@ -192,6 +193,7 @@ public class QueueServiceTest extends IntegerTestSupport {
         QueueResponse queueResponse1 = queueService.findQueueByToken(queueToken.token());
 
         // 초반 10명을 processing queue에서 삭제
+        System.out.println(tokens.size());
         for (QueueToken token : tokens) {
             queueService.deleteQueueToken(token.token());
         }

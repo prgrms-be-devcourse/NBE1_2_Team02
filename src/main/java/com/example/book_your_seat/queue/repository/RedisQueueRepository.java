@@ -18,12 +18,12 @@ public class RedisQueueRepository {
 
     private final RedisTemplate<String, String> redisTemplate;
 
-    public void addToWaitingQueue(String token, Long score) {
+    public void addToWaitingQueue(String token, Long userId, Long score) {
         if (haveSpaceInProcessingQueue()) {
-            redisTemplate.opsForZSet().add(PROCESSING_QUEUE_KEY, token, score.doubleValue());
+            redisTemplate.opsForZSet().add(PROCESSING_QUEUE_KEY, makeToken(token, userId), score.doubleValue());
             return;
         }
-        redisTemplate.opsForZSet().add(WAITING_QUEUE_KEY, token, score.doubleValue());
+        redisTemplate.opsForZSet().add(WAITING_QUEUE_KEY, makeToken(token, userId), score.doubleValue());
     }
 
     private boolean haveSpaceInProcessingQueue() {
@@ -34,13 +34,13 @@ public class RedisQueueRepository {
         return size < ALLOWED_PROCESSING_SIZE;
     }
 
-    public boolean isProcessingQueue(String token) {
-        Double score = redisTemplate.opsForZSet().score(PROCESSING_QUEUE_KEY, token);
+    public boolean isProcessingQueue(String token, Long userId) {
+        Double score = redisTemplate.opsForZSet().score(PROCESSING_QUEUE_KEY, makeToken(token, userId));
         return score != null;
     }
 
-    public long getWaitingQueuePosition(String token) {
-        Long rank = redisTemplate.opsForZSet().rank(WAITING_QUEUE_KEY, token);
+    public long getWaitingQueuePosition(String token, Long userId) {
+        Long rank = redisTemplate.opsForZSet().rank(WAITING_QUEUE_KEY, makeToken(token, userId));
         return rank != null ? rank : -1;
     }
 
@@ -72,11 +72,15 @@ public class RedisQueueRepository {
         return size != null ? size : ZERO;
     }
 
-    public void removeProcessingToken(String token) {
-        redisTemplate.opsForZSet().remove(PROCESSING_QUEUE_KEY, token);
+    public void removeProcessingToken(String token, Long userId) {
+        redisTemplate.opsForZSet().remove(PROCESSING_QUEUE_KEY, makeToken(token, userId));
     }
 
-    public void removeWaitingToken(String token) {
-        redisTemplate.opsForZSet().remove(WAITING_QUEUE_KEY, token);
+    public void removeWaitingToken(String token, Long userId) {
+        redisTemplate.opsForZSet().remove(WAITING_QUEUE_KEY, makeToken(token, userId));
+    }
+
+    private String makeToken(String token, Long userId) {
+        return token + DELIMITER + userId;
     }
 }
