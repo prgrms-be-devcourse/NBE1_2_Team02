@@ -30,4 +30,8 @@ public class UserManager {
             throw new IllegalArgumentException("User not found");
         }
     }
+
+    public User createUser(User user) {
+        return userRepository.save(user);
+    }
 }
