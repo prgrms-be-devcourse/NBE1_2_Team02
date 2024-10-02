@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Slice;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
@@ -22,14 +23,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
 @Transactional
-class UserCouponServiceImplTest {
+@Rollback(value = false)
+class UserCouponServiceImplTest{
 
     @Autowired
     private EntityManager em;
 
     @Autowired
     private UserCouponService userCouponService;
-
 
     @BeforeEach
     void beforeEach() {
@@ -49,9 +50,11 @@ class UserCouponServiceImplTest {
             }
             em.persist(userCoupon);
 
-            em.flush();
-            em.clear();
         }
+
+
+        em.flush();
+        em.clear();
     }
 
 
@@ -95,7 +98,7 @@ class UserCouponServiceImplTest {
 
 
         assertThat(userCoupons.getSize()).isEqualTo(5);
-//        assertThat(userCoupons.getContent().get(0).isUsed()).isTrue();
+        assertThat(userCoupons.getContent().get(0).isUsed()).isTrue();
     }
 
     @Test
