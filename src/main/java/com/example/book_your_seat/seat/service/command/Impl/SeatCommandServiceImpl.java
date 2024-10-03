@@ -1,39 +1,63 @@
 package com.example.book_your_seat.seat.service.command.Impl;
 
+import com.example.book_your_seat.seat.SeatConst;
 import com.example.book_your_seat.seat.controller.dto.SelectSeatRequest;
-import com.example.book_your_seat.seat.controller.dto.SelectSeatResponse;
 import com.example.book_your_seat.seat.domain.Seat;
-import com.example.book_your_seat.seat.mager.SeatManager;
 import com.example.book_your_seat.seat.repository.SeatRepository;
 import com.example.book_your_seat.seat.service.command.SeatCommandService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Primary;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import static com.example.book_your_seat.seat.SeatConst.SEAT_SOLD;
 
-@Service
+@Component
 @RequiredArgsConstructor
 @Transactional
 @Primary
 @Qualifier("Pessimistic")
 public class SeatCommandServiceImpl implements SeatCommandService {
 
-    private final SeatManager seatManager;
+    private final SeatRepository seatRepository;
+    private final RedisTemplate<String, Object> redisTemplate;
 
-    @Override
-    public SelectSeatResponse selectSeat(final SelectSeatRequest request) {
-        List<Seat> seats = seatManager.selectSeat(request);
+    public List<Seat> selectSeat(final SelectSeatRequest request) {
+        List<Seat> seats = seatRepository.findAllByIdWithLock(request.seatIds());
 
-        seatManager.cacheSeatIds(seats);
+        seats.forEach(seat -> {
+            if (seat.isSold()) {
+                throw new IllegalArgumentException(SeatConst.SEAT_SOLD);
+            }
+            seat.selectSeat();
+        });
+        return seatRepository.saveAll(seats);
+    }
 
-        return SelectSeatResponse.fromSeats(seats);
+    public void cacheSeatIds(final List<Seat> seats) {
+        seats.forEach(seat -> {
+            String redisKey = "seat:" + seat.getId();
+            try {
+                redisTemplate.opsForValue().set(redisKey, seat.getId(), 30, TimeUnit.MINUTES);
+            } catch (Exception e) {
+                throw new IllegalArgumentException(SEAT_SOLD,e);
+            }
+        });
+    }
+    public List<Seat> selectSeatRedisson(final SelectSeatRequest request) {
+        List<Seat> seats = seatRepository.findAllById(request.seatIds());
+
+        seats.forEach(seat -> {
+            if (seat.isSold()) {
+                throw new IllegalArgumentException(SeatConst.SEAT_SOLD);
+            }
+            seat.selectSeat();
+        });
+        return seatRepository.saveAll(seats);
     }
 }

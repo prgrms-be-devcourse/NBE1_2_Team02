@@ -9,6 +9,7 @@ import com.example.book_your_seat.seat.controller.dto.SelectSeatRequest;
 import com.example.book_your_seat.seat.domain.Seat;
 import com.example.book_your_seat.seat.repository.SeatRepository;
 import com.example.book_your_seat.seat.service.command.SeatCommandService;
+import com.example.book_your_seat.seat.service.facade.SeatService;
 import com.example.book_your_seat.seat.service.query.SeatQueryService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -30,7 +31,7 @@ import static org.hamcrest.Matchers.is;
 class SeatQueryServiceTest extends IntegerTestSupport {
 
     @Autowired
-    private SeatQueryService seatQueryService;
+    private SeatService seatService;
 
     @Autowired
     private ConcertCommandService concertCommandService;
@@ -40,8 +41,7 @@ class SeatQueryServiceTest extends IntegerTestSupport {
 
     @Autowired
     private SeatRepository seatRepository;
-    @Autowired
-    private SeatCommandService seatCommandService;
+
     private Long concertId;
     private List<Long> seatIds;
 
@@ -73,45 +73,10 @@ class SeatQueryServiceTest extends IntegerTestSupport {
     void remainSeatTest() {
         // given
         //when
-        List<RemainSeatResponse> remainSeats = seatQueryService.findRemainSeats(concertId);
+        List<RemainSeatResponse> remainSeats = seatService.findRemainSeats(concertId);
 
         //then
         assertThat(remainSeats.isEmpty(), is(false));
 
-    }
-
-    @DisplayName("모든 남아있는 좌석을 선택하는 100개의 요청이 들어 올 경우 99개의 요청은 실패한다")
-    @Test
-    void selectSeatTest() throws InterruptedException {
-        // given
-        SelectSeatRequest request = new SelectSeatRequest(seatIds);
-
-        // when
-        int threadCount = 100;
-        ExecutorService executorService = Executors.newFixedThreadPool(32);
-        CountDownLatch latch = new CountDownLatch(threadCount);
-        AtomicInteger successCount = new AtomicInteger();
-        AtomicInteger failCount = new AtomicInteger();
-
-        for (int i = 0; i < threadCount; i++) {
-            executorService.submit(() -> {
-                try {
-                    seatCommandService.selectSeat(request);
-                    successCount.incrementAndGet();
-                } catch (Exception e) {
-                    failCount.incrementAndGet();
-                } finally {
-                    latch.countDown();
-                }
-            });
-        }
-
-        latch.await();
-
-        // then
-        List<RemainSeatResponse> remainSeats = seatQueryService.findRemainSeats(concertId);
-        assertThat(remainSeats.isEmpty(), is(true)); // 잔여좌석 0개
-        assertThat(successCount.get(), is(1));
-        assertThat(failCount.get(), is(99));
     }
 }

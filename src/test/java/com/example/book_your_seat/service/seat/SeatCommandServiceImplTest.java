@@ -9,6 +9,7 @@ import com.example.book_your_seat.seat.controller.dto.SelectSeatRequest;
 import com.example.book_your_seat.seat.domain.Seat;
 import com.example.book_your_seat.seat.repository.SeatRepository;
 import com.example.book_your_seat.seat.service.command.SeatCommandService;
+import com.example.book_your_seat.seat.service.facade.SeatService;
 import com.example.book_your_seat.seat.service.query.SeatQueryService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -30,16 +31,13 @@ import static org.hamcrest.Matchers.is;
 
 class SeatCommandServiceImplTest extends IntegerTestSupport {
     @Autowired
-    private SeatQueryService seatQueryService;
-    @Autowired
     private ConcertCommandService concertCommandService;
     @Autowired
     private ConcertRepository concertRepository;
     @Autowired
     private SeatRepository seatRepository;
     @Autowired
-    @Qualifier("Pessimistic")
-    private SeatCommandService seatCommandService;
+    private SeatService seatService;
 
 
     private Long concertId;
@@ -84,7 +82,7 @@ class SeatCommandServiceImplTest extends IntegerTestSupport {
         for (int i = 0; i < threadCount; i++) {
             executorService.submit(() -> {
                 try {
-                    seatCommandService.selectSeat(request);
+                    seatService.selectSeat(request);
                     successCount.incrementAndGet();
                 } catch (Exception e) {
                     failCount.incrementAndGet();
@@ -97,7 +95,7 @@ class SeatCommandServiceImplTest extends IntegerTestSupport {
         latch.await();
 
         // then
-        List<RemainSeatResponse> remainSeats = seatQueryService.findRemainSeats(concertId);
+        List<RemainSeatResponse> remainSeats = seatService.findRemainSeats(concertId);
         assertThat(remainSeats.isEmpty(), is(true)); // 잔여좌석 0개
         assertThat(successCount.get(), is(1));
         assertThat(failCount.get(), is(999));

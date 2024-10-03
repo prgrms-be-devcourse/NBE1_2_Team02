@@ -3,8 +3,7 @@ package com.example.book_your_seat.seat.controller;
 import com.example.book_your_seat.seat.controller.dto.RemainSeatResponse;
 import com.example.book_your_seat.seat.controller.dto.SelectSeatRequest;
 import com.example.book_your_seat.seat.controller.dto.SelectSeatResponse;
-import com.example.book_your_seat.seat.service.command.SeatCommandService;
-import com.example.book_your_seat.seat.service.query.SeatQueryService;
+import com.example.book_your_seat.seat.service.facade.SeatService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -17,12 +16,11 @@ import java.util.List;
 @RequestMapping("/api/v1/seat")
 @RestController
 public class SeatController {
-    private final SeatQueryService seatQueryService;
-    private final SeatCommandService seatCommandService;
+    private final SeatService seatService;
 
     @GetMapping("/remainSeat/{concertId}")
     public ResponseEntity<List<RemainSeatResponse>> findRemainSeats(@PathVariable final Long concertId) {
-        List<RemainSeatResponse> remainSeats = seatQueryService.findRemainSeats(concertId);
+        List<RemainSeatResponse> remainSeats = seatService.findRemainSeats(concertId);
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(remainSeats);
@@ -30,7 +28,7 @@ public class SeatController {
 
     @PostMapping("/selectSeat")
     public ResponseEntity<SelectSeatResponse> selectSeat(@Valid @RequestBody final SelectSeatRequest selectSeatRequest) {
-        SelectSeatResponse selectSeatResponse = seatCommandService.selectSeat(selectSeatRequest);
+        SelectSeatResponse selectSeatResponse = seatService.selectSeat(selectSeatRequest);
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(selectSeatResponse);

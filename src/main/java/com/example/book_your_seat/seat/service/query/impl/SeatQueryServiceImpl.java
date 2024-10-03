@@ -4,6 +4,7 @@ import com.example.book_your_seat.seat.controller.dto.RemainSeatResponse;
 import com.example.book_your_seat.seat.repository.SeatRepository;
 import com.example.book_your_seat.seat.service.query.SeatQueryService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -11,7 +12,7 @@ import java.util.List;
 
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
-@Service
+@Component
 public class SeatQueryServiceImpl implements SeatQueryService {
     private final SeatRepository seatRepository;
 
