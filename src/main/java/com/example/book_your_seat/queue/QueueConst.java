@@ -5,6 +5,9 @@ public final class QueueConst {
     public static final String WAITING = "WAITING";
     public static final String NOT_IN_QUEUE = "NOT_IN_QUEUE";
 
+    public static final Integer ZERO = 0;
+    public static final Integer FIVE = 5;
+    public static final Integer MINUTE = 60;
     public static final Integer PROCESSING_QUEUE_SIZE = 1000;
     public static final Integer PROCESSING_TOKEN_EXPIRATION_TIME = 30 * 60 * 1000; //30분
     public static final Integer WAITING_TOKEN_EXPIRATION_TIME = 60 * 60 * 1000; //1시간

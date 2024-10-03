@@ -19,6 +19,7 @@ public class QueueCommandServiceImpl implements QueueCommandService {
     /*
     토큰을 발급하고, Waiting Queue에 등록
      */
+    @Override
     public String issueTokenAndEnqueue(Long userId) {
         String token = jwtUtil.createJwt(userId);
 
@@ -37,6 +38,7 @@ public class QueueCommandServiceImpl implements QueueCommandService {
     /*
     Waiting Queue -> Processing Queue 로 이동시키기
      */
+    @Override
     public void updateWaitingToProcessing() {
         int count = calculateAvailableProcessingCount();
         if (count == 0) return;
@@ -48,21 +50,24 @@ public class QueueCommandServiceImpl implements QueueCommandService {
     /*
     스케줄러 실행 시 만료토큰 제거
      */
+    @Override
     public void removeExpiredToken() {
         queueRedisRepository.removeExpiredToken(System.currentTimeMillis());
     }
 
     /*
-    웨이팅 큐에서 삭제
+    대기열에서 토큰 삭제
      */
+    @Override
     public void removeTokenInWaitingQueue(Long userId, String token) {
         queueRedisRepository.removeTokenInWaitingQueue(userId, token);
     }
 
     /*
-    진행 완료된 토큰 제거
-     */
-    public void completeProcessingToken(Long userId) {
+    처리열에서 토큰 삭제 (API 완료 시, 예외 발생 시)
+   */
+    @Override
+    public void removeTokenInProcessingQueue(Long userId) {
         queueRedisRepository.removeProcessingToken(userId);
     }
 

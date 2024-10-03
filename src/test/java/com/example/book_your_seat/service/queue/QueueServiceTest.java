@@ -162,7 +162,7 @@ public class QueueServiceTest extends IntegralTestSupport {
         assertEquals(501, zSet.zCard(PROCESSING_QUEUE_KEY));
 
         //when
-        queueCommandService.completeProcessingToken(testUser.getId());
+        queueCommandService.removeTokenInProcessingQueue(testUser.getId());
 
         //then
         assertEquals(500, zSet.zCard(PROCESSING_QUEUE_KEY));
@@ -180,7 +180,7 @@ public class QueueServiceTest extends IntegralTestSupport {
 
         //when 500개 완료했을 때 스케줄러를 실행하면
         for (int i = 1000; i <= 1500; i++) {
-            queueCommandService.completeProcessingToken((long) i);
+            queueCommandService.removeTokenInProcessingQueue((long) i);
         }
 
         queueCommandService.updateWaitingToProcessing();

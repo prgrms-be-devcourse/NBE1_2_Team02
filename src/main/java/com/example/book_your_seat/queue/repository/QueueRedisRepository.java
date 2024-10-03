@@ -106,7 +106,7 @@ public class QueueRedisRepository implements Serializable {
     }
 
     /*
-    처리 완료된 토큰 삭제
+    처리열에 있는 토큰 삭제 (API 완료 시, 예외 발생 시)
      */
     public void removeProcessingToken(Long userId) {
         Set<String> values = zSet.range(PROCESSING_QUEUE_KEY, 0, -1);

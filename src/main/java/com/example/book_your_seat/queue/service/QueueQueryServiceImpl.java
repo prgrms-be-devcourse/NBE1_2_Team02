@@ -19,14 +19,21 @@ public class QueueQueryServiceImpl implements QueueQueryService {
      */
     public QueueResponse findQueueStatus(Long userId, String token) {
         if (queueRedisRepository.isInProcessingQueue(userId)) {
-            return new QueueResponse(PROCESSING, 0);
+            return QueueResponse.processing();
         }
 
         Integer position = queueRedisRepository.getWaitingQueuePosition(userId, token);
         if (position != null) {
-            return new QueueResponse(WAITING, position);
+            return QueueResponse.waiting(position, calculateEstimatedWaitSeconds(position));
         } else {
-            return new QueueResponse(NOT_IN_QUEUE, 0);
+            return QueueResponse.notInQueue();
         }
+    }
+
+    private Integer calculateEstimatedWaitSeconds(int position) {
+        int batchSize = PROCESSING_QUEUE_SIZE;
+        int batchInterval = FIVE * MINUTE;
+        int batches = position / batchSize;
+        return batches * batchInterval;
     }
 }
