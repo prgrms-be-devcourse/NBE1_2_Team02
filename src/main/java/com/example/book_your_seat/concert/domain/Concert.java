@@ -40,7 +40,7 @@ public class Concert extends BaseEntity {
 
     private LocalDate endDate;
 
-    private Integer price;
+    private Long price;
 
     private int startHour;  // Hour, 시작시간
 

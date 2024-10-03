@@ -1,6 +1,7 @@
 package com.example.book_your_seat.coupon.manager;
 
 import static com.example.book_your_seat.coupon.CouponConst.ALREADY_ISSUED_USER;
+import static com.example.book_your_seat.coupon.CouponConst.INVALID_USER_COUPON;
 
 import com.example.book_your_seat.coupon.domain.UserCoupon;
 import com.example.book_your_seat.coupon.repository.UserCouponRepository;
@@ -24,5 +25,17 @@ public class UserCouponManager {
     @Transactional
     public UserCoupon save(UserCoupon userCoupon) {
         return userCouponRepository.save(userCoupon);
+    }
+
+
+    public UserCoupon findValidUserCoupon(Long userCouponId) {
+        return userCouponRepository.findByIdAndUsed(userCouponId, false)
+                .orElseThrow(() -> new IllegalArgumentException(INVALID_USER_COUPON));
+    }
+
+    @Transactional
+    public void updateUserCoupon(UserCoupon userCoupon) {
+        userCoupon.use();
+        userCouponRepository.save(userCoupon);
     }
 }

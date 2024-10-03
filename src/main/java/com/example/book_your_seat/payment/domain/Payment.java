@@ -1,45 +1,43 @@
 package com.example.book_your_seat.payment.domain;
 
-import com.example.book_your_seat.reservation.domain.Reservation;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
-import java.time.LocalDateTime;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Payment {
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "payment_id")
-    private Long id;
+    private UUID id;
 
-    private int totalPrice;
-    private LocalDateTime expiryAt;
+    private Long totalPrice;
+    private Long userCouponId;
+    private LocalDateTime processedAt;
     private String discountRate;
 
-    @Enumerated(EnumType.STRING)
-    private PaymentStatus paymentStatus;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "reservation_id")
-    private Reservation reservation;
-
-    public Payment(int totalPrice, LocalDateTime expiryAt, String discountRate, PaymentStatus paymentStatus) {
+    @Builder
+    public Payment(Long totalPrice,
+                   Long userCouponId,
+                   String discountRate
+    ) {
         this.totalPrice = totalPrice;
-        this.expiryAt = expiryAt;
+        this.userCouponId = userCouponId;
         this.discountRate = discountRate;
-        this.paymentStatus = paymentStatus;
+
+    }
+
+    public void setAdditionalInfo() {
+        if (this.processedAt == null) {
+            this.processedAt = LocalDateTime.now();
+        }
     }
 }

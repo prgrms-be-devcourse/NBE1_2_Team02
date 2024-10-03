@@ -26,17 +26,10 @@ public class Seat {
     private boolean isSold;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "concert_id")
-    private Concert concert;
-
-    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "reservation_id")
     private Reservation reservation;
 
-    public Seat(Concert concert) {
-        this.isSold = false;
-        this.concert = concert;
-        concert.addSeat(this);
+    public void addReservation(Reservation reservation) {
+        this.reservation = reservation;
     }
-
 }

@@ -27,18 +27,8 @@ public class Address extends BaseEntity {
     private String postcode;
     private String detail;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private User user;
-
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "reservation_id")
-    private Reservation reservation;
-
     public Address(String postcode, String detail, User user) {
         this.postcode = postcode;
         this.detail = detail;
-        this.user = user;
-        user.setAddress(this);
     }
 }

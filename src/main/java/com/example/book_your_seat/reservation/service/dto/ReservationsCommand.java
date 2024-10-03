@@ -1,7 +1,7 @@
-package com.example.book_your_seat.reservation.service.command;
+package com.example.book_your_seat.reservation.service.dto;
 
+import lombok.Builder;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 
 @Getter
 public final class ReservationsCommand {
@@ -10,6 +10,7 @@ public final class ReservationsCommand {
     private final Long reservationId;
     private final int pageSize;
 
+    @Builder
     private ReservationsCommand(Long userId, Long reservationId, int pageSize) {
         this.userId = userId;
         this.reservationId = reservationId;
@@ -17,6 +18,10 @@ public final class ReservationsCommand {
     }
 
     public static ReservationsCommand from(Long userId, int pageSize, Long reservationId) {
-        return new ReservationsCommand(userId, reservationId, pageSize);
+        return ReservationsCommand.builder()
+                .userId(userId)
+                .reservationId(reservationId)
+                .pageSize(pageSize)
+                .build();
     }
 }

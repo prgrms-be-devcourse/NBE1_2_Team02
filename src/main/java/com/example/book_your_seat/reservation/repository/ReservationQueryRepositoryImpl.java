@@ -1,7 +1,7 @@
 package com.example.book_your_seat.reservation.repository;
 
 import com.example.book_your_seat.reservation.domain.Reservation;
-import com.example.book_your_seat.reservation.service.command.ReservationsCommand;
+import com.example.book_your_seat.reservation.service.dto.ReservationsCommand;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
@@ -11,6 +11,7 @@ import java.util.List;
 
 import static com.example.book_your_seat.reservation.ReservationConst.INVALID_USER;
 import static com.example.book_your_seat.reservation.domain.QReservation.reservation;
+import static com.example.book_your_seat.seat.domain.QSeat.seat;
 
 @Repository
 @RequiredArgsConstructor
@@ -48,5 +49,18 @@ public class ReservationQueryRepositoryImpl implements ReservationQueryRepositor
             return null;
         }
         return reservation.id.lt(reservationId);
+    }
+
+
+    @Override
+    public Reservation findReservationBySeatsId(List<Long> seatsId) {
+
+        return queryFactory
+                .selectFrom(reservation)
+                .join(reservation.seats, seat)
+                .where(seat.id.in(seatsId))
+                .groupBy(reservation.id)
+                .having(reservation.seats.size().eq(seatsId.size()))
+                .fetchOne();
     }
 }

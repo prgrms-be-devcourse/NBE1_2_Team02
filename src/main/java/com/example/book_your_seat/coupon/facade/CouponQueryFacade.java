@@ -1,7 +1,9 @@
 package com.example.book_your_seat.coupon.facade;
 
 import com.example.book_your_seat.coupon.controller.dto.CouponDetailResponse;
+import com.example.book_your_seat.coupon.domain.Coupon;
 import com.example.book_your_seat.coupon.domain.UserCoupon;
+import com.example.book_your_seat.coupon.manager.UserCouponManager;
 import com.example.book_your_seat.user.manager.UserManager;
 import com.example.book_your_seat.user.domain.User;
 import java.util.List;
@@ -15,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class CouponQueryFacade implements CouponQueryService {
 
     private final UserManager userManager;
+    private final UserCouponManager userCouponManager;
 
     @Override
     public List<CouponDetailResponse> getCouponDetail(Long userId) {
@@ -23,6 +26,13 @@ public class CouponQueryFacade implements CouponQueryService {
                 .map(UserCoupon::getCoupon)
                 .map(CouponDetailResponse::fromCoupon)
                 .toList();
+    }
+
+    @Override
+    public CouponDetailResponse getCouponDetailById(Long userCouponId) {
+        UserCoupon userCoupon = userCouponManager.findValidUserCoupon(userCouponId);
+        Coupon coupon = userCoupon.getCoupon();
+        return CouponDetailResponse.fromCoupon(coupon);
     }
 
 }

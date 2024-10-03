@@ -1,5 +1,7 @@
 package com.example.book_your_seat.coupon.domain;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Arrays;
 import lombok.Getter;
 
@@ -24,6 +26,15 @@ public enum DiscountRate {
                 .filter(it -> it.value == discountRate)
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException(NOT_VALID_DISCOUNT_RATE));
+    }
+
+    public BigDecimal calculateDiscountedPrice(BigDecimal originalPrice) {
+        BigDecimal hundred = new BigDecimal("100");
+        BigDecimal discountValue = new BigDecimal(this.value);
+        BigDecimal percentage = hundred.subtract(discountValue);
+
+        BigDecimal discountedPercentage = percentage.divide(hundred, 1, RoundingMode.DOWN);
+        return originalPrice.multiply(discountedPercentage).setScale(1, RoundingMode.DOWN);
     }
 
     public String getStringForm() {
