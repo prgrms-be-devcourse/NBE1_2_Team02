@@ -9,6 +9,7 @@ import com.example.book_your_seat.payment.service.facade.PaymentService;
 import com.example.book_your_seat.seat.service.facade.SeatService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -22,6 +23,7 @@ public class PaymentServiceImpl implements PaymentService {
     private final SeatService seatService;
 
     @Override
+    @Transactional(readOnly = true)
     public FinalPriceResponse getFinalPrice(FinalPriceRequest request) {
         UserCoupon userCoupon = userCouponManager.getUserCoupon(request.userCouponId());
         validateUserCoupon(userCoupon);
