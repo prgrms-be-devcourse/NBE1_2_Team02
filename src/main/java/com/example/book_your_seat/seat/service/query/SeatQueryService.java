@@ -7,4 +7,5 @@ import java.util.List;
 public interface SeatQueryService {
     List<RemainSeatResponse> findRemainSeats(final Long concertId);
 
+    Integer getSeatPrice(final Long SeatId);
 }

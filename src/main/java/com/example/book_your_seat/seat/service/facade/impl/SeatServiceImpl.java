@@ -42,4 +42,9 @@ public class SeatServiceImpl implements SeatService {
     public List<RemainSeatResponse> findRemainSeats(Long concertId) {
         return seatQueryService.findRemainSeats(concertId);
     }
+
+    @Override
+    public Integer getSeatPrice(Long seatId) {
+        return seatQueryService.getSeatPrice(seatId);
+    }
 }

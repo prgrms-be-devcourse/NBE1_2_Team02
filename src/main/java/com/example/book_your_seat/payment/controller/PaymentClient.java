@@ -1,7 +1,7 @@
 package com.example.book_your_seat.payment.controller;
 
-import com.example.book_your_seat.payment.controller.dto.TossPaymentConfirmRequest;
-import com.example.book_your_seat.payment.controller.dto.TossPaymentConfirmSuccessResponse;
+import com.example.book_your_seat.payment.controller.dto.tossPayment.TossPaymentConfirmRequest;
+import com.example.book_your_seat.payment.controller.dto.tossPayment.TossPaymentConfirmSuccessResponse;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;

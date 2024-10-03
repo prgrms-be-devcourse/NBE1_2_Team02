@@ -1,12 +1,13 @@
 package com.example.book_your_seat.coupon.manager;
 
-import static com.example.book_your_seat.coupon.CouponConst.ALREADY_ISSUED_USER;
-
 import com.example.book_your_seat.coupon.domain.UserCoupon;
 import com.example.book_your_seat.coupon.repository.UserCouponRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+
+import static com.example.book_your_seat.coupon.CouponConst.ALREADY_ISSUED_USER;
+import static com.example.book_your_seat.coupon.CouponConst.COUPON_NOT_FOUND;
 
 @Component
 @Transactional(readOnly = true)
@@ -24,5 +25,11 @@ public class UserCouponManager {
     @Transactional
     public UserCoupon save(UserCoupon userCoupon) {
         return userCouponRepository.save(userCoupon);
+    }
+
+    public UserCoupon getUserCoupon(Long couponId) {
+        return userCouponRepository.findById(couponId).orElseThrow(
+                () -> new IllegalArgumentException(COUPON_NOT_FOUND)
+        );
     }
 }

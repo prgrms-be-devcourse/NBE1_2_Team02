@@ -3,7 +3,11 @@ package com.example.book_your_seat.payment.service.command.impl;
 import com.example.book_your_seat.coupon.domain.Coupon;
 import com.example.book_your_seat.coupon.repository.CouponRepository;
 import com.example.book_your_seat.payment.controller.PaymentClient;
-import com.example.book_your_seat.payment.controller.dto.*;
+import com.example.book_your_seat.payment.controller.dto.PaymentSuccessRequest;
+import com.example.book_your_seat.payment.controller.dto.PaymentSuccessResponse;
+import com.example.book_your_seat.payment.controller.dto.tossPayment.TossPaymentConfirmErrorResponse;
+import com.example.book_your_seat.payment.controller.dto.tossPayment.TossPaymentConfirmRequest;
+import com.example.book_your_seat.payment.controller.dto.tossPayment.TossPaymentConfirmSuccessResponse;
 import com.example.book_your_seat.payment.domain.Payment;
 import com.example.book_your_seat.payment.repository.PaymentRepository;
 import com.example.book_your_seat.payment.service.command.PaymentCommandService;
@@ -13,7 +17,7 @@ import com.example.book_your_seat.reservation.service.command.ReservationCommand
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
@@ -24,7 +28,7 @@ import java.util.Base64;
 import static com.example.book_your_seat.payment.PaymentConst.COUPON_NOT_FOUND;
 import static com.example.book_your_seat.payment.domain.PaymentStatus.COMPLETED;
 
-@Service
+@Component
 @Transactional
 @RequiredArgsConstructor
 public class PaymentCommandServiceImpl implements PaymentCommandService {

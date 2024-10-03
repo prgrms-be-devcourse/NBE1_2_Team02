@@ -17,4 +17,5 @@ public final class CouponConst {
     public static final String NULL_EXPIRATION_DATE_MESSAGE = "만료 기한을 입력해주세요.";
     public static final String INVALID_EXPIRATION_DATE_MESSAGE = "만료 기한은 미래여야합니다.";
 
+    public static final String COUPON_ALREADY_USED = "이미 사용된 쿠폰 입니다.";
 }

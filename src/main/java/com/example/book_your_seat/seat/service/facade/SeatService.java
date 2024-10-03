@@ -12,4 +12,6 @@ public interface SeatService {
     SelectSeatResponse selectSeatRedisson(final SelectSeatRequest request);
 
     List<RemainSeatResponse> findRemainSeats(final Long concertId);
+
+    Integer getSeatPrice(final Long seatId);
 }

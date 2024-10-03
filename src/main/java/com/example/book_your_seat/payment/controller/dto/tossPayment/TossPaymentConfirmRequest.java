@@ -1,4 +1,6 @@
-package com.example.book_your_seat.payment.controller.dto;
+package com.example.book_your_seat.payment.controller.dto.tossPayment;
+
+import com.example.book_your_seat.payment.controller.dto.PaymentSuccessRequest;
 
 public record TossPaymentConfirmRequest(
         String paymentKey,
