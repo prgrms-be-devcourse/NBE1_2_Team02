@@ -1,4 +1,4 @@
-package com.example.book_your_seat.payment.controller.dto;
+package com.example.book_your_seat.reservation.controller.dto;
 
 import jakarta.validation.constraints.NotNull;
 
@@ -6,7 +6,7 @@ import java.util.List;
 
 import static com.example.book_your_seat.payment.PaymentConst.*;
 
-public record PaymentSuccessRequest(
+public record ConfirmationReservationRequest(
 
         @NotNull(message = ENTER_PAYMENTKEY)
         String paymentKey,

@@ -57,6 +57,9 @@ public class Reservation {
         this.user = user;
         this.address = address;
         this.payment = payment;
+        user.addReservation(this);
+        address.addReservation(this);
+        payment.addReservation(this);
     }
 
     public void addSeat(Seat seat) {

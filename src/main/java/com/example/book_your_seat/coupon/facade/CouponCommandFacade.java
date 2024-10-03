@@ -7,11 +7,13 @@ import com.example.book_your_seat.coupon.domain.Coupon;
 import com.example.book_your_seat.coupon.domain.UserCoupon;
 import com.example.book_your_seat.coupon.manager.CouponManager;
 import com.example.book_your_seat.coupon.manager.UserCouponManager;
-import com.example.book_your_seat.user.manager.UserManager;
 import com.example.book_your_seat.user.domain.User;
+import com.example.book_your_seat.user.manager.UserManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import static com.example.book_your_seat.coupon.CouponConst.COUPON_ALREADY_USED;
 
 @Service
 @Transactional
@@ -41,6 +43,20 @@ public class CouponCommandFacade implements CouponCommandService {
         return new UserCouponIdResponse(
                 userCouponManager.save(new UserCoupon(user, coupon)).getId()
         );
+    }
+
+    @Override
+    public UserCoupon userCoupon(Long userCouponId) {
+        UserCoupon userCoupon = userCouponManager.getUserCoupon(userCouponId);
+
+        if (userCoupon.isUsed()) {
+            throw new IllegalArgumentException(COUPON_ALREADY_USED);
+        }
+
+        userCoupon.useCoupon();
+
+        return userCouponManager.save(userCoupon);
+
     }
 
 }

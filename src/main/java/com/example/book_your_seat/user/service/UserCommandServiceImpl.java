@@ -20,6 +20,7 @@ public class UserCommandServiceImpl implements UserCommandService {
 
     private final UserRepository userRepository;
     private final AddressRepository addressRepository;
+    private final UserQueryService userQueryService;
 
     public UserResponse join(JoinRequest joinRequest) {
         checkEmail(joinRequest.email());
@@ -49,15 +50,10 @@ public class UserCommandServiceImpl implements UserCommandService {
     }
 
     public AddressResponse addAddress(Long userId, AddAddressRequest addAddressRequest) {
-        User user = getUser(userId);
+        User user = userQueryService.getUser(userId);
         Address address = new Address(addAddressRequest.postcode(), addAddressRequest.detail(), user);
         Address savedAddress = addressRepository.save(address);
         return new AddressResponse(savedAddress.getId());
-    }
-
-    private User getUser(Long userId) {
-        return userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("해당 유저를 찾을 수 없습니다."));
     }
 
     public AddressResponse deleteAddress(Long addressId) {

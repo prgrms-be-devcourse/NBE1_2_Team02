@@ -1,6 +1,7 @@
 package com.example.book_your_seat.seat.service.facade.impl;
 
 import com.example.book_your_seat.aop.seatLock.SeatLock;
+import com.example.book_your_seat.reservation.domain.Reservation;
 import com.example.book_your_seat.seat.controller.dto.RemainSeatResponse;
 import com.example.book_your_seat.seat.controller.dto.SelectSeatRequest;
 import com.example.book_your_seat.seat.controller.dto.SelectSeatResponse;
@@ -8,6 +9,7 @@ import com.example.book_your_seat.seat.domain.Seat;
 import com.example.book_your_seat.seat.service.command.SeatCommandService;
 import com.example.book_your_seat.seat.service.facade.SeatService;
 import com.example.book_your_seat.seat.service.query.SeatQueryService;
+import com.example.book_your_seat.seat.service.redis.SeatRedisService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -18,33 +20,47 @@ import java.util.List;
 public class SeatServiceImpl implements SeatService {
     private final SeatCommandService seatCommandService;
     private final SeatQueryService seatQueryService;
+    private final SeatRedisService redisService;
 
     @Override
-    public SelectSeatResponse selectSeat(SelectSeatRequest request) {
+    public SelectSeatResponse selectSeat(final SelectSeatRequest request) {
         List<Seat> seats = seatCommandService.selectSeat(request);
 
-        seatCommandService.cacheSeatIds(seats);
+        redisService.cacheSeatIds(seats, request.userId());
 
         return SelectSeatResponse.fromSeats(seats);
     }
 
     @Override
     @SeatLock
-    public SelectSeatResponse selectSeatRedisson(SelectSeatRequest request) {
+    public SelectSeatResponse selectSeatRedisson(final SelectSeatRequest request) {
         List<Seat> seats = seatCommandService.selectSeatRedisson(request);
 
-        seatCommandService.cacheSeatIds(seats);
+        redisService.cacheSeatIds(seats, request.userId());
 
         return SelectSeatResponse.fromSeats(seats);
     }
 
     @Override
-    public List<RemainSeatResponse> findRemainSeats(Long concertId) {
+    public List<RemainSeatResponse> findRemainSeats(final Long concertId) {
         return seatQueryService.findRemainSeats(concertId);
     }
 
     @Override
-    public Integer getSeatPrice(Long seatId) {
+    public Integer getSeatPrice(final Long seatId) {
         return seatQueryService.getSeatPrice(seatId);
     }
+
+
+    @Override
+    public List<Seat> getSeats(final List<Long> seatIds) {
+        return seatQueryService.getSeats(seatIds);
+    }
+
+    @Override
+    public void seatReservationComplete(final List<Seat> seats, final Reservation reservation) {
+        seatCommandService.seatReservationComplete(seats, reservation);
+    }
+
+
 }

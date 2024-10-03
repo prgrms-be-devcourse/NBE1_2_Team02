@@ -35,5 +35,8 @@ public class SeatQueryServiceImpl implements SeatQueryService {
         return seat.getConcert().getPrice();
     }
 
-
+    @Override
+    public List<Seat> getSeats(List<Long> seatIds) {
+        return seatRepository.findAllById(seatIds);
+    }
 }

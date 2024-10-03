@@ -7,10 +7,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 
+import java.util.concurrent.CompletableFuture;
+
 @FeignClient(name = "paymentClient", url = "http://your-payment-service-url")
 public interface PaymentClient {
     @PostMapping("/payments/confirm")
-    TossPaymentConfirmSuccessResponse confirmPayment(
+    CompletableFuture<TossPaymentConfirmSuccessResponse> confirmPayment(
             @RequestHeader("Authorization") final String authorization,
             @RequestBody final TossPaymentConfirmRequest request
     );

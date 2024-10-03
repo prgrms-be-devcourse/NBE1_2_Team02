@@ -8,15 +8,12 @@ import com.example.book_your_seat.seat.controller.dto.RemainSeatResponse;
 import com.example.book_your_seat.seat.controller.dto.SelectSeatRequest;
 import com.example.book_your_seat.seat.domain.Seat;
 import com.example.book_your_seat.seat.repository.SeatRepository;
-import com.example.book_your_seat.seat.service.command.SeatCommandService;
 import com.example.book_your_seat.seat.service.facade.SeatService;
-import com.example.book_your_seat.seat.service.query.SeatQueryService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -70,7 +67,7 @@ class SeatCommandServiceImplTest extends IntegerTestSupport {
     @Test
     void selectSeatTest() throws InterruptedException {
         // given
-        SelectSeatRequest request = new SelectSeatRequest(seatIds);
+        SelectSeatRequest request = new SelectSeatRequest(1L,seatIds);
 
         // when
         int threadCount = 1000;

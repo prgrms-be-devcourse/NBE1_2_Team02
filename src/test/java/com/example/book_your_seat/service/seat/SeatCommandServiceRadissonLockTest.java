@@ -66,7 +66,7 @@ class SeatCommandServiceRadissonLockTest extends IntegerTestSupport {
     @Test
     void selectSeatTest() throws InterruptedException {
         // given
-        SelectSeatRequest request = new SelectSeatRequest(seatIds);
+        SelectSeatRequest request = new SelectSeatRequest(1L, seatIds);
 
         // when
         int threadCount = 100;
