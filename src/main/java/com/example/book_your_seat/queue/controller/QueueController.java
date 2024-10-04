@@ -27,17 +27,24 @@ public class QueueController {
                 .body(queueService.issueTokenAndEnqueue(user.getId()));
     }
 
-    @GetMapping("/queue")
+    @GetMapping()
     public ResponseEntity<QueueResponse> getQueueInfoWithToken(@SessionAttribute(LOGIN_USER) User user,
                                                                @RequestParam("token") String token)  {
         return ResponseEntity.ok()
                 .body(queueService.findQueueStatus(user.getId(), token));
     }
 
-    @PostMapping("/quit")
+    @PostMapping("/wait/quit")
     public ResponseEntity<Void> dequeueWaitingQueue(@SessionAttribute(LOGIN_USER) User user,
                                                     @RequestParam("token") String token) {
         queueService.dequeueWaitingQueue(user.getId(), token);
+        return ResponseEntity.ok(null);
+    }
+
+    @PostMapping("/process/quit")
+    public ResponseEntity<Void> dequeueProcessingQueue(@SessionAttribute(LOGIN_USER) User user,
+                                                    @RequestParam("token") String token) {
+        queueService.dequeueProcessingQueue(user.getId(), token);
         return ResponseEntity.ok(null);
     }
 }

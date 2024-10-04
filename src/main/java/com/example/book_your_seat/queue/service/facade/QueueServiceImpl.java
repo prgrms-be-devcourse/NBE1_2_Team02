@@ -6,7 +6,6 @@ import com.example.book_your_seat.queue.service.QueueCommandService;
 import com.example.book_your_seat.queue.service.QueueQueryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -25,7 +24,12 @@ public class QueueServiceImpl implements QueueService {
     }
 
     @Override
-    @Transactional(readOnly = true)
+    public void dequeueProcessingQueue(Long userId, String token) {
+        queueCommandService.removeTokenInProcessingQueue(userId, token);
+    }
+
+
+    @Override
     public QueueResponse findQueueStatus(Long userId, String token) {
         return queueQueryService.findQueueStatus(userId, token);
     }

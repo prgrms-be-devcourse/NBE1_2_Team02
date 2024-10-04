@@ -9,5 +9,5 @@ public interface QueueCommandService {
 
     void removeTokenInWaitingQueue(Long userId, String token);
 
-    void removeTokenInProcessingQueue(Long userId);
+    void removeTokenInProcessingQueue(Long userId, String token);
 }

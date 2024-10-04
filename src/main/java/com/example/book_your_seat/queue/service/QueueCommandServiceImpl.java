@@ -7,8 +7,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-import static com.example.book_your_seat.queue.QueueConst.ALREADY_ISSUED_USER;
-import static com.example.book_your_seat.queue.QueueConst.PROCESSING_QUEUE_SIZE;
+import static com.example.book_your_seat.queue.QueueConst.*;
 
 @Service
 @RequiredArgsConstructor
@@ -60,15 +59,21 @@ public class QueueCommandServiceImpl implements QueueCommandService {
      */
     @Override
     public void removeTokenInWaitingQueue(Long userId, String token) {
-        queueRedisRepository.removeTokenInWaitingQueue(userId, token);
+        Long tokenUserId = jwtUtil.getUserIdByToken(token);
+        if(userId.equals(tokenUserId))
+            queueRedisRepository.removeTokenInWaitingQueue(userId, token);
+        else throw new IllegalArgumentException(REMOVE_BAD_REQUEST);
     }
 
     /*
     처리열에서 토큰 삭제 (API 완료 시, 예외 발생 시)
    */
     @Override
-    public void removeTokenInProcessingQueue(Long userId) {
-        queueRedisRepository.removeProcessingToken(userId);
+    public void removeTokenInProcessingQueue(Long userId, String token) {
+        Long tokenUserId = jwtUtil.getUserIdByToken(token);
+        if(userId.equals(tokenUserId))
+            queueRedisRepository.removeTokenInProcessingQueue(userId, token);
+        else throw new IllegalArgumentException(REMOVE_BAD_REQUEST);
     }
 
     /*

@@ -4,12 +4,10 @@ import com.example.book_your_seat.queue.controller.dto.QueueResponse;
 import com.example.book_your_seat.queue.repository.QueueRedisRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import static com.example.book_your_seat.queue.QueueConst.*;
 
 @Service
-@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class QueueQueryServiceImpl implements QueueQueryService {
     public final QueueRedisRepository queueRedisRepository;
