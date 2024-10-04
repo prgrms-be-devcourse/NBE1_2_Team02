@@ -20,7 +20,6 @@ public class SeatQueryRepositoryImpl implements SeatQueryRepository {
     public List<Seat> findValidSeats(Long concertId, List<Long> seatsId) {
         return queryFactory.selectFrom(seat)
                 .where(
-                        seat.concert.id.eq(concertId),
                         seat.id.in(seatsId),
                         seat.isSold.eq(false)
                 )
@@ -31,7 +30,6 @@ public class SeatQueryRepositoryImpl implements SeatQueryRepository {
     public Long reserveSeats(Long concertId, List<Long> seatId) {
         return queryFactory.update(seat)
                 .where(
-                        seat.concert.id.eq(concertId),
                         seat.id.in(seatId)
                 )
                 .set(seat.isSold, true)

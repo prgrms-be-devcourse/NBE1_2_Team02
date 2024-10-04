@@ -57,7 +57,7 @@ public class ConcertJdbcRepositoryImpl implements ConcertJdbcRepository {
             ps.setString(1, concert.getTitle());
             ps.setDate(2, Date.valueOf(concert.getStartDate()));
             ps.setDate(3, Date.valueOf(concert.getEndDate()));
-            ps.setInt(4, concert.getPrice());
+            ps.setLong(4, concert.getPrice());
             ps.setInt(5, concert.getStartHour());
             ps.setInt(6, TOTAL_STOCK);
             ps.setTimestamp(7, Timestamp.valueOf(concert.getReservationStartAt()));

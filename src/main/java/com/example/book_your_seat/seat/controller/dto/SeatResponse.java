@@ -8,20 +8,17 @@ import lombok.Getter;
 public final class SeatResponse {
 
     private final Long seatId;
-    private final Long concertId;
     private final boolean isSold;
 
     @Builder
-    private SeatResponse(Long seatId, Long concertId, boolean isSold) {
+    private SeatResponse(Long seatId, boolean isSold) {
         this.seatId = seatId;
-        this.concertId = concertId;
         this.isSold = isSold;
     }
 
     public static SeatResponse from(Seat seat) {
         return SeatResponse.builder()
                 .seatId(seat.getId())
-                .concertId(seat.getConcert().getId())
                 .isSold(seat.isSold())
                 .build();
     }

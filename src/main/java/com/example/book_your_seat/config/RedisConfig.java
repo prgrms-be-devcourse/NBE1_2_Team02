@@ -1,9 +1,9 @@
 package com.example.book_your_seat.config;
 
+import com.example.book_your_seat.seat.SeatExpirationListener;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.data.redis.connection.MessageListener;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
@@ -58,7 +58,7 @@ public class RedisConfig {
     }
 
     @Bean
-    public MessageListenerAdapter keyExpirationAdapter(RedisKeyExpirationListener listener) {
+    public MessageListenerAdapter keyExpirationAdapter(SeatExpirationListener listener) {
         return new MessageListenerAdapter(listener);
     }
 }

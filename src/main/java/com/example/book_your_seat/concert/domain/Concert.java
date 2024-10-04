@@ -25,7 +25,7 @@ import static com.example.book_your_seat.concert.ConcertConst.*;
 
 @Entity
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+//@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Concert extends BaseEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -55,7 +55,7 @@ public class Concert extends BaseEntity {
     @OneToMany(mappedBy = "concert", cascade = CascadeType.ALL, orphanRemoval = true)
     private final List<Seat> seats = new ArrayList<>();
 
-    public Concert(String title, LocalDate startDate, LocalDate endDate, int price, int startHour) {
+    public Concert(String title, LocalDate startDate, LocalDate endDate, Long price, int startHour) {
         this.title = title;
         this.totalStock = TOTAL_STOCK;
         this.startDate = startDate;
@@ -64,6 +64,10 @@ public class Concert extends BaseEntity {
         this.startHour = startHour;
         this.reservationStartAt = setReservationTime(startDate);
         initializeSeats(); // 혹시라도 Seat 가 100개를 초과하지 않을까
+    }
+
+    public Concert() {
+
     }
 
     private LocalDateTime setReservationTime(LocalDate startDate) {
@@ -80,7 +84,7 @@ public class Concert extends BaseEntity {
 
     private void initializeSeats() {
         IntStream.range(ZERO, TOTAL_STOCK)
-                .forEach(i -> new Seat(this));
+                .forEach(i -> new Seat());
     }
 
     public void addLikeConcert(LikeConcert likeConcert) {

@@ -17,7 +17,7 @@ public final class ConcertResponse {
     private final Integer totalStock;
     private final LocalDate startDate;
     private final LocalDate endDate;
-    private final Integer price;
+    private final Long price;
     private final Integer startHour;
     private final LocalDateTime reservationStartAt;
     private final List<Review> reviews;

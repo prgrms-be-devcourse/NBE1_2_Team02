@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+//@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Seat {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,4 +32,6 @@ public class Seat {
     public void addReservation(Reservation reservation) {
         this.reservation = reservation;
     }
+
+
 }

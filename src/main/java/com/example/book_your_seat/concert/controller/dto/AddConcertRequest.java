@@ -23,7 +23,7 @@ public record AddConcertRequest(
         LocalDate endDate,
 
         @NotNull(message = ENTER_CONCERT_PRICE)
-        Integer price,
+        Long price,
 
         @NotNull(message = ENTER_CONCERT_START_HOUR)
         @Min(value = 0, message = INVALID_CONCERT_START_HOUR)
