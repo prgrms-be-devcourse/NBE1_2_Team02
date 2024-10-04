@@ -29,7 +29,7 @@ public class UserCouponManager {
 
 
     public UserCoupon findValidUserCoupon(Long userCouponId) {
-        return userCouponRepository.findByIdAndUsed(userCouponId, false)
+        return userCouponRepository.findByIdAndIsUsed(userCouponId, false)
                 .orElseThrow(() -> new IllegalArgumentException(INVALID_USER_COUPON));
     }
 

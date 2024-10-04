@@ -1,6 +1,6 @@
 package com.example.book_your_seat.config;
 
-import com.example.book_your_seat.seat.SeatExpirationListener;
+import com.example.book_your_seat.seat.service.SeatExpirationListener;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,6 +14,9 @@ import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
 import org.springframework.data.redis.repository.configuration.EnableRedisRepositories;
 import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
+
+import java.util.List;
+import java.util.UUID;
 
 @Configuration
 @EnableRedisRepositories
@@ -43,6 +46,16 @@ public class RedisConfig {
         template.setValueSerializer(new GenericJackson2JsonRedisSerializer());
         return template;
     }
+
+    @Bean
+    public RedisTemplate<UUID, List<Long>> redisUuidTemplate(RedisConnectionFactory connectionFactory) {
+        RedisTemplate<UUID, List<Long>> template = new RedisTemplate<>();
+        template.setConnectionFactory(connectionFactory);
+        template.setKeySerializer(new StringRedisSerializer());
+        template.setValueSerializer(new GenericJackson2JsonRedisSerializer());
+        return template;
+    }
+
 
     @Bean
     public RedisMessageListenerContainer redisMessageListenerContainer(

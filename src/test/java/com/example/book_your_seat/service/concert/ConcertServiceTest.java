@@ -31,7 +31,7 @@ class ConcertServiceTest extends IntegerTestSupport {
                 "제목1",
                 LocalDate.of(2024, 9, 24),
                 LocalDate.of(2024,9,25),
-                10000,
+                10000L,
                 120
         );
 
@@ -46,7 +46,7 @@ class ConcertServiceTest extends IntegerTestSupport {
                                 "제목1",
                                 LocalDate.of(2024, 9, 24),
                                 LocalDate.of(2024, 9, 25),
-                                10000,
+                                10000L,
                                 120
                         );
     }
@@ -59,7 +59,7 @@ class ConcertServiceTest extends IntegerTestSupport {
                 "제목1",
                 LocalDate.of(2024, 9, 24),
                 LocalDate.of(2024,9,25),
-                10000,
+                10000L,
                 14
         );
         Long id = concertCommandService.add(request);
@@ -79,14 +79,14 @@ class ConcertServiceTest extends IntegerTestSupport {
                 "제목1",
                 LocalDate.of(2024, 9, 24),
                 LocalDate.of(2024,9,25),
-                10000,
+                10000L,
                 120
         );
         AddConcertRequest request2 = new AddConcertRequest(
                 "제목2",
                 LocalDate.of(2024, 10, 24),
                 LocalDate.of(2024,11,25),
-                90000,
+                90000L,
                 999
         );
         concertCommandService.add(request1);
@@ -109,7 +109,7 @@ class ConcertServiceTest extends IntegerTestSupport {
                 "제목1",
                 LocalDate.of(2024, 9, 24),
                 LocalDate.of(2024,9,25),
-                10000,
+                10000L,
                 120
         );
         Long id = concertCommandService.add(request);
@@ -124,7 +124,7 @@ class ConcertServiceTest extends IntegerTestSupport {
                         "제목1",
                         LocalDate.of(2024, 9, 24),
                         LocalDate.of(2024, 9, 25),
-                        10000,
+                        10000L,
                         120
                 );
     }
@@ -139,7 +139,7 @@ class ConcertServiceTest extends IntegerTestSupport {
                 "제목1",
                 LocalDate.of(2024, 9, 24),
                 LocalDate.of(2024,9,25),
-                10000,
+                10000L,
                 120
         );
         Long id = concertCommandService.add(request);

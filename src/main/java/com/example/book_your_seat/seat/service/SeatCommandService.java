@@ -1,10 +1,9 @@
-package com.example.book_your_seat.seat.service.facade;
+package com.example.book_your_seat.seat.service;
 
 import com.example.book_your_seat.seat.service.dto.SelectSeatsCommand;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.UUID;
 
 @Service
 public interface SeatCommandService {

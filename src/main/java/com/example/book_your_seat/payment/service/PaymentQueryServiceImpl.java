@@ -50,7 +50,7 @@ public class PaymentQueryServiceImpl implements PaymentQueryService {
             return originalPrice;
         }
 
-        return userCouponRepository.findByIdAndUsed(userCouponId, false)
+        return userCouponRepository.findByIdAndIsUsed(userCouponId, false)
                 .map(UserCoupon::getCoupon)
                 .filter(coupon -> LocalDate.now().isBefore(coupon.getExpirationDate()))
                 .map(Coupon::getDiscountRate)
@@ -72,8 +72,8 @@ public class PaymentQueryServiceImpl implements PaymentQueryService {
     }
 
     @Override
-    public List<Seat> getSeats(Long concertId, List<Long> seatsId) {
-        return seatRepository.findValidSeats(concertId, seatsId);
+    public List<Seat> getSeats(List<Long> seatsId) {
+        return seatRepository.findValidSeats(seatsId);
     }
 
     @Override

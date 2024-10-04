@@ -21,7 +21,7 @@ class ConcertTest extends IntegerTestSupport {
                 "title",
                 LocalDate.of(2024, 9, 24),
                 LocalDate.of(2024,9,25),
-                10000,
+                10000L,
                 120
         );
 

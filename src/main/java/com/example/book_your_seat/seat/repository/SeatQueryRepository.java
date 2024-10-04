@@ -8,7 +8,7 @@ import java.util.List;
 @Repository
 public interface SeatQueryRepository {
 
-    List<Seat> findValidSeats(Long concertId, List<Long> seats);
+    List<Seat> findValidSeats(List<Long> seats);
     Long reserveSeats(Long concertId, List<Long> seatId);
     void cancelSeats(List<Long> seatId);
 

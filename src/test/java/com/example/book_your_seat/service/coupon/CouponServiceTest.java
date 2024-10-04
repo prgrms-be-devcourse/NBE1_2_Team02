@@ -24,7 +24,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 
+@Transactional
 public class CouponServiceTest extends IntegerTestSupport {
 
     @Autowired
@@ -68,6 +70,8 @@ public class CouponServiceTest extends IntegerTestSupport {
 
         // then
         Optional<Coupon> byId = couponRepository.findById(coupon.couponId());
+
+        assertThat(byId.isEmpty()).isFalse();
         assertThat(byId.isPresent()).isTrue();
 
         Coupon savedCoupon = byId.get();

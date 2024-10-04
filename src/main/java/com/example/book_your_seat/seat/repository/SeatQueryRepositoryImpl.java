@@ -17,7 +17,7 @@ public class SeatQueryRepositoryImpl implements SeatQueryRepository {
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public List<Seat> findValidSeats(Long concertId, List<Long> seatsId) {
+    public List<Seat> findValidSeats(List<Long> seatsId) {
         return queryFactory.selectFrom(seat)
                 .where(
                         seat.id.in(seatsId),

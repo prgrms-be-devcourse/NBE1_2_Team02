@@ -20,7 +20,7 @@ public interface PaymentQueryService {
 
     Address getAddress(Long addressId);
 
-    List<Seat> getSeats(Long concertId, List<Long> seatsId);
+    List<Seat> getSeats(List<Long> seatsId);
 
     Payment getPayment(UUID paymentId);
 }

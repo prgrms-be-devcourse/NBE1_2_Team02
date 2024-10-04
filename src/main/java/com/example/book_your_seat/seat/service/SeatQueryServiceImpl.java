@@ -1,4 +1,4 @@
-package com.example.book_your_seat.seat.service.facade;
+package com.example.book_your_seat.seat.service;
 
 import com.example.book_your_seat.concert.domain.Concert;
 import com.example.book_your_seat.concert.repository.ConcertRepository;

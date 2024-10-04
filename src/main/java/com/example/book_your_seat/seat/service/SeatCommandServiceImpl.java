@@ -1,4 +1,4 @@
-package com.example.book_your_seat.seat.service.facade;
+package com.example.book_your_seat.seat.service;
 
 import com.example.book_your_seat.reservation.domain.Reservation;
 import com.example.book_your_seat.reservation.repository.ReservationRepository;
@@ -23,6 +23,7 @@ public class SeatCommandServiceImpl implements SeatCommandService {
 
     private final SeatRepository seatRepository;
     private final ReservationRepository reservationRepository;
+
     private final RedisTemplate<UUID, List<Long>> redisTemplate;
 
     @Override
@@ -41,13 +42,13 @@ public class SeatCommandServiceImpl implements SeatCommandService {
         UUID reservationId = UUID.randomUUID();
         List<Seat> seats = seatRepository.findAllById(command.getSeatsId());
 
-        Reservation.builder()
+        Reservation reservation = Reservation.builder()
                 .id(reservationId)
                 .userId(command.getUserId())
                 .addressId(command.getAddressId())
                 .seats(seats)
                 .build();
-
+        reservationRepository.save(reservation);
         redisTemplate.opsForValue().set(reservationId, command.getSeatsId(),30, TimeUnit.MINUTES);
     }
 

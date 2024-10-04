@@ -1,9 +1,8 @@
-package com.example.book_your_seat.seat;
+package com.example.book_your_seat.seat.service;
 
 import com.example.book_your_seat.reservation.domain.Reservation;
 import com.example.book_your_seat.reservation.service.ReservationQueryService;
 import com.example.book_your_seat.seat.domain.Seat;
-import com.example.book_your_seat.seat.service.facade.SeatCommandService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.connection.Message;
 import org.springframework.data.redis.connection.MessageListener;
