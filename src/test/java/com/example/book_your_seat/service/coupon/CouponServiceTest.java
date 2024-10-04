@@ -3,7 +3,7 @@ package com.example.book_your_seat.service.coupon;
 import static com.example.book_your_seat.coupon.CouponConst.ALREADY_ISSUED_USER;
 import static org.assertj.core.api.Assertions.*;
 
-import com.example.book_your_seat.IntegerTestSupport;
+import com.example.book_your_seat.IntegralTestSupport;
 import com.example.book_your_seat.coupon.controller.dto.CouponCreateRequest;
 import com.example.book_your_seat.coupon.controller.dto.CouponDetailResponse;
 import com.example.book_your_seat.coupon.controller.dto.CouponResponse;
@@ -26,8 +26,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
-@Transactional
-public class CouponServiceTest extends IntegerTestSupport {
+public class CouponServiceTest extends IntegralTestSupport {
+
 
     @Autowired
     private CouponCommandService couponCommandService;

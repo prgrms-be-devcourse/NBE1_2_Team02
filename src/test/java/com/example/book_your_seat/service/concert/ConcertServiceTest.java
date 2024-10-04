@@ -1,6 +1,6 @@
 package com.example.book_your_seat.service.concert;
 
-import com.example.book_your_seat.IntegerTestSupport;
+import com.example.book_your_seat.IntegralTestSupport;
 import com.example.book_your_seat.concert.controller.dto.AddConcertRequest;
 import com.example.book_your_seat.concert.controller.dto.ConcertResponse;
 import com.example.book_your_seat.concert.service.ConcertCommandService;
@@ -14,7 +14,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
-class ConcertServiceTest extends IntegerTestSupport {
+class ConcertServiceTest extends IntegralTestSupport {
 
     @Autowired
     private ConcertCommandService concertCommandService;
