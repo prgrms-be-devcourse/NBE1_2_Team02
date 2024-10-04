@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class LogAspect {
 
-    private final LogTracer logTracer;
+    /*private final LogTracer logTracer;
 
     @Pointcut("execution(* com.example.book_your_seat..*Controller.*(..)) || execution(* com.example.book_your_seat..*Service.*(..)) || execution(* com.example.book_your_seat..*Repository.*(..))")
     public void everyRequest() { }
@@ -43,5 +43,5 @@ public class LogAspect {
         String[] arr = Arrays.copyOfRange(split, length-3, length);
         return arr[1] + "." + arr[2];
     }
-
+*/
 }

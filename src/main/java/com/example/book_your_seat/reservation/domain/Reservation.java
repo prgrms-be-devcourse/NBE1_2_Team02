@@ -1,6 +1,9 @@
 package com.example.book_your_seat.reservation.domain;
 
+import com.example.book_your_seat.concert.ConcertConst;
+import com.example.book_your_seat.concert.domain.Concert;
 import com.example.book_your_seat.payment.domain.Payment;
+import com.example.book_your_seat.seat.domain.Seat;
 import com.example.book_your_seat.user.domain.Address;
 import com.example.book_your_seat.user.domain.User;
 import jakarta.persistence.CascadeType;
@@ -21,6 +24,8 @@ import java.util.List;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import static com.example.book_your_seat.concert.ConcertConst.INVALID_CONCERT_ID;
 
 @Entity
 @Getter
@@ -47,9 +52,17 @@ public class Reservation {
     private Payment payment;
 
     @OneToMany(mappedBy = "reservation", cascade = CascadeType.ALL)
-    private final List<ConcertReservation> concertReservations = new ArrayList<>();
+    private final List<Seat> seats = new ArrayList<>();
 
-    public void addConcertReservation(ConcertReservation reservation) {
-        this.concertReservations.add(reservation);
+
+    public void addSeat(Seat seat) {
+        this.seats.add(seat);
+    }
+
+    public Concert getConcert() {
+        return this.seats.stream()
+                .findFirst()
+                .map(Seat::getConcert)
+                .orElseThrow(() -> new IllegalArgumentException(INVALID_CONCERT_ID));
     }
 }
