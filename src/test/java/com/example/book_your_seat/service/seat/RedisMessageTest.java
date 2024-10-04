@@ -4,6 +4,7 @@ import com.example.book_your_seat.IntegralTestSupport;
 import com.example.book_your_seat.seat.domain.Seat;
 import com.example.book_your_seat.seat.repository.SeatRepository;
 import com.example.book_your_seat.seat.service.redis.RedisExpiredListener;
+import com.example.book_your_seat.seat.service.redis.SeatRedisService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -26,6 +27,9 @@ public class RedisMessageTest extends IntegralTestSupport {
     @Mock
     private RedisMessageListenerContainer listenerContainer;
 
+    @Mock
+    private SeatRedisService seatRedisService;
+
     @InjectMocks
     private RedisExpiredListener redisExpiredListener;
 
@@ -33,7 +37,7 @@ public class RedisMessageTest extends IntegralTestSupport {
 
     @BeforeEach
     public void setUp() {
-        // Mock the Message object
+        // Message 객체 목 설정
         message = mock(Message.class);
         when(message.toString()).thenReturn("seat:1");
     }
@@ -53,6 +57,7 @@ public class RedisMessageTest extends IntegralTestSupport {
         // Then
         verify(seat).releaseSeat();
         verify(seatRepository).save(any(Seat.class));
+        verify(seatRedisService).deleteCache(anyLong());
     }
 
     @Test

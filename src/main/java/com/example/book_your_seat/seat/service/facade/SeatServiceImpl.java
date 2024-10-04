@@ -60,5 +60,4 @@ public class SeatServiceImpl implements SeatService {
         seatCommandService.seatReservationComplete(seats, reservation);
     }
 
-
 }

@@ -1,6 +1,5 @@
 package com.example.book_your_seat.aop.logtracer;
 
-import java.util.Arrays;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -9,13 +8,15 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.stereotype.Component;
 
+import java.util.Arrays;
+
 @Aspect
 @Slf4j
 @RequiredArgsConstructor
 @Component
 public class LogAspect {
 
-    /*private final LogTracer logTracer;
+    private final LogTracer logTracer;
 
     @Pointcut("execution(* com.example.book_your_seat..*Controller.*(..)) || execution(* com.example.book_your_seat..*Service.*(..)) || execution(* com.example.book_your_seat..*Repository.*(..))")
     public void everyRequest() { }
@@ -43,5 +44,5 @@ public class LogAspect {
         String[] arr = Arrays.copyOfRange(split, length-3, length);
         return arr[1] + "." + arr[2];
     }
-*/
+
 }

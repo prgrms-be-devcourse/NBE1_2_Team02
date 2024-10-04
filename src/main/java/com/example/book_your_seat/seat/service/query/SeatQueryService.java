@@ -13,4 +13,5 @@ public interface SeatQueryService {
     Integer getSeatPrice(final Long SeatId);
 
     List<Seat> getSeats(final List<Long> seatIds);
+
 }

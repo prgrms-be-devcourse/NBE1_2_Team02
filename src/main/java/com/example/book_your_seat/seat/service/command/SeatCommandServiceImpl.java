@@ -8,10 +8,8 @@ import com.example.book_your_seat.seat.repository.SeatRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 
@@ -20,7 +18,6 @@ import java.util.List;
 @Transactional
 @Primary
 @Slf4j
-@Qualifier("Pessimistic")
 public class SeatCommandServiceImpl implements SeatCommandService {
 
     private final SeatRepository seatRepository;
@@ -34,7 +31,7 @@ public class SeatCommandServiceImpl implements SeatCommandService {
                 log.info("seat isSold = {}", seat.isSold());
                 throw new IllegalArgumentException(SeatConst.SEAT_SOLD);
             }
-//            seat.selectSeat();
+            seat.selectSeat();
         });
         return seatRepository.saveAll(seats);
     }

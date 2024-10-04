@@ -46,6 +46,7 @@ public class SeatQueryServiceImpl implements SeatQueryService {
         return seatRepository.findAllById(seatIds);
     }
 
+
     private static void validateConcertDate(Concert concert) {
         LocalDate startDate = concert.getStartDate();
         LocalDate reservationDeadLine = startDate.minusDays(1);

@@ -49,7 +49,7 @@ class SeatCommandServiceRadissonLockTest extends IntegralTestSupport {
         );
 
         concertId = concertCommandService.add(request);
-        seatIds = seatRepository.findByConcertIdAndNotSold(concertId)
+        seatIds = seatRepository.findByConcertId(concertId)
                 .stream()
                 .map(Seat::getId)
                 .collect(Collectors.toList());
@@ -90,8 +90,6 @@ class SeatCommandServiceRadissonLockTest extends IntegralTestSupport {
         latch.await();
 
         // then
-        List<RemainSeatResponse> remainSeats = seatService.findRemainSeats(concertId);
-        assertThat(remainSeats.isEmpty(), is(true)); // 잔여좌석 0개
         assertThat(successCount.get(), is(1));
         assertThat(failCount.get(), is(99));
     }

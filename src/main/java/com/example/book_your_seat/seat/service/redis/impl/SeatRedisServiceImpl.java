@@ -11,7 +11,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 
 import static com.example.book_your_seat.seat.SeatConst.ACCEPTABLE_TIMEOUT;
 import static com.example.book_your_seat.seat.SeatConst.SEAT_SOLD;
@@ -27,10 +26,10 @@ public class SeatRedisServiceImpl implements SeatRedisService {
         seats.forEach(seat -> {
             String redisKey = "seat:" + seat.getId();
             try {
-                redisTemplate.opsForValue().set(redisKey, userId, 30, TimeUnit.MINUTES);
+                redisTemplate.opsForValue().set(redisKey, userId.toString(), 30, TimeUnit.MINUTES);
             }catch (Exception e){
 
-                throw new IllegalArgumentException("ㅆㅃㅆㅃㅆㅃㅆㅆㅃㅆㅃㅆ");
+                throw new IllegalArgumentException(SEAT_SOLD);
             }
         });
     }

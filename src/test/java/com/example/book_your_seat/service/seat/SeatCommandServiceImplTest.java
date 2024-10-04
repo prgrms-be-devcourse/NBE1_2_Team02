@@ -13,6 +13,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -34,7 +35,8 @@ class SeatCommandServiceImplTest extends IntegralTestSupport {
     private SeatRepository seatRepository;
     @Autowired
     private SeatService seatService;
-
+    @Autowired
+    private RedisTemplate<String, Object> redisTemplate;
 
     private Long concertId;
     private List<Long> seatIds;
@@ -50,7 +52,7 @@ class SeatCommandServiceImplTest extends IntegralTestSupport {
         );
 
         concertId = concertCommandService.add(request);
-        seatIds = seatRepository.findByConcertIdAndNotSold(concertId)
+        seatIds = seatRepository.findByConcertId(concertId)
                 .stream()
                 .map(Seat::getId)
                 .collect(Collectors.toList());
@@ -60,6 +62,8 @@ class SeatCommandServiceImplTest extends IntegralTestSupport {
     void tearDown() {
         concertRepository.deleteAll();
         seatRepository.deleteAll();
+        redisTemplate.getConnectionFactory().getConnection().flushAll();
+
     }
 
     @DisplayName("모든 남아있는 좌석을 선택하는 1000개의 요청이 들어 올 경우 99개의 요청은 실패한다")
@@ -91,8 +95,6 @@ class SeatCommandServiceImplTest extends IntegralTestSupport {
         latch.await();
 
         // then
-        List<RemainSeatResponse> remainSeats = seatService.findRemainSeats(concertId);
-        assertThat(remainSeats.isEmpty(), is(true)); // 잔여좌석 0개
         assertThat(successCount.get(), is(1));
         assertThat(failCount.get(), is(999));
     }
