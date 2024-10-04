@@ -54,7 +54,7 @@ public class CouponRepositoryImpl implements CouponRepositoryCustom{
         return user.id.eq(memberId);
     }
 
-    private BooleanExpression isUsed(boolean used) {
-        return used ? userCoupon.isUsed.isTrue() : userCoupon.isUsed.isFalse();
+    private BooleanExpression isUsed(Boolean used) {
+        return (used == null) ? null : (used ? userCoupon.isUsed.isTrue() : userCoupon.isUsed.isFalse());
     }
 }

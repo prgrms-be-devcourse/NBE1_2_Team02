@@ -25,7 +25,7 @@ public class UserCouponController {
 
 
     @GetMapping
-    public Slice<UserCouponResponse> getUserCoupons(@Valid  UserCouponRequest userCouponRequest, HttpServletRequest request, Pageable pageable) {
+    public Slice<UserCouponResponse> getUserCoupons( UserCouponRequest userCouponRequest, HttpServletRequest request, Pageable pageable) {
         Long userId = getUserId(request);
         return userCouponService.getUserCoupons(userCouponRequest, userId, pageable);
     }

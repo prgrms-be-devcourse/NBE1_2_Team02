@@ -1,5 +1,6 @@
 package com.example.book_your_seat.coupon.facade;
 
+import com.example.book_your_seat.IntegerTestSupport;
 import com.example.book_your_seat.coupon.controller.dto.UserCouponRequest;
 import com.example.book_your_seat.coupon.controller.dto.UserCouponResponse;
 import com.example.book_your_seat.coupon.domain.Coupon;
@@ -25,8 +26,8 @@ import java.time.LocalDate;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@SpringBootTest
-class UserCouponServiceImplTest{
+
+class UserCouponServiceImplTest extends IntegerTestSupport {
 
     @Autowired
     private UserCouponRepository userCouponRepository;
@@ -132,7 +133,7 @@ class UserCouponServiceImplTest{
        //then
 
         PageRequest pageRequest2 = PageRequest.of(1, 20); //10장 남음
-        Slice<UserCouponResponse> userCoupons2 = userCouponService.getUserCoupons(userCouponRequest, 1L, pageRequest2);
+        Slice<UserCouponResponse> userCoupons2 = userCouponService.getUserCoupons(userCouponRequest, user.getId(), pageRequest2);
 
         assertThat(userCoupons2.hasNext()).isFalse();
     }
