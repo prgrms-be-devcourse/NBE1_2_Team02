@@ -40,7 +40,7 @@ public class SeatRedisServiceImpl implements SeatRedisService {
         for (Long seatId : request.seatIds()) {
             String redisKey = "seat:" + seatId;
 
-            if(!Boolean.TRUE.equals(redisTemplate.hasKey(redisKey))) {
+            if(Boolean.FALSE.equals(redisTemplate.hasKey(redisKey))) {
                 throw new IllegalArgumentException(ACCEPTABLE_TIMEOUT);
             }
             // 저장된 userId와 요청된 userId 비교
