@@ -47,7 +47,7 @@ public class SeatQueryServiceImpl implements SeatQueryService {
     }
 
 
-    private static void validateConcertDate(Concert concert) {
+    private void validateConcertDate(Concert concert) {
         LocalDate startDate = concert.getStartDate();
         LocalDate reservationDeadLine = startDate.minusDays(1);
         LocalDate now = LocalDate.now();

@@ -23,10 +23,7 @@ public class SeatController {
     public ResponseEntity<List<SeatResponse>> findAllSeats(
             @PathVariable final Long concertId
     ) {
-        List<SeatResponse> responses =
-                seatService.findAllSeats(concertId).stream()
-                .map(SeatResponse::from)
-                .toList();
+        List<SeatResponse> responses = seatService.findAllSeats(concertId);
         return ResponseEntity.ok(responses);
     }
 

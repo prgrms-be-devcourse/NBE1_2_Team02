@@ -1,6 +1,7 @@
 package com.example.book_your_seat.seat.service.facade;
 
 import com.example.book_your_seat.reservation.domain.Reservation;
+import com.example.book_your_seat.seat.controller.dto.SeatResponse;
 import com.example.book_your_seat.seat.controller.dto.SelectSeatRequest;
 import com.example.book_your_seat.seat.controller.dto.SelectSeatResponse;
 import com.example.book_your_seat.seat.domain.Seat;
@@ -9,7 +10,7 @@ import java.util.List;
 
 
 public interface SeatService {
-    List<Seat> findAllSeats(Long concertId);
+    List<SeatResponse> findAllSeats(Long concertId);
 
     SelectSeatResponse selectSeat(final SelectSeatRequest request);
 

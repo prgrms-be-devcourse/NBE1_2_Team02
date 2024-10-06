@@ -2,6 +2,7 @@ package com.example.book_your_seat.seat.service.facade;
 
 import com.example.book_your_seat.aop.seatLock.SeatLock;
 import com.example.book_your_seat.reservation.domain.Reservation;
+import com.example.book_your_seat.seat.controller.dto.SeatResponse;
 import com.example.book_your_seat.seat.controller.dto.SelectSeatRequest;
 import com.example.book_your_seat.seat.controller.dto.SelectSeatResponse;
 import com.example.book_your_seat.seat.domain.Seat;
@@ -21,8 +22,10 @@ public class SeatServiceImpl implements SeatService {
     private final SeatQueryService seatQueryService;
     private final SeatRedisService redisService;
 
-    public List<Seat> findAllSeats(Long concertId) {
-        return seatQueryService.findAllSeats(concertId);
+    public List<SeatResponse> findAllSeats(Long concertId) {
+        return seatQueryService.findAllSeats(concertId).stream()
+                .map(SeatResponse::from)
+                .toList();
     }
 
     @Override
