@@ -19,7 +19,7 @@ public class SeatController {
 
     private final SeatService seatService;
 
-    @GetMapping("/{concertId}")
+    @GetMapping
     public ResponseEntity<List<SeatResponse>> findAllSeats(
             @PathVariable final Long concertId
     ) {

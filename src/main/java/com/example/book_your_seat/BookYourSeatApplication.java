@@ -9,7 +9,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @EnableScheduling
 @EnableJpaAuditing
 @SpringBootApplication
-@EnableFeignClients
+@EnableFeignClients(basePackages = "com.example.book_your_seat.payment.controller")
 public class BookYourSeatApplication {
 
 	public static void main(String[] args) {

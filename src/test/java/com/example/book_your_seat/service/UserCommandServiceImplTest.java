@@ -3,6 +3,7 @@ package com.example.book_your_seat.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import com.example.book_your_seat.IntegralTestSupport;
 import com.example.book_your_seat.user.controller.dto.AddAddressRequest;
 import com.example.book_your_seat.user.controller.dto.AddressResponse;
 import com.example.book_your_seat.user.controller.dto.JoinRequest;
@@ -22,9 +23,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
-@SpringBootTest
+
 @Transactional
-public class UserCommandServiceImplTest {
+public class UserCommandServiceImplTest extends IntegralTestSupport {
 
     @Autowired
     private UserCommandServiceImpl userCommandServiceImpl;
