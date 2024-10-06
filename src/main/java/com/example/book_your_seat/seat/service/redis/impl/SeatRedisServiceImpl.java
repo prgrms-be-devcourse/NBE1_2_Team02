@@ -1,7 +1,7 @@
 package com.example.book_your_seat.seat.service.redis.impl;
 
 
-import com.example.book_your_seat.reservation.contorller.dto.ConfirmationReservationRequest;
+import com.example.book_your_seat.reservation.contorller.dto.PaymentRequest;
 import com.example.book_your_seat.seat.domain.Seat;
 import com.example.book_your_seat.seat.service.redis.SeatRedisService;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +22,7 @@ public class SeatRedisServiceImpl implements SeatRedisService {
 
     @Override
     @Transactional
-    public void cacheSeatIds(List<Seat> seats, Long userId) {
+    public void cacheSeatIds(final List<Seat> seats,final Long userId) {
         seats.forEach(seat -> {
             String redisKey = "seat:" + seat.getId();
             try {
@@ -36,7 +36,7 @@ public class SeatRedisServiceImpl implements SeatRedisService {
 
     @Override
     @Transactional(readOnly = true)
-    public void validateSeat(ConfirmationReservationRequest request) {
+    public void validateSeat(final PaymentRequest request) {
         for (Long seatId : request.seatIds()) {
             String redisKey = "seat:" + seatId;
 

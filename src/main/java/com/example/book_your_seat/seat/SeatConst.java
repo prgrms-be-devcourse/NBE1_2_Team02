@@ -6,7 +6,7 @@ public final class SeatConst {
 
     public static final String ENTER_CONCERT_ID = "concertID를 입력하세요!";
 
-    public static final String ENTER_ADDRESS_ID = "addressId를 입력하세요";
+    public static final String INVALID_ADDRESS = "addressId를 입력하세요";
 
     public static final String ENTER_SEATS = "seats를 입력하세요";
 

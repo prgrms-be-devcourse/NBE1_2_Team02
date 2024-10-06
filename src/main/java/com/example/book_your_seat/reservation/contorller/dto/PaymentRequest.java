@@ -6,20 +6,23 @@ import java.util.List;
 
 import static com.example.book_your_seat.payment.PaymentConst.*;
 
-public record ConfirmationReservationRequest(
+public record PaymentRequest(
 
         @NotNull(message = ENTER_PAYMENTKEY)
         String paymentKey,
         @NotNull(message = ENTER_ORDER_ID)
         String orderId,
         @NotNull(message = ENTER_AMOUNT)
-        Integer amount,
+        Long amount,
         @NotNull(message = ENTER_SEAT_ID)
         List<Long> seatIds,
         @NotNull(message = ENTER_ADDRESS_ID)
         Long addressId,
         @NotNull(message = ENTER_USER_ID)
         Long userId,
-        Long couponId
+
+        Long concertId,
+
+        Long userCouponId
 ) {
 }

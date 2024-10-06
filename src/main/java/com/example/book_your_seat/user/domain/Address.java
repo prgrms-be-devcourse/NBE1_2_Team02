@@ -41,4 +41,8 @@ public class Address extends BaseEntity {
         this.user = user;
         user.setAddress(this);
     }
+
+    public void addReservation(Reservation reservation) {
+        this.reservation = reservation;
+    }
 }

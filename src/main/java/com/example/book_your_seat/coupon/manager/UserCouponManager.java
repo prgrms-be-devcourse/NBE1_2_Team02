@@ -25,4 +25,14 @@ public class UserCouponManager {
     public UserCoupon save(UserCoupon userCoupon) {
         return userCouponRepository.save(userCoupon);
     }
+
+    public UserCoupon findValidUserCoupon(Long userCouponId) {
+        return userCouponRepository.findByIdAndIsUsed(userCouponId, false)
+                .orElseThrow(() -> new IllegalArgumentException("INVALID_USER_COUPON"));
+    }
+    @Transactional
+    public void updateUserCoupon(UserCoupon userCoupon) {
+        userCoupon.use();
+        userCouponRepository.save(userCoupon);
+    }
 }
