@@ -1,9 +1,5 @@
 package com.example.book_your_seat.service.coupon;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
 import com.example.book_your_seat.IntegralTestSupport;
 import com.example.book_your_seat.config.security.jwt.SecurityJwtUtil;
 import com.example.book_your_seat.user.controller.dto.*;
@@ -12,16 +8,9 @@ import com.example.book_your_seat.user.domain.User;
 import com.example.book_your_seat.user.repository.AddressRepository;
 import com.example.book_your_seat.user.repository.UserRepository;
 import com.example.book_your_seat.user.service.command.UserCommandService;
-import com.example.book_your_seat.user.service.command.UserCommandServiceImpl;
-
-import java.time.LocalDate;
-import java.util.List;
-import java.util.Optional;
-
 import com.example.book_your_seat.user.service.facade.UserFacade;
 import com.example.book_your_seat.user.service.query.UserQueryService;
 import org.assertj.core.api.Assertions;
-import org.hibernate.Hibernate;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -29,8 +18,16 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.Optional;
 
-public class UserCommandServiceImplTest extends IntegralTestSupport {
+import static com.example.book_your_seat.user.UserConst.ADDRESS_NOT_OWNED;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+
+public class UserServiceTest extends IntegralTestSupport {
 
     @Autowired
     private UserCommandService userCommandService;
@@ -65,7 +62,7 @@ public class UserCommandServiceImplTest extends IntegralTestSupport {
     }
 
     @Test
-    @DisplayName("회원 가입 테스트")
+    @DisplayName("회원 가입에 성공한다.")
     void joinWithValidDataTest() {
         // given
         JoinRequest joinRequest = new JoinRequest("nickname", "username", "test2@test.com", "passwordpassword");
@@ -89,7 +86,7 @@ public class UserCommandServiceImplTest extends IntegralTestSupport {
     }
 
     @Test
-    @DisplayName("로그인 테스트")
+    @DisplayName("로그인에 성공한다.")
     void loginWithValidDataTest() {
         JoinRequest joinRequest = new JoinRequest("nickname", "username", "test2@test.com", "passwordpassword");
         Long userId = userCommandService.join(joinRequest).userId();
@@ -106,7 +103,7 @@ public class UserCommandServiceImplTest extends IntegralTestSupport {
     }
 
     @Test
-    @DisplayName("잘못된 비밀번호로 로그인 하면 실패합니다.")
+    @DisplayName("잘못된 비밀번호로 로그인 하면 실패한다.")
     void loginWithInvalidCredentialsTest() {
         // given
         LoginRequest loginRequest = new LoginRequest("test@test.com", "wrongpassword");
@@ -116,7 +113,7 @@ public class UserCommandServiceImplTest extends IntegralTestSupport {
     }
 
     @Test
-    @DisplayName("주소 추가 테스트")
+    @DisplayName("주소를 추가한다.")
     void AddAddressTest() {
         // given
         AddAddressRequest addAddressRequest = new AddAddressRequest("postcode", "detail");
@@ -129,7 +126,7 @@ public class UserCommandServiceImplTest extends IntegralTestSupport {
     }
 
     @Test
-    @DisplayName("주소 삭제 테스트")
+    @DisplayName("주소를 삭제한다.")
     void deleteAddressTest() {
         // given
         AddAddressRequest addAddressRequest = new AddAddressRequest("postcode", "detail");
@@ -142,6 +139,25 @@ public class UserCommandServiceImplTest extends IntegralTestSupport {
         Optional<Address> byId = addressRepository.findById(addressIdResponse.addressId());
 
         assertThat(byId.isEmpty()).isTrue();
+    }
+
+    @Test
+    @DisplayName("본인의 주소가 아니면 삭제할 수 없다.")
+    void deleteAddressFailTest() {
+        // given
+        User newUser = new User("nickname", "username", "test@test.com", "passwordpassword");
+        userRepository.saveAndFlush(newUser);
+
+        AddAddressRequest addAddressRequest = new AddAddressRequest("postcode", "detail");
+        AddressIdResponse addressIdResponse = userFacade.addAddress(newUser.getId(), addAddressRequest);
+
+        // when && then
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+                () -> userFacade.deleteAddress(existingUser.getId(), addressIdResponse.addressId()));
+
+        assertThat(exception)
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage(ADDRESS_NOT_OWNED);
     }
 
     @Test
