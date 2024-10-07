@@ -3,7 +3,7 @@ package com.example.book_your_seat.concurrent;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import com.example.book_your_seat.IntegerTestSupport;
+import com.example.book_your_seat.IntegralTestSupport;
 import com.example.book_your_seat.coupon.domain.Coupon;
 import com.example.book_your_seat.coupon.domain.DiscountRate;
 import com.example.book_your_seat.coupon.facade.CouponCommandFacade;
@@ -23,7 +23,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-public class PessimisticTest extends IntegerTestSupport {
+public class PessimisticTest extends IntegralTestSupport {
     @Autowired
     private CouponCommandFacade couponCommandServiceImpl;
 

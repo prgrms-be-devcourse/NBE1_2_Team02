@@ -24,3 +24,7 @@ logging:
   level:
     ROOT: INFO
     org.springframework.web.filter.CommonsRequestLoggingFilter: DEBUG
+
+jwt:
+  secret: secretsecretsecretkeykeykeykeykeykey
+  expiration_time: 3600 # 1시간
