@@ -1,6 +1,5 @@
 package com.example.book_your_seat.coupon.facade;
 
-import com.example.book_your_seat.aop.distributedlock.DistributedLock;
 import com.example.book_your_seat.coupon.controller.dto.CouponCreateRequest;
 import com.example.book_your_seat.coupon.controller.dto.CouponResponse;
 import com.example.book_your_seat.coupon.controller.dto.UserCouponIdResponse;
@@ -31,7 +30,6 @@ public class CouponCommandFacade implements CouponCommandService {
     }
 
     @Override
-    @DistributedLock(key = "coupon_lock")
     public UserCouponIdResponse issueCouponWithPessimistic(Long userId, Long couponId) {
         User user = userManager.getUser(userId);
         Coupon coupon = couponManager.findByIdWithPessimistic(couponId);

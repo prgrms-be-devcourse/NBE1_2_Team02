@@ -1,6 +1,6 @@
 package com.example.book_your_seat.service.concert;
 
-import com.example.book_your_seat.IntegralTestSupport;
+import com.example.book_your_seat.IntegerTestSupport;
 import com.example.book_your_seat.concert.domain.Concert;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-class ConcertTest extends IntegralTestSupport {
+class ConcertTest extends IntegerTestSupport {
 
     // 예매 시작 시간 검증필요..
 
