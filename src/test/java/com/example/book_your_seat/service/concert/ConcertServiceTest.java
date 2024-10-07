@@ -2,9 +2,11 @@ package com.example.book_your_seat.service.concert;
 
 import com.example.book_your_seat.IntegerTestSupport;
 import com.example.book_your_seat.concert.controller.dto.AddConcertRequest;
+import com.example.book_your_seat.concert.controller.dto.ConcertListResponse;
 import com.example.book_your_seat.concert.controller.dto.ConcertResponse;
 import com.example.book_your_seat.concert.service.ConcertCommandService;
 import com.example.book_your_seat.concert.service.ConcertQueryService;
+import jakarta.persistence.EntityManager;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -22,6 +24,9 @@ class ConcertServiceTest extends IntegerTestSupport {
     @Autowired
     private ConcertQueryService concertQueryService;
 
+
+    @Autowired
+    private EntityManager entityManager;
 
     @DisplayName("제목, 시작 시간, 종료 시간, 금액, 러닝 타임을 입력하면 Concert 를 생성한다.")
     @Test
@@ -151,5 +156,6 @@ class ConcertServiceTest extends IntegerTestSupport {
         Assertions.assertThatExceptionOfType(IllegalArgumentException.class)
                 .isThrownBy(() -> concertQueryService.findById(id));
     }
+
 
 }

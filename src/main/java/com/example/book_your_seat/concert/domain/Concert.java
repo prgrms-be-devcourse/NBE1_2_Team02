@@ -36,6 +36,7 @@ public class Concert extends BaseEntity {
 
     private Integer totalStock;
 
+
     private LocalDate startDate;
 
     private LocalDate endDate;
