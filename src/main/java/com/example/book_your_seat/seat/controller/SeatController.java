@@ -3,7 +3,7 @@ package com.example.book_your_seat.seat.controller;
 import com.example.book_your_seat.seat.controller.dto.SeatResponse;
 import com.example.book_your_seat.seat.controller.dto.SelectSeatRequest;
 import com.example.book_your_seat.seat.controller.dto.SelectSeatResponse;
-import com.example.book_your_seat.seat.service.facade.SeatService;
+import com.example.book_your_seat.seat.service.facade.SeatFacade;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -17,19 +17,19 @@ import java.util.List;
 @RequestMapping("/seats")
 public class SeatController {
 
-    private final SeatService seatService;
+    private final SeatFacade seatFacade;
 
     @GetMapping
     public ResponseEntity<List<SeatResponse>> findAllSeats(
             @PathVariable final Long concertId
     ) {
-        List<SeatResponse> responses = seatService.findAllSeats(concertId);
+        List<SeatResponse> responses = seatFacade.findAllSeats(concertId);
         return ResponseEntity.ok(responses);
     }
 
     @PostMapping("/select")
     public ResponseEntity<SelectSeatResponse> selectSeat(@Valid @RequestBody final SelectSeatRequest selectSeatRequest) {
-        SelectSeatResponse selectSeatResponse = seatService.selectSeat(selectSeatRequest);
+        SelectSeatResponse selectSeatResponse = seatFacade.selectSeat(selectSeatRequest);
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(selectSeatResponse);

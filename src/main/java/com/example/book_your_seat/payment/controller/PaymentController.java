@@ -4,7 +4,7 @@ import com.example.book_your_seat.payment.controller.dto.request.TossConfirmRequ
 import com.example.book_your_seat.payment.controller.dto.response.ConfirmResponse;
 import com.example.book_your_seat.payment.controller.dto.response.TossConfirmResponse;
 import com.example.book_your_seat.payment.service.dto.PaymentCommand;
-import com.example.book_your_seat.payment.service.facade.PaymentService;
+import com.example.book_your_seat.payment.service.facade.PaymentFacade;
 import com.example.book_your_seat.reservation.contorller.dto.PaymentRequest;
 import com.example.book_your_seat.seat.service.redis.SeatRedisService;
 import jakarta.validation.Valid;
@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class PaymentController {
 
     private final TossApiService tossApiService;
-    private final PaymentService paymentService;
+    private final PaymentFacade paymentFacade;
     private final SeatRedisService seatRedisService;
 
     @PostMapping("/success")
@@ -32,7 +32,7 @@ public class PaymentController {
         TossConfirmResponse confirmResponse = tossApiService.confirm(TossConfirmRequest.from(request));
 
         PaymentCommand command = PaymentCommand.from(request, confirmResponse);
-        ConfirmResponse response = paymentService.processPayment(command);
+        ConfirmResponse response = paymentFacade.processPayment(command);
         return ResponseEntity.ok(response);
     }
 }

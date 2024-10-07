@@ -7,7 +7,7 @@ import com.example.book_your_seat.concert.service.ConcertCommandService;
 import com.example.book_your_seat.seat.controller.dto.SelectSeatRequest;
 import com.example.book_your_seat.seat.domain.Seat;
 import com.example.book_your_seat.seat.repository.SeatRepository;
-import com.example.book_your_seat.seat.service.facade.SeatService;
+import com.example.book_your_seat.seat.service.facade.SeatFacade;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -34,7 +34,7 @@ class SeatCommandServiceRadissonLockTest extends IntegralTestSupport {
     @Autowired
     private SeatRepository seatRepository;
     @Autowired
-    private SeatService seatService;
+    private SeatFacade seatFacade;
     private Long concertId;
     private List<Long> seatIds;
 
@@ -77,7 +77,7 @@ class SeatCommandServiceRadissonLockTest extends IntegralTestSupport {
         for (int i = 0; i < threadCount; i++) {
             executorService.submit(() -> {
                 try {
-                    seatService.selectSeatRedisson(request);
+                    seatFacade.selectSeatRedisson(request);
                     successCount.incrementAndGet();
                 } catch (Exception e) {
                     failCount.incrementAndGet();

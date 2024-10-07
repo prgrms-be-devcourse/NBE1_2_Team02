@@ -1,6 +1,5 @@
 package com.example.book_your_seat.reservation.domain;
 
-import com.example.book_your_seat.concert.domain.Concert;
 import com.example.book_your_seat.payment.domain.Payment;
 import com.example.book_your_seat.seat.domain.Seat;
 import com.example.book_your_seat.user.domain.Address;
@@ -13,8 +12,6 @@ import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static com.example.book_your_seat.concert.ConcertConst.INVALID_CONCERT_ID;
 
 @Entity
 @Getter
@@ -60,10 +57,4 @@ public class Reservation {
         this.seats.add(seat);
     }
 
-    public Concert getConcert() {
-        return this.seats.stream()
-                .findFirst()
-                .map(Seat::getConcert)
-                .orElseThrow(() -> new IllegalArgumentException(INVALID_CONCERT_ID));
-    }
 }
