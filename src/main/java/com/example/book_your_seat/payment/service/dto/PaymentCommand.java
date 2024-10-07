@@ -6,6 +6,8 @@ import com.example.book_your_seat.reservation.contorller.dto.PaymentRequest;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import static com.example.book_your_seat.payment.PaymentConst.INVALID_AMOUNT;
+
 public final class PaymentCommand {
 
     public final String orderId;
@@ -23,7 +25,7 @@ public final class PaymentCommand {
         Long requestAmount = request.amount();
         Long confirmAmount = confirmResponse.totalAmount();
         if (!requestAmount.equals(confirmAmount)) {
-            throw new IllegalArgumentException("INVALID_AMOUNT");
+            throw new IllegalArgumentException(INVALID_AMOUNT);
         }
 
         this.orderId = confirmResponse.orderId();

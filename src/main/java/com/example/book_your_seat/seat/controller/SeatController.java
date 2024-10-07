@@ -27,7 +27,7 @@ public class SeatController {
         return ResponseEntity.ok(responses);
     }
 
-    @PostMapping("/selectSeat")
+    @PostMapping("/select")
     public ResponseEntity<SelectSeatResponse> selectSeat(@Valid @RequestBody final SelectSeatRequest selectSeatRequest) {
         SelectSeatResponse selectSeatResponse = seatService.selectSeat(selectSeatRequest);
         return ResponseEntity

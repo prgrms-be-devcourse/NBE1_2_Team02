@@ -1,8 +1,5 @@
 package com.example.book_your_seat.config;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.jsontype.BasicPolymorphicTypeValidator;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -32,17 +29,6 @@ public class RedisConfig {
         redisConfiguration.setPort(port);
         redisConfiguration.setPassword(password);
         return new LettuceConnectionFactory(redisConfiguration);
-    }
-    @Bean(name = "redisObjectMapper")
-    public ObjectMapper redisObjectMapper() {
-        BasicPolymorphicTypeValidator validator = BasicPolymorphicTypeValidator.builder()
-                .allowIfSubType(Object.class)
-                .build();
-
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.registerModule(new JavaTimeModule());
-        objectMapper.activateDefaultTyping(validator, ObjectMapper.DefaultTyping.NON_FINAL);
-        return objectMapper;
     }
 
     @Bean
