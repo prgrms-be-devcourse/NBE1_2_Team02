@@ -40,7 +40,8 @@ public class UserCoupon extends BaseEntity {
         user.adduserCoupon(this);
         coupon.addUserCoupon(this);
     }
-    public void use() {
-        this.isUsed = true;
+
+    public void setUsed() {
+        isUsed = true;
     }
 }

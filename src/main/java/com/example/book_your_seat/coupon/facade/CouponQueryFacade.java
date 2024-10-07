@@ -35,5 +35,4 @@ public class CouponQueryFacade implements CouponQueryService {
         Coupon coupon = userCoupon.getCoupon();
         return CouponDetailResponse.fromCoupon(coupon);
     }
-
 }
