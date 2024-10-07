@@ -3,7 +3,7 @@ package com.example.book_your_seat.service.coupon;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import com.example.book_your_seat.IntegerTestSupport;
+import com.example.book_your_seat.IntegralTestSupport;
 import com.example.book_your_seat.user.controller.dto.AddAddressRequest;
 import com.example.book_your_seat.user.controller.dto.AddressResponse;
 import com.example.book_your_seat.user.controller.dto.JoinRequest;
@@ -24,8 +24,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
 
-
-public class UserCommandServiceImplTest extends IntegerTestSupport {
+@Transactional
+public class UserCommandServiceImplTest extends IntegralTestSupport {
 
     @Autowired
     private UserCommandServiceImpl userCommandServiceImpl;

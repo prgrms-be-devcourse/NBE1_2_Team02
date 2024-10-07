@@ -45,4 +45,10 @@ public class CouponCommandFacade implements CouponCommandService {
         );
     }
 
+    @Override
+    public void useUserCoupon(Long userCouponId) {
+        UserCoupon validUserCoupon = userCouponManager.findValidUserCoupon(userCouponId);
+        userCouponManager.updateUserCoupon(validUserCoupon);
+    }
+
 }

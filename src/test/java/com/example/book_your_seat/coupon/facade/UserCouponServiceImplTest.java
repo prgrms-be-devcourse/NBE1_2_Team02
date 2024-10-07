@@ -1,6 +1,7 @@
 package com.example.book_your_seat.coupon.facade;
 
-import com.example.book_your_seat.IntegerTestSupport;
+
+import com.example.book_your_seat.IntegralTestSupport;
 import com.example.book_your_seat.coupon.controller.dto.UserCouponRequest;
 import com.example.book_your_seat.coupon.controller.dto.UserCouponResponse;
 import com.example.book_your_seat.coupon.domain.Coupon;
@@ -10,24 +11,20 @@ import com.example.book_your_seat.coupon.repository.CouponRepository;
 import com.example.book_your_seat.coupon.repository.UserCouponRepository;
 import com.example.book_your_seat.user.domain.User;
 import com.example.book_your_seat.user.repository.UserRepository;
-import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Slice;
-import org.springframework.test.annotation.Rollback;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 
-class UserCouponServiceImplTest extends IntegerTestSupport {
+class UserCouponServiceImplTest extends IntegralTestSupport {
 
     @Autowired
     private UserCouponRepository userCouponRepository;
