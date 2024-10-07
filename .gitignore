@@ -26,6 +26,10 @@ out/
 !**/src/main/**/out/
 !**/src/test/**/out/
 
+/build/generated/
+/src/main/generated/
+/generated/
+
 ### NetBeans ###
 /nbproject/private/
 /nbbuild/

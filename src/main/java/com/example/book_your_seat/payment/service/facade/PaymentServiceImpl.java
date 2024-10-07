@@ -37,40 +37,19 @@ public class PaymentServiceImpl implements PaymentService {
     private final ConcertQueryService concertQueryService;
 
 
-
     @Override
     public ConfirmResponse processPayment(final PaymentCommand command) {
 
-        CouponDetailResponse couponResponse = couponQueryService.getCouponDetailById(command.userCouponId);
-
-
-        // Payment & Reservation 생성
-        Payment payment = Payment.builder()
-                .totalPrice(command.totalAmount)
-                .paymentStatus(PaymentStatus.COMPLETED)
-                .expiryAt(command.approvedAt)
-                .discountRate(couponResponse.discountRate())
-                .build();
-
-        User user = userQueryService.getUserByUserId(command.userId);
-        Address address = addressQueryService.getAddressByAddressId(command.addressId);
-
-        Reservation reservation = Reservation.builder()
-                .user(user)
-                .address(address)
-                .payment(payment)
-                .status(ReservationStatus.ORDERED)
-                .build();
-
+        Payment payment = createPayment(command);
+        Reservation reservation = createReservation(command, payment);
 
         paymentCommandService.savePayment(payment);
         Reservation savedReservation = reservationCommandService.saveReservation(reservation);
 
         couponCommandService.useUserCoupon(command.userCouponId);
         ConcertResponse concert = concertQueryService.findById(command.concertId);
-        // 반환값 생성
 
-        ConfirmResponse response = ConfirmResponse.builder()
+        return ConfirmResponse.builder()
                 .userId(command.userId)
                 .reservationId(savedReservation.getId())
                 .concludePrice(command.totalAmount)
@@ -79,7 +58,28 @@ public class PaymentServiceImpl implements PaymentService {
                 .concertStartHour(concert.getStartHour())
                 .seatsId(command.seatIds)
                 .build();
+    }
 
-        return response;
+    private Reservation createReservation(PaymentCommand command, Payment payment) {
+        User user = userQueryService.getUserByUserId(command.userId);
+        Address address = addressQueryService.getAddressByAddressId(command.addressId);
+
+        return Reservation.builder()
+                .user(user)
+                .address(address)
+                .payment(payment)
+                .status(ReservationStatus.ORDERED)
+                .build();
+    }
+
+    private Payment createPayment(PaymentCommand command) {
+        CouponDetailResponse couponResponse = couponQueryService.getCouponDetailById(command.userCouponId);
+
+        return Payment.builder()
+                .totalPrice(command.totalAmount)
+                .paymentStatus(PaymentStatus.COMPLETED)
+                .expiryAt(command.approvedAt)
+                .discountRate(couponResponse.discountRate())
+                .build();
     }
 }
