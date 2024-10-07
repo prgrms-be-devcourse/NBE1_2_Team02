@@ -68,4 +68,5 @@ public class UserController {
                 .status(HttpStatus.OK)
                 .body(userQueryService.getUserAddressList(user));
     }
+
 }

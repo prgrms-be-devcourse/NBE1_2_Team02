@@ -11,4 +11,5 @@ public interface AddressRepository extends JpaRepository<Address, Long> {
 
     @Query("SELECT a FROM Address a JOIN FETCH a.user u WHERE a.id = :addressId")
     Optional<Address> findByIdWithUser(@Param("addressId") Long addressId);
+
 }

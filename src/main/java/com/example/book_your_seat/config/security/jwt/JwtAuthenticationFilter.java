@@ -17,6 +17,7 @@ import static com.example.book_your_seat.common.util.JwtConst.UNSUPPORTED_JWT;
 @Slf4j
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
+
     private static final String TOKEN_TYPE = "Bearer ";
     private final SecurityJwtUtil securityJwtUtil;
 
@@ -48,4 +49,5 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         if (!authorization.startsWith(TOKEN_TYPE))
             throw new IllegalArgumentException(UNSUPPORTED_JWT);
     }
+
 }

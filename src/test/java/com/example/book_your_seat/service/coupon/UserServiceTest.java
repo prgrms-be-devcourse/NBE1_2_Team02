@@ -134,10 +134,9 @@ public class UserServiceTest extends IntegralTestSupport {
 
         // when
         userFacade.deleteAddress(existingUser.getId(), addressIdResponse.addressId());
-
-        // then
         Optional<Address> byId = addressRepository.findById(addressIdResponse.addressId());
 
+        // then
         assertThat(byId.isEmpty()).isTrue();
     }
 

@@ -16,7 +16,9 @@ import static com.example.book_your_seat.config.security.exception.SecurityConst
 
 @Component
 public class CustomAccessDeniedHandler implements AccessDeniedHandler {
+
     private final ObjectMapper objectMapper = new ObjectMapper();
+
     @Override
     public void handle(HttpServletRequest request, HttpServletResponse response,
                        AccessDeniedException accessDeniedException) throws IOException {
@@ -29,4 +31,6 @@ public class CustomAccessDeniedHandler implements AccessDeniedHandler {
 
         response.getWriter().write(objectMapper.writeValueAsString(errorResponse));
     }
+
 }
+

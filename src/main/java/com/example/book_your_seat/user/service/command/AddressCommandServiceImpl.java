@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class AddressCommandServiceImpl implements AddressCommandService {
+
     private final AddressRepository addressRepository;
 
     @Override
@@ -26,4 +27,5 @@ public class AddressCommandServiceImpl implements AddressCommandService {
         addressRepository.deleteById(addressId);
         return new AddressIdResponse(addressId);
     }
+
 }

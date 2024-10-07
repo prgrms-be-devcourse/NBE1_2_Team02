@@ -30,7 +30,7 @@ public class UserCommandServiceImpl implements UserCommandService {
     private final SecurityJwtUtil securityJwtUtil;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
-
+    @Override
     public UserResponse join(JoinRequest joinRequest) {
         checkEmail(joinRequest.email());
         User user = new User(
@@ -44,6 +44,7 @@ public class UserCommandServiceImpl implements UserCommandService {
         return new UserResponse(savedUser.getId());
     }
 
+    @Override
     public TokenResponse login(LoginRequest loginRequest) {
         UsernamePasswordAuthenticationToken authenticationToken =
                 new UsernamePasswordAuthenticationToken(loginRequest.email(), loginRequest.password());
@@ -64,4 +65,5 @@ public class UserCommandServiceImpl implements UserCommandService {
             throw new IllegalArgumentException(ALREADY_JOIN_EMAIL);
         }
     }
+
 }

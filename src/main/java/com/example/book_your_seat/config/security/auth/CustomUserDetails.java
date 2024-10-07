@@ -18,7 +18,6 @@ public class CustomUserDetails implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        // 유저의 역할을 권한으로 변환하는 로직
         return List.of(new SimpleGrantedAuthority(user.getUserRole().name()));
     }
 
@@ -51,4 +50,5 @@ public class CustomUserDetails implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
+
 }

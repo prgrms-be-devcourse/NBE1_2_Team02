@@ -18,4 +18,5 @@ public class AddressQueryServiceImpl implements AddressQueryService {
         return addressRepository.findByIdWithUser(addressId)
                 .orElseThrow(() -> new IllegalArgumentException(ADDRESS_NOT_FOUND));
     }
+
 }

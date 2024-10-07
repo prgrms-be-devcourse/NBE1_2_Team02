@@ -13,6 +13,7 @@ import static com.example.book_your_seat.user.UserConst.INVALID_EMAIL;
 @Service
 @RequiredArgsConstructor
 public class CustomUserDetailsService implements UserDetailsService {
+
     private final UserRepository userRepository;
 
     @Override
@@ -23,4 +24,5 @@ public class CustomUserDetailsService implements UserDetailsService {
 
         return new CustomUserDetails(user);
     }
+
 }

@@ -8,6 +8,9 @@ import java.util.List;
 public interface UserQueryService {
 
     User getUserByUserId(Long userId);
+
     User getUserWithUserCoupons(Long userId);
+
     List<AddressResponse> getUserAddressList(User user);
+
 }

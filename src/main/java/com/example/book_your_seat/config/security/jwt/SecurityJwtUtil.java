@@ -27,11 +27,11 @@ import static com.example.book_your_seat.common.util.JwtConst.*;
 @Slf4j
 @Component
 public class SecurityJwtUtil {
+
     private final SecretKey secretKey;
     private final Integer expirationTime;
     private final CustomUserDetailsService customUserDetailsService;
     private static final String SIGNATURE_ALGORITHM = Jwts.SIG.HS256.key().build().getAlgorithm();
-
 
     SecurityJwtUtil(@Value("${jwt.secret}") String secretKey, @Value("${jwt.login_expiration_time}") Integer expirationTime, CustomUserDetailsService customUserDetailsService) {
         this.secretKey = new SecretKeySpec(secretKey.getBytes(StandardCharsets.UTF_8), SIGNATURE_ALGORITHM);
@@ -61,7 +61,6 @@ public class SecurityJwtUtil {
         } catch (ExpiredJwtException e) {
             throw new IllegalStateException(EXPIRED_JWT);
         } catch (UnsupportedJwtException | SignatureException e) {
-            log.error("JWT 처리 중 오류 발생: {}", e.getMessage());
             throw new IllegalStateException(UNSUPPORTED_JWT);
         } catch (IllegalArgumentException e) {
             throw new IllegalArgumentException(EMPTY_JWT);
@@ -84,7 +83,6 @@ public class SecurityJwtUtil {
                 .parseSignedClaims(token)
                 .getPayload()
                 .get("role", String.class);
-
     }
 
     public Authentication getAuthentication(String token) {
@@ -96,4 +94,5 @@ public class SecurityJwtUtil {
 
         return new UsernamePasswordAuthenticationToken(userDetails, token, List.of(authority));
     }
+
 }
