@@ -2,7 +2,6 @@ package com.example.book_your_seat.service.concert;
 
 import com.example.book_your_seat.IntegerTestSupport;
 import com.example.book_your_seat.concert.controller.dto.AddConcertRequest;
-import com.example.book_your_seat.concert.controller.dto.ConcertListResponse;
 import com.example.book_your_seat.concert.controller.dto.ConcertResponse;
 import com.example.book_your_seat.concert.service.ConcertCommandService;
 import com.example.book_your_seat.concert.service.ConcertQueryService;
