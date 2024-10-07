@@ -25,7 +25,6 @@ import org.springframework.stereotype.Service;
 @Service
 public class PaymentFacadeImpl implements PaymentFacade {
 
-    private final UserQueryService userQueryService;
     private final AddressQueryService addressQueryService;
 
     private final PaymentCommandService paymentCommandService;

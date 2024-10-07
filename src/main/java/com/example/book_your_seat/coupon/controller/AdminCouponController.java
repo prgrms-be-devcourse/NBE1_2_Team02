@@ -1,11 +1,8 @@
 package com.example.book_your_seat.coupon.controller;
 
-import com.example.book_your_seat.config.security.auth.LoginUser;
 import com.example.book_your_seat.coupon.controller.dto.CouponCreateRequest;
 import com.example.book_your_seat.coupon.controller.dto.CouponResponse;
 import com.example.book_your_seat.coupon.facade.CouponCommandService;
-import com.example.book_your_seat.coupon.facade.CouponQueryService;
-import com.example.book_your_seat.user.domain.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

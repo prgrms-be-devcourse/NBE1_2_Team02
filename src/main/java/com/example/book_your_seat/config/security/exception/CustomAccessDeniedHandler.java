@@ -1,7 +1,6 @@
 package com.example.book_your_seat.config.security.exception;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.MediaType;
@@ -20,7 +19,7 @@ public class CustomAccessDeniedHandler implements AccessDeniedHandler {
     private final ObjectMapper objectMapper = new ObjectMapper();
     @Override
     public void handle(HttpServletRequest request, HttpServletResponse response,
-                       AccessDeniedException accessDeniedException) throws IOException, ServletException {
+                       AccessDeniedException accessDeniedException) throws IOException {
         response.setStatus(HttpServletResponse.SC_FORBIDDEN);
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setCharacterEncoding("UTF-8");

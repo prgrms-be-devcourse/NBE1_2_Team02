@@ -8,7 +8,6 @@ import com.example.book_your_seat.user.controller.dto.TokenResponse;
 import com.example.book_your_seat.user.controller.dto.UserResponse;
 import com.example.book_your_seat.user.domain.User;
 import com.example.book_your_seat.user.repository.UserRepository;
-import com.example.book_your_seat.user.service.command.UserCommandService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
