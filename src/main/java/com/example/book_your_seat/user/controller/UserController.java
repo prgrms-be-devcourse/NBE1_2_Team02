@@ -2,11 +2,7 @@ package com.example.book_your_seat.user.controller;
 
 import static com.example.book_your_seat.common.SessionConst.LOGIN_USER;
 
-import com.example.book_your_seat.user.controller.dto.AddAddressRequest;
-import com.example.book_your_seat.user.controller.dto.AddressResponse;
-import com.example.book_your_seat.user.controller.dto.JoinRequest;
-import com.example.book_your_seat.user.controller.dto.LoginRequest;
-import com.example.book_your_seat.user.controller.dto.UserResponse;
+import com.example.book_your_seat.user.controller.dto.*;
 import com.example.book_your_seat.user.service.UserCommandServiceImpl;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -38,15 +34,13 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<UserResponse> login(
-            @Valid @RequestBody LoginRequest loginRequest,
-            HttpServletRequest request
+    public ResponseEntity<TokenResponse> login(
+            @Valid @RequestBody LoginRequest loginRequest
     ) {
-        UserResponse loginUserId = userCommandServiceImpl.login(loginRequest);
-        addMemberInSession(request, loginUserId);
+        TokenResponse tokenResponse = userCommandServiceImpl.login(loginRequest);
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(loginUserId);
+                .body(tokenResponse);
     }
 
     private void addMemberInSession(HttpServletRequest request, UserResponse loginUser) {

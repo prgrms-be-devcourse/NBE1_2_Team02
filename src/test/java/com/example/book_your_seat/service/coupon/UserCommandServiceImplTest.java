@@ -4,11 +4,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import com.example.book_your_seat.IntegralTestSupport;
-import com.example.book_your_seat.user.controller.dto.AddAddressRequest;
-import com.example.book_your_seat.user.controller.dto.AddressResponse;
-import com.example.book_your_seat.user.controller.dto.JoinRequest;
-import com.example.book_your_seat.user.controller.dto.LoginRequest;
-import com.example.book_your_seat.user.controller.dto.UserResponse;
+import com.example.book_your_seat.config.security.jwt.SecurityJwtUtil;
+import com.example.book_your_seat.user.controller.dto.*;
 import com.example.book_your_seat.user.domain.Address;
 import com.example.book_your_seat.user.domain.User;
 import com.example.book_your_seat.user.repository.AddressRepository;
@@ -20,11 +17,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.transaction.annotation.Transactional;
 
 
-@Transactional
 public class UserCommandServiceImplTest extends IntegralTestSupport {
 
     @Autowired
@@ -35,6 +29,9 @@ public class UserCommandServiceImplTest extends IntegralTestSupport {
 
     @Autowired
     private AddressRepository addressRepository;
+
+    @Autowired
+    private SecurityJwtUtil securityJwtUtil;
 
     private User existingUser;
 
@@ -77,14 +74,18 @@ public class UserCommandServiceImplTest extends IntegralTestSupport {
     @Test
     @DisplayName("로그인 테스트")
     void loginWithValidDataTest() {
+        JoinRequest joinRequest = new JoinRequest("nickname", "username", "test2@test.com", "passwordpassword");
+        Long userId = userCommandServiceImpl.join(joinRequest).userId();
         // given
-        LoginRequest loginRequest = new LoginRequest("test@test.com", "passwordpassword");
+        LoginRequest loginRequest = new LoginRequest("test2@test.com", "passwordpassword");
 
         // when
-        UserResponse response = userCommandServiceImpl.login(loginRequest);
+        TokenResponse response = userCommandServiceImpl.login(loginRequest);
+        String email = securityJwtUtil.getEmailByToken(response.accessToken());
 
         // then
-        assertThat(response.userId()).isEqualTo(existingUser.getId());
+        User testUser = userRepository.findByEmail(email).get();
+        assertThat(userId).isEqualTo(testUser.getId());
     }
 
     @Test
