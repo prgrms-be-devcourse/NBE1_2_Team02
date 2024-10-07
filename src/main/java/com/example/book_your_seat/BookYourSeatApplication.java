@@ -7,8 +7,9 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 @EnableScheduling
-@SpringBootApplication
 @EnableJpaAuditing
+@SpringBootApplication
+@EnableFeignClients(basePackages = "com.example.book_your_seat.payment.controller")
 @EnableCaching
 public class BookYourSeatApplication {
 

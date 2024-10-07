@@ -1,7 +1,6 @@
 package com.example.book_your_seat.concert.domain;
 
 import com.example.book_your_seat.common.entity.BaseEntity;
-import com.example.book_your_seat.reservation.domain.ConcertReservation;
 import com.example.book_your_seat.review.domain.Review;
 import com.example.book_your_seat.seat.domain.Seat;
 import jakarta.persistence.CascadeType;
@@ -56,8 +55,6 @@ public class Concert extends BaseEntity {
     @OneToMany(mappedBy = "concert", cascade = CascadeType.ALL, orphanRemoval = true)
     private final List<Seat> seats = new ArrayList<>();
 
-    @OneToMany(mappedBy = "concert", cascade = CascadeType.ALL)
-    private final List<ConcertReservation> concertReservations = new ArrayList<>();
 
     public Concert(String title, LocalDate startDate, LocalDate endDate, int price, int startHour) {
         this.title = title;
@@ -99,7 +96,4 @@ public class Concert extends BaseEntity {
         this.seats.add(seat);
     }
 
-    public void addConcertReservation(ConcertReservation reservation) {
-        this.concertReservations.add(reservation);
-    }
 }

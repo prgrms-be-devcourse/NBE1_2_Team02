@@ -7,4 +7,5 @@ public interface CouponQueryService {
 
     List<CouponDetailResponse> getCouponDetail(Long userId);
 
+    CouponDetailResponse getCouponDetailById(Long userCouponId);
 }

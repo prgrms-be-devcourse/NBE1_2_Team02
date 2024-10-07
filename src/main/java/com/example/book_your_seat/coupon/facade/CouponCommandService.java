@@ -8,5 +8,6 @@ public interface CouponCommandService {
 
     CouponResponse createCoupon(CouponCreateRequest couponCreateRequest);
     UserCouponIdResponse issueCouponWithPessimistic(Long userId, Long couponId);
+    void useUserCoupon(Long userCouponId);
 
 }
