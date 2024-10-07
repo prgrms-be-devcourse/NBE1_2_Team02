@@ -1,6 +1,12 @@
 spring:
   datasource:
     url: jdbc:h2:mem:testdb;MODE=MYSQL;NON_KEYWORDS=USER
-    jpa:
-      hibernate:
-        ddl-auto: create-drop
+
+  redis:
+    host: localhost
+    port: 6379
+    password:
+
+jwt:
+  secret: secretsecretsecretkeykeykeykeykeykey
+  expiration_time: 3600 # 1시간
