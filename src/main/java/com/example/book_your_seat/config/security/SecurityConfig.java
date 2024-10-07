@@ -27,6 +27,7 @@ public class SecurityConfig {
 
     private final CustomUserDetailsService customUserDetailsService;
     private final SecurityJwtUtil securityJwtUtil;
+
     @Bean
     public BCryptPasswordEncoder bCryptPasswordEncoder() {
         return new BCryptPasswordEncoder();
@@ -65,14 +66,14 @@ public class SecurityConfig {
         return http.build();
     }
 
-    //인증 관리자 관련 성정
+    //인증 관리자 관련 설정
     @Bean
     public AuthenticationManager authenticationManager(HttpSecurity http,
                                                        BCryptPasswordEncoder bCryptPasswordEncoder) throws Exception {
 
         AuthenticationManagerBuilder sharedObject = http.getSharedObject(AuthenticationManagerBuilder.class);
         sharedObject
-                .userDetailsService(customUserDetailsService) //사용자 정보 조회
+                .userDetailsService(customUserDetailsService)
                 .passwordEncoder(bCryptPasswordEncoder);
 
         return sharedObject.build();

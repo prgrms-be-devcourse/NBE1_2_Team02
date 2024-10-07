@@ -33,7 +33,7 @@ public class SecurityJwtUtil {
     private static final String SIGNATURE_ALGORITHM = Jwts.SIG.HS256.key().build().getAlgorithm();
 
 
-    SecurityJwtUtil(@Value("${jwt.secret}") String secretKey, @Value("${jwt.expiration_time}") Integer expirationTime, CustomUserDetailsService customUserDetailsService) {
+    SecurityJwtUtil(@Value("${jwt.secret}") String secretKey, @Value("${jwt.login_expiration_time}") Integer expirationTime, CustomUserDetailsService customUserDetailsService) {
         this.secretKey = new SecretKeySpec(secretKey.getBytes(StandardCharsets.UTF_8), SIGNATURE_ALGORITHM);
         this.expirationTime = expirationTime;
         this.customUserDetailsService = customUserDetailsService;

@@ -33,6 +33,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         validateJwtAuthorizationType(authorization);
         String jwt = authorization.substring(TOKEN_TYPE.length());
+
         //token 검증이 완료된 경우에만 authentication을 부여
         if (securityJwtUtil.validateToken(jwt)) {
             log.info("jwt :" + jwt);
