@@ -3,8 +3,8 @@ CREATE TABLE concert (
                          concert_id BIGINT AUTO_INCREMENT PRIMARY KEY,  -- ID 필드, 기본 키
                          title VARCHAR(255) NOT NULL,                   -- 제목
                          total_stock INT NOT NULL,                      -- 총 재고
-                         start_date DATE NOT NULL,                      -- 시작 날짜
-                         end_date DATE NOT NULL,                        -- 종료 날짜
+                         start_date TIMESTAMP NOT NULL,                      -- 시작 날짜
+                         end_date TIMESTAMP NOT NULL,                        -- 종료 날짜
                          price INT NOT NULL,                            -- 가격
                          start_hour INT NOT NULL,                             -- 시작 시간 (시간)
                          reservation_start_at TIMESTAMP, -- 예약 가능 시간

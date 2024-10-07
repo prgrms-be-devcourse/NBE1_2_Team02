@@ -19,8 +19,9 @@ import com.example.book_your_seat.user.service.AddressQueryService;
 import com.example.book_your_seat.user.service.UserQueryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-
+@Transactional
 @RequiredArgsConstructor
 @Service
 public class PaymentFacadeImpl implements PaymentFacade {

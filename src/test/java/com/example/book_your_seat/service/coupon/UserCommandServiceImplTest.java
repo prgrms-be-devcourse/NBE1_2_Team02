@@ -3,6 +3,7 @@ package com.example.book_your_seat.service.coupon;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import com.example.DbCleaner;
 import com.example.book_your_seat.IntegralTestSupport;
 import com.example.book_your_seat.user.controller.dto.AddAddressRequest;
 import com.example.book_your_seat.user.controller.dto.AddressResponse;
@@ -28,6 +29,9 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserCommandServiceImplTest extends IntegralTestSupport {
 
     @Autowired
+    private DbCleaner dbCleaner;
+
+    @Autowired
     private UserCommandServiceImpl userCommandServiceImpl;
 
     @Autowired
@@ -48,6 +52,7 @@ public class UserCommandServiceImplTest extends IntegralTestSupport {
     @AfterEach
     void tearDown() {
         userRepository.deleteAll();
+        dbCleaner.cleanDatabase();
     }
 
     @Test
