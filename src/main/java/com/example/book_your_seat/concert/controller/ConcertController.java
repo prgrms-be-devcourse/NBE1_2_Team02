@@ -55,7 +55,7 @@ public class ConcertController {
 
     @GetMapping("/redis/list")
     public ResponseEntity<ResultRedisConcert> findAllRedisList(){
-        ResultRedisConcert resultRedisConcert = concertQueryService.finduesdRedisAllConcertList();
+        ResultRedisConcert resultRedisConcert = concertQueryService.findUsedRedisAllConcertList();
         return ResponseEntity.ok(resultRedisConcert);
     }
 }
