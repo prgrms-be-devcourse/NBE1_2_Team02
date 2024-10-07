@@ -1,6 +1,7 @@
 package com.example.book_your_seat.service.coupon;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import com.example.book_your_seat.IntegralTestSupport;
@@ -10,21 +11,32 @@ import com.example.book_your_seat.user.domain.Address;
 import com.example.book_your_seat.user.domain.User;
 import com.example.book_your_seat.user.repository.AddressRepository;
 import com.example.book_your_seat.user.repository.UserRepository;
+import com.example.book_your_seat.user.service.command.UserCommandService;
 import com.example.book_your_seat.user.service.command.UserCommandServiceImpl;
+
+import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 import com.example.book_your_seat.user.service.facade.UserFacade;
+import com.example.book_your_seat.user.service.query.UserQueryService;
+import org.assertj.core.api.Assertions;
+import org.hibernate.Hibernate;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 
 
 public class UserCommandServiceImplTest extends IntegralTestSupport {
 
     @Autowired
-    private UserCommandServiceImpl userCommandServiceImpl;
+    private UserCommandService userCommandService;
+
+    @Autowired
+    private UserQueryService userQueryService;
 
     @Autowired
     private UserFacade userFacade;
@@ -59,7 +71,7 @@ public class UserCommandServiceImplTest extends IntegralTestSupport {
         JoinRequest joinRequest = new JoinRequest("nickname", "username", "test2@test.com", "passwordpassword");
 
         // when
-        UserResponse response = userCommandServiceImpl.join(joinRequest);
+        UserResponse response = userCommandService.join(joinRequest);
 
         // then
         assertThat(response).isNotNull();
@@ -73,19 +85,19 @@ public class UserCommandServiceImplTest extends IntegralTestSupport {
         JoinRequest joinRequest = new JoinRequest("nickname", "username", "test@test.com", "passwordpassword");
 
         // when // then
-        assertThrows(IllegalArgumentException.class, () -> userCommandServiceImpl.join(joinRequest));
+        assertThrows(IllegalArgumentException.class, () -> userCommandService.join(joinRequest));
     }
 
     @Test
     @DisplayName("로그인 테스트")
     void loginWithValidDataTest() {
         JoinRequest joinRequest = new JoinRequest("nickname", "username", "test2@test.com", "passwordpassword");
-        Long userId = userCommandServiceImpl.join(joinRequest).userId();
+        Long userId = userCommandService.join(joinRequest).userId();
         // given
         LoginRequest loginRequest = new LoginRequest("test2@test.com", "passwordpassword");
 
         // when
-        TokenResponse response = userCommandServiceImpl.login(loginRequest);
+        TokenResponse response = userCommandService.login(loginRequest);
         String email = securityJwtUtil.getEmailByToken(response.accessToken());
 
         // then
@@ -100,7 +112,7 @@ public class UserCommandServiceImplTest extends IntegralTestSupport {
         LoginRequest loginRequest = new LoginRequest("test@test.com", "wrongpassword");
 
         // when // then
-        assertThrows(IllegalArgumentException.class, () -> userCommandServiceImpl.login(loginRequest));
+        assertThrows(IllegalArgumentException.class, () -> userCommandService.login(loginRequest));
     }
 
     @Test
@@ -110,10 +122,10 @@ public class UserCommandServiceImplTest extends IntegralTestSupport {
         AddAddressRequest addAddressRequest = new AddAddressRequest("postcode", "detail");
 
         // when
-        AddressResponse addressResponse = userFacade.addAddress(existingUser.getId(), addAddressRequest);
+        AddressIdResponse addressIdResponse = userFacade.addAddress(existingUser.getId(), addAddressRequest);
 
         // then
-        assertThat(addressResponse.addressId()).isEqualTo(1L);
+        assertThat(addressIdResponse.addressId()).isEqualTo(1L);
     }
 
     @Test
@@ -121,14 +133,34 @@ public class UserCommandServiceImplTest extends IntegralTestSupport {
     void deleteAddressTest() {
         // given
         AddAddressRequest addAddressRequest = new AddAddressRequest("postcode", "detail");
-        AddressResponse addressResponse = userFacade.addAddress(existingUser.getId(), addAddressRequest);
+        AddressIdResponse addressIdResponse = userFacade.addAddress(existingUser.getId(), addAddressRequest);
 
         // when
-        userFacade.deleteAddress(existingUser.getId(), addressResponse.addressId());
+        userFacade.deleteAddress(existingUser.getId(), addressIdResponse.addressId());
 
         // then
-        Optional<Address> byId = addressRepository.findById(addressResponse.addressId());
+        Optional<Address> byId = addressRepository.findById(addressIdResponse.addressId());
 
         assertThat(byId.isEmpty()).isTrue();
+    }
+
+    @Test
+    @Transactional
+    @DisplayName("유저의 주소 목록을 반환한다.")
+    void getUserAddressListTest() {
+        // given
+        AddAddressRequest addAddressRequest = new AddAddressRequest("postcode", "detail");
+        userFacade.addAddress(existingUser.getId(), addAddressRequest);
+        AddAddressRequest addAddressRequest2 = new AddAddressRequest("postcode2", "detail2");
+        userFacade.addAddress(existingUser.getId(), addAddressRequest2);
+
+        // when
+        List<AddressResponse> list = userQueryService.getUserAddressList(existingUser);
+
+        // then
+        assertEquals(2, list.size());
+        Assertions.assertThat(list)
+                .extracting("postcode")
+                .containsExactly("postcode", "postcode2");
     }
 }

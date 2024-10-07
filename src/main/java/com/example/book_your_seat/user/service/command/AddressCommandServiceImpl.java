@@ -1,7 +1,7 @@
 package com.example.book_your_seat.user.service.command;
 
 import com.example.book_your_seat.user.controller.dto.AddAddressRequest;
-import com.example.book_your_seat.user.controller.dto.AddressResponse;
+import com.example.book_your_seat.user.controller.dto.AddressIdResponse;
 import com.example.book_your_seat.user.domain.Address;
 import com.example.book_your_seat.user.domain.User;
 import com.example.book_your_seat.user.repository.AddressRepository;
@@ -14,16 +14,16 @@ public class AddressCommandServiceImpl implements AddressCommandService {
     private final AddressRepository addressRepository;
 
     @Override
-    public AddressResponse addAddress(User user, AddAddressRequest addAddressRequest) {
+    public AddressIdResponse addAddress(User user, AddAddressRequest addAddressRequest) {
 
         Address address = new Address(addAddressRequest.postcode(), addAddressRequest.detail(), user);
         Address savedAddress = addressRepository.save(address);
-        return new AddressResponse(savedAddress.getId());
+        return new AddressIdResponse(savedAddress.getId());
     }
 
     @Override
-    public AddressResponse deleteAddress(Long addressId) {
+    public AddressIdResponse deleteAddress(Long addressId) {
         addressRepository.deleteById(addressId);
-        return new AddressResponse(addressId);
+        return new AddressIdResponse(addressId);
     }
 }

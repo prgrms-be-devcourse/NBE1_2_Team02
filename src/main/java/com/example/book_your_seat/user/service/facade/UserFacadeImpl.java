@@ -1,14 +1,13 @@
 package com.example.book_your_seat.user.service.facade;
 
 import com.example.book_your_seat.user.controller.dto.AddAddressRequest;
-import com.example.book_your_seat.user.controller.dto.AddressResponse;
+import com.example.book_your_seat.user.controller.dto.AddressIdResponse;
 import com.example.book_your_seat.user.domain.Address;
 import com.example.book_your_seat.user.domain.User;
 import com.example.book_your_seat.user.service.query.AddressQueryService;
 import com.example.book_your_seat.user.service.query.UserQueryService;
 import com.example.book_your_seat.user.service.command.AddressCommandService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,12 +22,12 @@ public class UserFacadeImpl implements UserFacade {
     private final AddressQueryService addressQueryService;
     private final AddressCommandService addressCommandService;
 
-    public AddressResponse addAddress(Long userId, AddAddressRequest addAddressRequest) {
+    public AddressIdResponse addAddress(Long userId, AddAddressRequest addAddressRequest) {
         User user = userQueryService.getUserByUserId(userId);
         return addressCommandService.addAddress(user, addAddressRequest);
     }
 
-    public AddressResponse deleteAddress(Long userId, Long addressId) {
+    public AddressIdResponse deleteAddress(Long userId, Long addressId) {
         Address address = addressQueryService.getAddressWithUser(addressId);
 
         if(!userId.equals(address.getUser().getId()))
