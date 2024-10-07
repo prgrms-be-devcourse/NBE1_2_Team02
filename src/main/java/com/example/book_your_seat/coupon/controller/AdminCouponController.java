@@ -1,0 +1,31 @@
+package com.example.book_your_seat.coupon.controller;
+
+import com.example.book_your_seat.config.security.auth.LoginUser;
+import com.example.book_your_seat.coupon.controller.dto.CouponCreateRequest;
+import com.example.book_your_seat.coupon.controller.dto.CouponResponse;
+import com.example.book_your_seat.coupon.facade.CouponCommandService;
+import com.example.book_your_seat.coupon.facade.CouponQueryService;
+import com.example.book_your_seat.user.domain.User;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+@RequestMapping("/admin/api/v1/coupons")
+@RequiredArgsConstructor
+public class AdminCouponController {
+    private final CouponCommandService couponCommandService;
+
+    @PostMapping
+    public ResponseEntity<CouponResponse> addCoupon(
+            @RequestBody CouponCreateRequest couponCreateRequest
+    ) {
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(couponCommandService.createCoupon(couponCreateRequest));
+    }
+}

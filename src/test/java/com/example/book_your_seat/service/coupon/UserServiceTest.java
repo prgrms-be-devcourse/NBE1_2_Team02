@@ -151,10 +151,11 @@ public class UserServiceTest extends IntegralTestSupport {
         AddAddressRequest addAddressRequest = new AddAddressRequest("postcode", "detail");
         AddressIdResponse addressIdResponse = userFacade.addAddress(newUser.getId(), addAddressRequest);
 
-        // when && then
+        // when
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
                 () -> userFacade.deleteAddress(existingUser.getId(), addressIdResponse.addressId()));
 
+        //then
         assertThat(exception)
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage(ADDRESS_NOT_OWNED);

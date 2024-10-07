@@ -1,6 +1,8 @@
 package com.example.book_your_seat.config.security;
 
 import com.example.book_your_seat.config.security.auth.CustomUserDetailsService;
+import com.example.book_your_seat.config.security.exception.CustomAccessDeniedHandler;
+import com.example.book_your_seat.config.security.exception.CustomAuthenticationEntryPoint;
 import com.example.book_your_seat.config.security.jwt.JwtAuthenticationFilter;
 import com.example.book_your_seat.config.security.jwt.SecurityJwtUtil;
 import com.example.book_your_seat.user.domain.UserRole;
@@ -16,6 +18,7 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
@@ -23,6 +26,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @RequiredArgsConstructor
 public class SecurityConfig {
 
+    private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
     private final CustomUserDetailsService customUserDetailsService;
     private final SecurityJwtUtil securityJwtUtil;
     @Bean
@@ -50,10 +54,14 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests((auth) -> auth
                         .requestMatchers(HttpMethod.GET, "/swagger-ui/**", "/api-docs/**").permitAll()
-
                         .requestMatchers("/api/v1/users","/api/v1/users/login").permitAll()
                         .requestMatchers("/admin/**").hasAnyAuthority(UserRole.ADMIN.getName())
-                        .anyRequest().authenticated());
+                        .anyRequest().authenticated())
+                .exceptionHandling((exceptions) -> exceptions
+                        .authenticationEntryPoint(new CustomAuthenticationEntryPoint()) // 인증 예외 처리
+                        .accessDeniedHandler(new CustomAccessDeniedHandler())           // 인가 예외 처리
+                );
+
         http
                 .addFilterBefore(new JwtAuthenticationFilter(securityJwtUtil), UsernamePasswordAuthenticationFilter.class);
         return http.build();
