@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -23,7 +23,7 @@ public class SlackServiceImpl implements SlackService {
     private final Slack slackClient = Slack.getInstance();
 
     @Override
-    public void setErrorMessage(String title, HashMap<String, String> data) {
+    public void setErrorMessage(String title, LinkedHashMap<String, String> data) {
         try{
             slackClient.send(slackUrl, payload(p -> p
                     .text(title)
