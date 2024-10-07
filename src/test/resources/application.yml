@@ -9,4 +9,5 @@ spring:
 
 jwt:
   secret: secretsecretsecretkeykeykeykeykeykey
-  expiration_time: 3600 # 1시간
+  login_expiration_time: 7200 #2시간
+  queue_expiration_time: 3600 # 1시간
