@@ -15,8 +15,8 @@ import com.example.book_your_seat.reservation.domain.ReservationStatus;
 import com.example.book_your_seat.reservation.service.ReservationCommandService;
 import com.example.book_your_seat.user.domain.Address;
 import com.example.book_your_seat.user.domain.User;
-import com.example.book_your_seat.user.service.AddressQueryService;
-import com.example.book_your_seat.user.service.UserQueryService;
+import com.example.book_your_seat.user.service.query.AddressQueryService;
+import com.example.book_your_seat.user.service.query.UserQueryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -61,8 +61,8 @@ public class PaymentFacadeImpl implements PaymentFacade {
     }
 
     private Reservation createReservation(PaymentCommand command, Payment payment) {
-        User user = userQueryService.getUserByUserId(command.userId);
-        Address address = addressQueryService.getAddressByAddressId(command.addressId);
+        Address address = addressQueryService.getAddressWithUser(command.addressId);
+        User user = address.getUser();
 
         return Reservation.builder()
                 .user(user)

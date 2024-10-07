@@ -5,7 +5,7 @@ import com.example.book_your_seat.coupon.domain.Coupon;
 import com.example.book_your_seat.coupon.domain.UserCoupon;
 import com.example.book_your_seat.coupon.manager.UserCouponManager;
 import com.example.book_your_seat.user.domain.User;
-import com.example.book_your_seat.user.manager.UserManager;
+import com.example.book_your_seat.user.service.query.UserQueryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,12 +17,12 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CouponQueryFacade implements CouponQueryService {
 
-    private final UserManager userManager;
+    private final UserQueryService userQueryService;
     private final UserCouponManager userCouponManager;
 
     @Override
     public List<CouponDetailResponse> getCouponDetail(Long userId) {
-        User user = userManager.getUserWithUserCoupons(userId);
+        User user = userQueryService.getUserWithUserCoupons(userId);
         return user.getUserCoupons().stream()
                 .map(UserCoupon::getCoupon)
                 .map(CouponDetailResponse::fromCoupon)

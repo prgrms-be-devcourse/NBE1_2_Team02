@@ -1,28 +1,28 @@
-package com.example.book_your_seat.user.manager;
-
-import static com.example.book_your_seat.coupon.CouponConst.USER_NOT_FOUND;
+package com.example.book_your_seat.user.service.query;
 
 import com.example.book_your_seat.user.domain.User;
 import com.example.book_your_seat.user.repository.UserRepository;
+import com.example.book_your_seat.user.service.query.UserQueryService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.stereotype.Service;
 
-@Component
-@Transactional(readOnly = true)
+import static com.example.book_your_seat.coupon.CouponConst.USER_NOT_FOUND;
+
+@Service
 @RequiredArgsConstructor
-public class UserManager {
+public class UserQueryServiceImpl implements UserQueryService {
 
     private final UserRepository userRepository;
 
-    public User getUser(Long userId) {
+    @Override
+    public User getUserByUserId(Long userId) {
         return userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException(USER_NOT_FOUND));
     }
 
+    @Override
     public User getUserWithUserCoupons(Long userId) {
         return userRepository.findByIdWithUserCoupons(userId)
                 .orElseThrow(() -> new IllegalArgumentException(USER_NOT_FOUND));
     }
-
 }

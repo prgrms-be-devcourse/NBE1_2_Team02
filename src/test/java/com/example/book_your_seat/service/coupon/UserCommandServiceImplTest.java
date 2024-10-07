@@ -10,8 +10,10 @@ import com.example.book_your_seat.user.domain.Address;
 import com.example.book_your_seat.user.domain.User;
 import com.example.book_your_seat.user.repository.AddressRepository;
 import com.example.book_your_seat.user.repository.UserRepository;
-import com.example.book_your_seat.user.service.UserCommandServiceImpl;
+import com.example.book_your_seat.user.service.command.UserCommandServiceImpl;
 import java.util.Optional;
+
+import com.example.book_your_seat.user.service.facade.UserFacade;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -23,6 +25,9 @@ public class UserCommandServiceImplTest extends IntegralTestSupport {
 
     @Autowired
     private UserCommandServiceImpl userCommandServiceImpl;
+
+    @Autowired
+    private UserFacade userFacade;
 
     @Autowired
     private UserRepository userRepository;
@@ -105,7 +110,7 @@ public class UserCommandServiceImplTest extends IntegralTestSupport {
         AddAddressRequest addAddressRequest = new AddAddressRequest("postcode", "detail");
 
         // when
-        AddressResponse addressResponse = userCommandServiceImpl.addAddress(existingUser.getId(), addAddressRequest);
+        AddressResponse addressResponse = userFacade.addAddress(existingUser.getId(), addAddressRequest);
 
         // then
         assertThat(addressResponse.addressId()).isEqualTo(1L);
@@ -116,10 +121,10 @@ public class UserCommandServiceImplTest extends IntegralTestSupport {
     void deleteAddressTest() {
         // given
         AddAddressRequest addAddressRequest = new AddAddressRequest("postcode", "detail");
-        AddressResponse addressResponse = userCommandServiceImpl.addAddress(existingUser.getId(), addAddressRequest);
+        AddressResponse addressResponse = userFacade.addAddress(existingUser.getId(), addAddressRequest);
 
         // when
-        userCommandServiceImpl.deleteAddress(addressResponse.addressId());
+        userFacade.deleteAddress(existingUser.getId(), addressResponse.addressId());
 
         // then
         Optional<Address> byId = addressRepository.findById(addressResponse.addressId());

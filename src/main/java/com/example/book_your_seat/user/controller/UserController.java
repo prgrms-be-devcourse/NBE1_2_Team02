@@ -1,11 +1,10 @@
 package com.example.book_your_seat.user.controller;
 
-import static com.example.book_your_seat.common.SessionConst.LOGIN_USER;
-
+import com.example.book_your_seat.config.security.auth.LoginUser;
 import com.example.book_your_seat.user.controller.dto.*;
-import com.example.book_your_seat.user.service.UserCommandServiceImpl;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
+import com.example.book_your_seat.user.domain.User;
+import com.example.book_your_seat.user.service.command.UserCommandService;
+import com.example.book_your_seat.user.service.facade.UserFacade;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -22,7 +21,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class UserController {
 
-    private final UserCommandServiceImpl userCommandServiceImpl;
+    private final UserFacade userFacade;
+    private final UserCommandService userCommandService;
 
     @PostMapping
     public ResponseEntity<UserResponse> createUser(
@@ -30,40 +30,37 @@ public class UserController {
     ) {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(userCommandServiceImpl.join(joinRequest));
+                .body(userCommandService.join(joinRequest));
     }
 
     @PostMapping("/login")
     public ResponseEntity<TokenResponse> login(
             @Valid @RequestBody LoginRequest loginRequest
     ) {
-        TokenResponse tokenResponse = userCommandServiceImpl.login(loginRequest);
+        TokenResponse tokenResponse = userCommandService.login(loginRequest);
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(tokenResponse);
     }
 
-    private void addMemberInSession(HttpServletRequest request, UserResponse loginUser) {
-        HttpSession session = request.getSession();
-        session.setAttribute(LOGIN_USER, loginUser);
-    }
-
-    @PostMapping("/{userId}/address")
+    @PostMapping("/address")
     public ResponseEntity<AddressResponse> addAddress(
-            @PathVariable("userId")Long userId,
+            @LoginUser User user,
             @Valid @RequestBody AddAddressRequest addAddressRequest
     ) {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(userCommandServiceImpl.addAddress(userId, addAddressRequest));
+                .body(userFacade.addAddress(user.getId(), addAddressRequest));
     }
 
     @DeleteMapping("/address/{addressId}")
     public ResponseEntity<AddressResponse> deleteAddress(
+            @LoginUser User user,
             @PathVariable("addressId") Long addressId
     ) {
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(userCommandServiceImpl.deleteAddress(addressId));
+                .body(userFacade.deleteAddress(user.getId(), addressId));
     }
+
 }
