@@ -1,26 +1,17 @@
 package com.example.book_your_seat.reservation.domain;
 
 import com.example.book_your_seat.payment.domain.Payment;
+import com.example.book_your_seat.seat.domain.Seat;
 import com.example.book_your_seat.user.domain.Address;
 import com.example.book_your_seat.user.domain.User;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
-import java.util.ArrayList;
-import java.util.List;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -47,9 +38,23 @@ public class Reservation {
     private Payment payment;
 
     @OneToMany(mappedBy = "reservation", cascade = CascadeType.ALL)
-    private final List<ConcertReservation> concertReservations = new ArrayList<>();
+    private final List<Seat> seats = new ArrayList<>();
 
-    public void addConcertReservation(ConcertReservation reservation) {
-        this.concertReservations.add(reservation);
+
+    @Builder
+    public Reservation(ReservationStatus status, User user, Address address,Payment payment) {
+        this.status = status;
+        this.user = user;
+        this.address = address;
+        this.payment = payment;
+
+        user.addReservation(this);
+        address.addReservation(this);
+        payment.addReservation(this);
     }
+
+    public void addSeat(Seat seat) {
+        this.seats.add(seat);
+    }
+
 }

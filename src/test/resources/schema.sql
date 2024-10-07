@@ -35,11 +35,3 @@ CREATE TABLE seat (
                       seat_number INT,  -- 좌석 번호 (가정)
                       FOREIGN KEY (concert_id) REFERENCES concert(concert_id) ON DELETE CASCADE
 );
-
--- ConcertReservation 테이블 생성 (Concert와 1:N 관계)
-CREATE TABLE concert_reservation (
-                                     reservation_id BIGINT AUTO_INCREMENT PRIMARY KEY,
-                                     concert_id BIGINT,
-                                     reservation_date DATE,
-                                     FOREIGN KEY (concert_id) REFERENCES concert(concert_id) ON DELETE CASCADE
-);
