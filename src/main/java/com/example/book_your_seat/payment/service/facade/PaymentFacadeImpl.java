@@ -23,7 +23,7 @@ import org.springframework.stereotype.Service;
 
 @RequiredArgsConstructor
 @Service
-public class PaymentServiceImpl implements PaymentService {
+public class PaymentFacadeImpl implements PaymentFacade {
 
     private final UserQueryService userQueryService;
     private final AddressQueryService addressQueryService;

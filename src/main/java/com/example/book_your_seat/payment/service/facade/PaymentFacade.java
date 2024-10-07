@@ -5,6 +5,6 @@ import com.example.book_your_seat.payment.service.dto.PaymentCommand;
 import org.springframework.stereotype.Service;
 
 @Service
-public interface PaymentService {
+public interface PaymentFacade {
     ConfirmResponse processPayment(PaymentCommand paymentCommand);
 }

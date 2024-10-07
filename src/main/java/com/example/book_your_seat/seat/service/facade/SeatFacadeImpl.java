@@ -16,7 +16,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class SeatServiceImpl implements SeatService {
+public class SeatFacadeImpl implements SeatFacade {
 
     private final SeatCommandService seatCommandService;
     private final SeatQueryService seatQueryService;

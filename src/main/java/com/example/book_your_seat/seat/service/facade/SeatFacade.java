@@ -9,7 +9,7 @@ import com.example.book_your_seat.seat.domain.Seat;
 import java.util.List;
 
 
-public interface SeatService {
+public interface SeatFacade {
     List<SeatResponse> findAllSeats(Long concertId);
 
     SelectSeatResponse selectSeat(final SelectSeatRequest request);
