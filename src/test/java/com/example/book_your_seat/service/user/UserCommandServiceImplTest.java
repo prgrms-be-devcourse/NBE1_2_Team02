@@ -43,7 +43,6 @@ public class UserCommandServiceImplTest extends IntegralTestSupport {
     @Autowired
     private UserFacade userFacade;
 
-
     @Autowired
     private UserRepository userRepository;
 

@@ -17,22 +17,19 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import static com.example.book_your_seat.user.UserConst.ALREADY_JOIN_EMAIL;
 import static com.example.book_your_seat.user.UserConst.INVALID_LOGIN_REQUEST;
 
 @Service
-@Transactional
 @RequiredArgsConstructor
 public class UserCommandServiceImpl implements UserCommandService {
 
     private final UserRepository userRepository;
-    private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final SecurityJwtUtil securityJwtUtil;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final AuthenticationManagerBuilder authenticationManagerBuilder;
 
     @Override
     public UserResponse join(JoinRequest joinRequest) {
-        checkEmail(joinRequest.email());
         User user = new User(
                 joinRequest.nickname(),
                 joinRequest.username(),
@@ -45,6 +42,7 @@ public class UserCommandServiceImpl implements UserCommandService {
     }
 
     @Override
+    @Transactional
     public TokenResponse login(LoginRequest loginRequest) {
         UsernamePasswordAuthenticationToken authenticationToken =
                 new UsernamePasswordAuthenticationToken(loginRequest.email(), loginRequest.password());
@@ -59,11 +57,4 @@ public class UserCommandServiceImpl implements UserCommandService {
             throw new IllegalArgumentException(INVALID_LOGIN_REQUEST);
         }
     }
-
-    private void checkEmail(String email) {
-        if (userRepository.existsByEmail(email)) {
-            throw new IllegalArgumentException(ALREADY_JOIN_EMAIL);
-        }
-    }
-
 }

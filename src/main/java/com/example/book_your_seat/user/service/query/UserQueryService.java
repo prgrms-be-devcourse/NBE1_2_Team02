@@ -13,4 +13,7 @@ public interface UserQueryService {
 
     List<AddressResponse> getUserAddressList(User user);
 
+    void checkEmail(String email);
+
+
 }

@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 import static com.example.book_your_seat.coupon.CouponConst.USER_NOT_FOUND;
+import static com.example.book_your_seat.user.UserConst.ALREADY_JOIN_EMAIL;
 
 @Service
 @RequiredArgsConstructor
@@ -37,6 +38,13 @@ public class UserQueryServiceImpl implements UserQueryService {
                         address.getPostcode(),
                         address.getDetail()
                 )).toList();
+    }
+
+    @Override
+    public void checkEmail(String email) {
+        if (userRepository.existsByEmail(email)) {
+            throw new IllegalArgumentException(ALREADY_JOIN_EMAIL);
+        }
     }
 
 }

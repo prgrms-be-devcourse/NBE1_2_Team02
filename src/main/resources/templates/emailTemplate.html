@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>회원가입 인증 이메일</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            padding: 20px;
+        }
+        .email-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h2 {
+            font-size: 28px;
+            color: #333333;
+        }
+        p {
+            font-size: 18px;
+            color: #555555;
+        }
+        .cert-code {
+            font-size: 36px;
+            color: #007bff;
+            font-weight: bold;
+            margin: 20px 0;
+        }
+        .footer {
+            margin-top: 20px;
+            font-size: 14px;
+            color: #888888;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+<div class="email-container">
+    <h2>안녕하세요, <span th:text="${name}"></span>님!</h2>
+    <p>회원가입을 위해 아래 인증 코드를 입력해 주세요:</p>
+    <div class="cert-code" th:text="${certCode}"></div>
+</div>
+</body>
+</html>
