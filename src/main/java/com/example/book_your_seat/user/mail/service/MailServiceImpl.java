@@ -17,6 +17,7 @@ import java.security.SecureRandom;
 import java.util.concurrent.CompletableFuture;
 
 import static com.example.book_your_seat.user.UserConst.*;
+import static com.example.book_your_seat.user.mail.MailConst.*;
 
 @Slf4j
 @Service
@@ -34,7 +35,7 @@ public class MailServiceImpl implements MailService {
     public Boolean sendCertMail(String email) {
         sendMail(email).thenAccept(certCord -> {
             mailRedisRepository.saveEmailCertCode(email, certCord);
-            log.info("메일 전송 완료 : ", email);
+            log.info("{} {}", MAIL_SUCCESS, email);
         });
         return true;
     }
@@ -46,17 +47,17 @@ public class MailServiceImpl implements MailService {
         try {
             MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
             helper.setTo(to);
-            helper.setSubject("[BookYourSeat] 회원 가입 인증 코드");
+            helper.setSubject(MAIL_SUBJECT);
             helper.setFrom(from);
 
             //데이터 설정
             String certCode = generateCertCode();
             Context context = new Context();
-            context.setVariable("name", to);
-            context.setVariable("certCode", certCode);
+            context.setVariable(MAIL, to);
+            context.setVariable(CERTCODE, certCode);
 
             //html 매핑
-            String htmlContent = templateEngine.process("emailTemplate", context);
+            String htmlContent = templateEngine.process(EMAIL_TEMPLATE, context);
             helper.setText(htmlContent, true);
 
             //메일 전송
@@ -72,9 +73,7 @@ public class MailServiceImpl implements MailService {
     public Boolean checkCertCode(String email, String certCode) {
         String savedCertCode = mailRedisRepository.findCertCodeByEmail(email);
 
-        if (!savedCertCode.equals(certCode)) {
-            throw new IllegalArgumentException(INVALID_CERT_CODE);
-        }
+        compareCertCode(certCode, savedCertCode);
 
         mailRedisRepository.saveVerifiedEmail(email);
         return true;
@@ -82,12 +81,18 @@ public class MailServiceImpl implements MailService {
 
     @Override
     public void checkVerifiedEmail(String email) {
-       if(mailRedisRepository.findVerifiedEmail(email) == null)
-           throw new IllegalArgumentException(EMAIL_NOT_VERIFIED);
+        if (mailRedisRepository.findVerifiedEmail(email) == null)
+            throw new IllegalArgumentException(EMAIL_NOT_VERIFIED);
+    }
+
+    private void compareCertCode(String certCode, String savedCertCode) {
+        if (!savedCertCode.equals(certCode)) {
+            throw new IllegalArgumentException(INVALID_CERT_CODE);
+        }
     }
 
     private String generateCertCode() {
-        final String candidateChars = "1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        final String candidateChars = NUMBER_AND_ALPHABET;
         final int certCodeLength = 6;
         SecureRandom random = new SecureRandom();
         StringBuilder certCode = new StringBuilder(certCodeLength);
