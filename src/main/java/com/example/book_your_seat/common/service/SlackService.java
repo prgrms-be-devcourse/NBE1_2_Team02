@@ -6,4 +6,6 @@ public interface SlackService {
 
      void setErrorMessage(String title, LinkedHashMap<String, String> data);
 
+     void setPaymentMessage(String title, LinkedHashMap<String, String> data);
+
 }

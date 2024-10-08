@@ -33,6 +33,8 @@ public class PaymentController {
 
         PaymentCommand command = PaymentCommand.from(request, confirmResponse);
         ConfirmResponse response = paymentFacade.processPayment(command);
+
+
         return ResponseEntity.ok(response);
     }
 }

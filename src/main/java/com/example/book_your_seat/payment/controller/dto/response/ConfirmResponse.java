@@ -2,9 +2,10 @@ package com.example.book_your_seat.payment.controller.dto.response;
 
 import com.example.book_your_seat.reservation.domain.ReservationStatus;
 import lombok.Builder;
+import lombok.Getter;
 
 import java.util.List;
-
+@Getter
 public final class ConfirmResponse {
 
     private final Long userId;
