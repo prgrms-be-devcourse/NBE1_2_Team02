@@ -11,3 +11,7 @@ jwt:
   secret: secretsecretsecretkeykeykeykeykeykey
   login_expiration_time: 7200 #2시간
   queue_expiration_time: 3600 # 1시간
+
+webhook:
+  slack:
+    url: "https://hooks.slack.com/services/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"
