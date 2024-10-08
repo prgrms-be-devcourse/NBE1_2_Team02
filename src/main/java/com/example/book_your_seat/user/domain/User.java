@@ -30,8 +30,11 @@ public class User extends BaseEntity {
     private Long id;
 
     private String nickname;
+
     private String username;
+
     private String email;
+
     private String password;
 
     @Enumerated(EnumType.STRING)
