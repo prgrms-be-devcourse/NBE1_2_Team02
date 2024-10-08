@@ -18,8 +18,6 @@ public record PaymentRequest(
         List<Long> seatIds,
         @NotNull(message = ENTER_ADDRESS_ID)
         Long addressId,
-        @NotNull(message = ENTER_USER_ID)
-        Long userId,
 
         Long concertId,
 

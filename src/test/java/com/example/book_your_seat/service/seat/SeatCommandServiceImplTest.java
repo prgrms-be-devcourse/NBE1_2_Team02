@@ -1,13 +1,17 @@
 package com.example.book_your_seat.service.seat;
 
+import com.example.DbCleaner;
 import com.example.book_your_seat.IntegralTestSupport;
 import com.example.book_your_seat.concert.controller.dto.AddConcertRequest;
 import com.example.book_your_seat.concert.repository.ConcertRepository;
 import com.example.book_your_seat.concert.service.ConcertCommandService;
+import com.example.book_your_seat.queue.service.facade.QueueService;
 import com.example.book_your_seat.seat.controller.dto.SelectSeatRequest;
 import com.example.book_your_seat.seat.domain.Seat;
 import com.example.book_your_seat.seat.repository.SeatRepository;
 import com.example.book_your_seat.seat.service.facade.SeatFacade;
+import com.example.book_your_seat.user.domain.User;
+import com.example.book_your_seat.user.repository.UserRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -27,28 +31,45 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
 class SeatCommandServiceImplTest extends IntegralTestSupport {
+
     @Autowired
     private ConcertCommandService concertCommandService;
+
     @Autowired
     private ConcertRepository concertRepository;
+
     @Autowired
     private SeatRepository seatRepository;
+
     @Autowired
     private SeatFacade seatFacade;
+
     @Autowired
     private RedisTemplate<String, Object> redisTemplate;
 
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private QueueService queueService;
+
+    @Autowired
+    DbCleaner dbCleaner;
+
     private Long concertId;
     private List<Long> seatIds;
+    private User savedUser;
 
     @BeforeEach
     void setUp() {
+        redisTemplate.getConnectionFactory().getConnection().flushAll();
+        savedUser = userRepository.save(new User("nickname", "username", "email@email.com","password"));
         AddConcertRequest request = new AddConcertRequest(
                 "제목1",
                 LocalDate.of(2024, 9, 24),
                 LocalDate.of(2024, 9, 25),
                 10000,
-                120
+                20
         );
 
         concertId = concertCommandService.add(request);
@@ -60,17 +81,17 @@ class SeatCommandServiceImplTest extends IntegralTestSupport {
 
     @AfterEach
     void tearDown() {
-        concertRepository.deleteAll();
-        seatRepository.deleteAll();
+        dbCleaner.cleanDatabase();
         redisTemplate.getConnectionFactory().getConnection().flushAll();
-
     }
 
-    @DisplayName("모든 남아있는 좌석을 선택하는 1000개의 요청이 들어 올 경우 99개의 요청은 실패한다")
+    @DisplayName("모든 남아있는 좌석을 선택하는 1000개의 요청이 들어 올 경우 999개의 요청은 실패한다")
     @Test
     void selectSeatTest() throws InterruptedException {
         // given
-        SelectSeatRequest request = new SelectSeatRequest(1L,seatIds);
+        Long userId = savedUser.getId();
+        SelectSeatRequest request = new SelectSeatRequest(seatIds);
+        queueService.issueTokenAndEnqueue(userId);
 
         // when
         int threadCount = 1000;
@@ -82,9 +103,10 @@ class SeatCommandServiceImplTest extends IntegralTestSupport {
         for (int i = 0; i < threadCount; i++) {
             executorService.submit(() -> {
                 try {
-                    seatFacade.selectSeat(request);
+                    seatFacade.selectSeat(request, userId);
                     successCount.incrementAndGet();
                 } catch (Exception e) {
+                    e.printStackTrace();
                     failCount.incrementAndGet();
                 } finally {
                     latch.countDown();
@@ -97,6 +119,8 @@ class SeatCommandServiceImplTest extends IntegralTestSupport {
         // then
         assertThat(successCount.get(), is(1));
         assertThat(failCount.get(), is(999));
+
+        executorService.shutdown();
     }
 
 }
