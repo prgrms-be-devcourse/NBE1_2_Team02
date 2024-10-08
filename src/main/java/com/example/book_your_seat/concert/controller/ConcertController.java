@@ -2,6 +2,7 @@ package com.example.book_your_seat.concert.controller;
 
 import com.example.book_your_seat.concert.controller.dto.AddConcertRequest;
 import com.example.book_your_seat.concert.controller.dto.ConcertResponse;
+import com.example.book_your_seat.concert.controller.dto.ResultRedisConcert;
 import com.example.book_your_seat.concert.service.ConcertCommandService;
 import com.example.book_your_seat.concert.service.ConcertQueryService;
 import jakarta.validation.Valid;
@@ -44,5 +45,11 @@ public class ConcertController {
     public ResponseEntity<Void> deleteById(@PathVariable final Long concertId) {
         concertCommandService.delete(concertId);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/redis/list")
+    public ResponseEntity<ResultRedisConcert> findAllRedisList(){
+        ResultRedisConcert resultRedisConcert = concertQueryService.findUsedRedisAllConcertList();
+        return ResponseEntity.ok(resultRedisConcert);
     }
 }
