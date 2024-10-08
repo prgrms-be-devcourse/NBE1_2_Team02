@@ -31,18 +31,25 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
 class SeatCommandServiceImplTest extends IntegralTestSupport {
+
     @Autowired
     private ConcertCommandService concertCommandService;
+
     @Autowired
     private ConcertRepository concertRepository;
+
     @Autowired
     private SeatRepository seatRepository;
+
     @Autowired
     private SeatFacade seatFacade;
+
     @Autowired
     private RedisTemplate<String, Object> redisTemplate;
+
     @Autowired
     private UserRepository userRepository;
+
     @Autowired
     private QueueService queueService;
 
@@ -73,8 +80,6 @@ class SeatCommandServiceImplTest extends IntegralTestSupport {
 
     @AfterEach
     void tearDown() {
-//        concertRepository.deleteAll();
-//        seatRepository.deleteAll();
         dbCleaner.cleanDatabase();
         redisTemplate.getConnectionFactory().getConnection().flushAll();
 
@@ -86,7 +91,7 @@ class SeatCommandServiceImplTest extends IntegralTestSupport {
         // given
         Long userId = savedUser.getId();
         SelectSeatRequest request = new SelectSeatRequest(seatIds);
-        String token = queueService.issueTokenAndEnqueue(userId).token();
+        queueService.issueTokenAndEnqueue(userId);
 
 
         // when

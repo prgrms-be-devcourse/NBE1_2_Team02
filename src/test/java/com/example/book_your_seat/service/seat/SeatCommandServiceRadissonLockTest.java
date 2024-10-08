@@ -34,25 +34,32 @@ class SeatCommandServiceRadissonLockTest extends IntegralTestSupport {
 
     @Autowired
     private ConcertCommandService concertCommandService;
+
     @Autowired
     private ConcertRepository concertRepository;
+
     @Autowired
     private SeatRepository seatRepository;
+
     @Autowired
     private SeatFacade seatFacade;
-    private Long concertId;
-    private List<Long> seatIds;
 
     @Autowired
     private UserRepository userRepository;
+
     @Autowired
     private QueueService queueService;
+
     @Autowired
     DbCleaner dbCleaner;
+
     @Autowired
     private RedisTemplate<String, Object> redisTemplate;
 
+    private Long concertId;
+    private List<Long> seatIds;
     private User savedUser;
+
     @BeforeEach
     void setUp() {
         savedUser = userRepository.save(new User("nickname", "username", "email@email.com","password"));
@@ -73,8 +80,6 @@ class SeatCommandServiceRadissonLockTest extends IntegralTestSupport {
 
     @AfterEach
     void tearDown() {
-//        concertRepository.deleteAll();
-//        seatRepository.deleteAll();
         dbCleaner.cleanDatabase();
         redisTemplate.getConnectionFactory().getConnection().flushAll();
     }
@@ -85,7 +90,7 @@ class SeatCommandServiceRadissonLockTest extends IntegralTestSupport {
         // given
         Long userId = savedUser.getId();
         SelectSeatRequest request = new SelectSeatRequest(seatIds);
-        String token = queueService.issueTokenAndEnqueue(userId).token();
+        queueService.issueTokenAndEnqueue(userId);
 
         // when
         int threadCount = 100;

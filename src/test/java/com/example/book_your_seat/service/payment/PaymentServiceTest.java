@@ -16,6 +16,8 @@ import com.example.book_your_seat.payment.controller.dto.response.FinalPriceResp
 import com.example.book_your_seat.payment.controller.dto.response.TossConfirmResponse;
 import com.example.book_your_seat.payment.service.dto.PaymentCommand;
 import com.example.book_your_seat.payment.service.facade.PaymentFacade;
+import com.example.book_your_seat.queue.repository.QueueRedisRepository;
+import com.example.book_your_seat.queue.util.QueueJwtUtil;
 import com.example.book_your_seat.reservation.contorller.dto.PaymentRequest;
 import com.example.book_your_seat.reservation.domain.ReservationStatus;
 import com.example.book_your_seat.seat.domain.Seat;
@@ -35,6 +37,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
+import org.springframework.data.redis.core.RedisTemplate;
 
 
 class PaymentServiceTest extends IntegralTestSupport {
@@ -56,12 +59,23 @@ class PaymentServiceTest extends IntegralTestSupport {
 
     @Autowired
     private PaymentFacade paymentFacade;
+
     @Autowired
     private ConcertCommandService concertCommandService;
+
+    @Autowired
+    private QueueRedisRepository queueRedisRepository;
+
+    @Autowired
+    private RedisTemplate<String, Object> redisTemplate;
+
+    @Autowired
+    private QueueJwtUtil queueJwtUtil;
 
     @AfterEach
     void tearDown() {
         dbCleaner.cleanDatabase();
+        redisTemplate.getConnectionFactory().getConnection().flushAll();
     }
 
     @Test
@@ -99,7 +113,6 @@ class PaymentServiceTest extends IntegralTestSupport {
                 List.of(1L, 2L),
                 1L,
                 1L,
-                1L,
                 1L
         );
 
@@ -131,6 +144,8 @@ class PaymentServiceTest extends IntegralTestSupport {
 
         User user = new User("khan_nickname", "khan_username", "khan_email", "password");
         User savedUser = userRepository.save(user);
+        String token = queueJwtUtil.createJwt(savedUser.getId());
+        queueRedisRepository.enqueueProcessingQueue(savedUser.getId(), token);
 
         Address address = new Address("12345", "khan_detail", savedUser);
         addressRepository.save(address);
@@ -145,7 +160,7 @@ class PaymentServiceTest extends IntegralTestSupport {
 
 
         // When
-        ConfirmResponse result = paymentFacade.processPayment(command);
+        ConfirmResponse result = paymentFacade.processPayment(command, savedUser.getId(), token);
 
 
         // Then

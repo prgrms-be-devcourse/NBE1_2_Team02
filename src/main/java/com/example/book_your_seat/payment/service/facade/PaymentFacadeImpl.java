@@ -13,6 +13,7 @@ import com.example.book_your_seat.payment.domain.Payment;
 import com.example.book_your_seat.payment.domain.PaymentStatus;
 import com.example.book_your_seat.payment.service.PaymentCommandService;
 import com.example.book_your_seat.payment.service.dto.PaymentCommand;
+import com.example.book_your_seat.queue.service.facade.QueueService;
 import com.example.book_your_seat.reservation.domain.Reservation;
 import com.example.book_your_seat.reservation.domain.ReservationStatus;
 import com.example.book_your_seat.reservation.service.ReservationCommandService;
@@ -20,7 +21,6 @@ import com.example.book_your_seat.seat.service.query.SeatQueryService;
 import com.example.book_your_seat.user.domain.Address;
 import com.example.book_your_seat.user.domain.User;
 import com.example.book_your_seat.user.service.query.AddressQueryService;
-import com.example.book_your_seat.user.service.query.UserQueryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -44,8 +44,10 @@ public class PaymentFacadeImpl implements PaymentFacade {
     private final ConcertQueryService concertQueryService;
     private final SeatQueryService seatQueryService;
 
+    private final QueueService queueService;
+
     @Override
-    public ConfirmResponse processPayment(final PaymentCommand command) {
+    public ConfirmResponse processPayment(final PaymentCommand command, Long userId, String token) {
 
         Payment payment = createPayment(command);
         Reservation reservation = createReservation(command, payment);
@@ -56,8 +58,10 @@ public class PaymentFacadeImpl implements PaymentFacade {
         couponCommandService.useUserCoupon(command.userCouponId);
         ConcertResponse concert = concertQueryService.findById(command.concertId);
 
+        queueService.dequeueProcessingQueue(userId, token);
+
         return ConfirmResponse.builder()
-                .userId(command.userId)
+                .userId(userId)
                 .reservationId(savedReservation.getId())
                 .concludePrice(command.totalAmount)
                 .status(savedReservation.getStatus())

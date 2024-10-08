@@ -18,6 +18,7 @@ import static com.example.book_your_seat.seat.SeatConst.SEAT_SOLD;
 @Component
 @RequiredArgsConstructor
 public class SeatRedisServiceImpl implements SeatRedisService {
+
     private final RedisTemplate<String, Object> redisTemplate;
 
     @Override
@@ -36,7 +37,7 @@ public class SeatRedisServiceImpl implements SeatRedisService {
 
     @Override
     @Transactional(readOnly = true)
-    public void validateSeat(final PaymentRequest request) {
+    public void validateSeat(final PaymentRequest request, final Long userId) {
         for (Long seatId : request.seatIds()) {
             String redisKey = "seat:" + seatId;
 
@@ -45,7 +46,7 @@ public class SeatRedisServiceImpl implements SeatRedisService {
             }
             // 저장된 userId와 요청된 userId 비교
             Long storedUserId = (Long) redisTemplate.opsForValue().get(redisKey);
-            if (!request.userId().equals(storedUserId)) {
+            if (!userId.equals(storedUserId)) {
                 throw new IllegalArgumentException(ACCEPTABLE_TIMEOUT);
             }
         }

@@ -33,7 +33,7 @@ public class SeatFacadeImpl implements SeatFacade {
     }
 
     @Override
-    public SelectSeatResponse selectSeat(final SelectSeatRequest request, Long userId) {
+    public SelectSeatResponse selectSeat(final SelectSeatRequest request, final Long userId) {
         checkInProcessingQueue(userId);
 
         List<Seat> seats = seatCommandService.selectSeat(request);
@@ -45,7 +45,7 @@ public class SeatFacadeImpl implements SeatFacade {
 
     @Override
     @SeatLock
-    public SelectSeatResponse selectSeatRedisson(final SelectSeatRequest request, Long userId) {
+    public SelectSeatResponse selectSeatRedisson(final SelectSeatRequest request, final Long userId) {
         checkInProcessingQueue(userId);
 
         List<Seat> seats = seatCommandService.selectSeatRedisson(request);

@@ -8,7 +8,7 @@ import java.util.List;
 public interface SeatRedisService {
     void cacheSeatIds(List<Seat> seats, Long userId);
 
-    void validateSeat(PaymentRequest request);
+    void validateSeat(PaymentRequest request, Long userId);
 
     void deleteCache(final Long seatId);
 }

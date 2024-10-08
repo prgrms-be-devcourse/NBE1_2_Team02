@@ -9,7 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public interface PaymentFacade {
-    ConfirmResponse processPayment(PaymentCommand paymentCommand);
+    ConfirmResponse processPayment(PaymentCommand paymentCommand, Long userId, String token);
 
     FinalPriceResponse getFinalPrice(FinalPriceRequest request);
 
