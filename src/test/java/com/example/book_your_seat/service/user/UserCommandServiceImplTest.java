@@ -120,6 +120,7 @@ public class UserCommandServiceImplTest extends IntegralTestSupport {
     }
 
     @Test
+    @Transactional
     @DisplayName("주소를 추가한다.")
     void AddAddressTest() {
         // given
@@ -127,9 +128,12 @@ public class UserCommandServiceImplTest extends IntegralTestSupport {
 
         // when
         AddressIdResponse addressIdResponse = userFacade.addAddress(existingUser.getId(), addAddressRequest);
+        List<Address> list = existingUser.getAddressList();
 
         // then
-        assertThat(addressIdResponse.addressId()).isEqualTo(1L);
+        assertThat(list.size()).isEqualTo(1);
+        assertThat(list.get(0).getUser().getId()).isEqualTo(existingUser.getId());
+        assertThat(list.get(0).getId()).isEqualTo(addressIdResponse.addressId());
     }
 
     @Test
