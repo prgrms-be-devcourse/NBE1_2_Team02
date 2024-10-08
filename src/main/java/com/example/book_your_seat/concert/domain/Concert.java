@@ -3,22 +3,16 @@ package com.example.book_your_seat.concert.domain;
 import com.example.book_your_seat.common.entity.BaseEntity;
 import com.example.book_your_seat.review.domain.Review;
 import com.example.book_your_seat.seat.domain.Seat;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.IntStream;
-
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 import static com.example.book_your_seat.concert.ConcertConst.*;
 
@@ -79,8 +73,8 @@ public class Concert extends BaseEntity {
     }
 
     private void initializeSeats() {
-        IntStream.range(ZERO, TOTAL_STOCK)
-                .forEach(i -> new Seat(this));
+        IntStream.range(1, TOTAL_STOCK + 1)
+                .forEach(i -> new Seat(this, i));
     }
 
     public void addLikeConcert(LikeConcert likeConcert) {

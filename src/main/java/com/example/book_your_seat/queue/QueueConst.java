@@ -17,4 +17,6 @@ public final class QueueConst {
     public static final String ALREADY_ISSUED_USER = "이미 토큰을 발급받은 유저입니다.";
     public static final String REMOVE_BAD_REQUEST = "로그인한 유저의 토큰이 아닙니다.";
 
+    public static final String NOT_IN_PROCESSING_QUEUE = "처리 가능한 유저가 아닙니다.";
+
 }

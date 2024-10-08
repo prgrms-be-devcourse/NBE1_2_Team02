@@ -67,8 +67,8 @@ public class ConcertJdbcRepositoryImpl implements ConcertJdbcRepository {
     }
 
     private void saveBulkSeat(Concert concert, Long concertId) {
-        String seatSql = "INSERT INTO seat (concert_id, is_sold) " +
-                "VALUES (?, ?)";
+        String seatSql = "INSERT INTO seat (concert_id, is_sold, seat_number) " +
+                "VALUES (?, ?, ?)";
 
         jdbcTemplate.batchUpdate(seatSql,
                 concert.getSeats(),
@@ -76,6 +76,7 @@ public class ConcertJdbcRepositoryImpl implements ConcertJdbcRepository {
                 (PreparedStatement ps, Seat seat) -> {
                     ps.setLong(1, concertId);
                     ps.setBoolean(2, seat.isSold());
+                    ps.setInt(3, seat.getSeatNumber());
                 });
     }
 }
