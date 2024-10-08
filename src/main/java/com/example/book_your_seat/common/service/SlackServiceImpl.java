@@ -14,44 +14,44 @@ import java.util.stream.Collectors;
 
 import static com.slack.api.webhook.WebhookPayloads.payload;
 
-@Service
-public class SlackServiceImpl implements SlackService {
+    @Service
+    public class SlackServiceImpl implements SlackService {
 
-    @Value("${webhook.slack.url}")
-    private String slackUrl;
+        @Value("${webhook.slack.url}")
+        private String slackUrl;
 
-    private final Slack slackClient = Slack.getInstance();
+        private final Slack slackClient = Slack.getInstance();
 
-    @Override
-    public void setErrorMessage(String title, LinkedHashMap<String, String> data) {
-        try{
-            slackClient.send(slackUrl, payload(p -> p
-                    .text(title)
-                    .attachments(List.of(
-                            Attachment.builder().color(Color.RED.getCode())
-                                    .fields(
-                                            data.keySet().stream().map(key -> generateSlackField(key, data.get(key))).collect(Collectors.toList())
-                                    ).build())))
-            );
-        }catch (IOException e) {
-            e.printStackTrace();
+        @Override
+        public void setErrorMessage(String title, LinkedHashMap<String, String> data) {
+            try{
+                slackClient.send(slackUrl, payload(p -> p
+                        .text(title)
+                        .attachments(List.of(
+                                Attachment.builder().color(Color.RED.getCode())
+                                        .fields(
+                                                data.keySet().stream().map(key -> generateSlackField(key, data.get(key))).collect(Collectors.toList())
+                                        ).build())))
+                );
+            }catch (IOException e) {
+                e.printStackTrace();
+            }
         }
-    }
 
-    @Override
-    public void setPaymentMessage(String title, LinkedHashMap<String, String> data) {
-        try{
-            slackClient.send(slackUrl, payload(p -> p
-                    .text(title)
-                    .attachments(List.of(
-                            Attachment.builder().color(Color.BLUE.getCode())
-                                    .fields(
-                                            data.keySet().stream().map(key -> generateSlackField(key, data.get(key))).collect(Collectors.toList())
-                                    ).build())))
-            );
-        }catch (IOException e) {
-            e.printStackTrace();
-        }
+        @Override
+        public void setPaymentMessage(String title, LinkedHashMap<String, String> data) {
+            try{
+                slackClient.send(slackUrl, payload(p -> p
+                        .text(title)
+                        .attachments(List.of(
+                                Attachment.builder().color(Color.BLUE.getCode())
+                                        .fields(
+                                                data.keySet().stream().map(key -> generateSlackField(key, data.get(key))).collect(Collectors.toList())
+                                        ).build())))
+                );
+            }catch (IOException e) {
+                e.printStackTrace();
+            }
 
     }
 

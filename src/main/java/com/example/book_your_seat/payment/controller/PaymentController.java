@@ -1,5 +1,6 @@
 package com.example.book_your_seat.payment.controller;
 
+import com.example.book_your_seat.common.service.SlackFacade;
 import com.example.book_your_seat.payment.controller.dto.request.FinalPriceRequest;
 import com.example.book_your_seat.payment.controller.dto.request.TossConfirmRequest;
 import com.example.book_your_seat.payment.controller.dto.response.ConfirmResponse;
@@ -26,6 +27,7 @@ public class PaymentController {
     private final TossApiService tossApiService;
     private final PaymentFacade paymentFacade;
     private final SeatRedisService seatRedisService;
+    private final SlackFacade slackFacade;
 
     @PostMapping("/totalPrice")
     public ResponseEntity<FinalPriceResponse> getTotalPrice(
@@ -47,6 +49,7 @@ public class PaymentController {
         PaymentCommand command = PaymentCommand.from(request, confirmResponse);
         ConfirmResponse response = paymentFacade.processPayment(command);
 
+        slackFacade.sendPaymentSuccessMessage(response);
 
         return ResponseEntity.ok(response);
     }
