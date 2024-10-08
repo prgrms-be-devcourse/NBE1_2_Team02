@@ -14,4 +14,7 @@ public final class PaymentConst {
 
 
     public static final String INVALID_AMOUNT = "유효하지 않은 가격입니다.";
+
+    public static final String AMOUNT_PAY = "총 가격";
+    public static final String PAY_TIME = "결제 시간";
 }

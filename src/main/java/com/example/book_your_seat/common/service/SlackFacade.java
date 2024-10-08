@@ -12,6 +12,11 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 import static com.example.book_your_seat.common.constants.Constants.*;
+import static com.example.book_your_seat.concert.ConcertConst.CONCERT_NAME;
+import static com.example.book_your_seat.concert.ConcertConst.CONCERT_TIME;
+import static com.example.book_your_seat.payment.PaymentConst.AMOUNT_PAY;
+import static com.example.book_your_seat.payment.PaymentConst.PAY_TIME;
+import static com.example.book_your_seat.reservation.ReservationConst.*;
 
 @Service
 @RequiredArgsConstructor
@@ -27,7 +32,7 @@ public class SlackFacade {
 
         dataMap.put(EXCEPTION_LOG, errorResult.message());
         dataMap.put(EXCEPTION_URL, request.getRequestURL().toString());
-        dataMap.put(EXCEPTION_DATETIME, LocalDateTime.now().format(DateTimeFormatter.ofPattern(ERROR_TIME)));
+        dataMap.put(EXCEPTION_DATETIME, LocalDateTime.now().format(DateTimeFormatter.ofPattern(TIME)));
         dataMap.put(EXCEPTION_METHOD, request.getMethod());
 
 
@@ -41,28 +46,28 @@ public class SlackFacade {
     public void sendPaymentSuccessMessage(ConfirmResponse confirmResponse){
 
         LinkedHashMap<String, String> dataMap = new LinkedHashMap<>();
-        dataMap.put("예약 번호", confirmResponse.getReservationId().toString());
-        dataMap.put("총 가격", confirmResponse.getConcludePrice().toString());
-        dataMap.put("예약 상태", confirmResponse.getStatus().toString());
-        dataMap.put("콘서트 제목", confirmResponse.getConcertTitle());
-        dataMap.put("콘서트 시간", String.valueOf(confirmResponse.getConcertStartHour()));
-        dataMap.put("결제 시간", LocalDateTime.now().format(DateTimeFormatter.ofPattern(ERROR_TIME)));
+        dataMap.put(RESERVATION_NUMBER, confirmResponse.getReservationId().toString());
+        dataMap.put(AMOUNT_PAY, confirmResponse.getConcludePrice().toString());
+        dataMap.put(RESERVATION_STATE, confirmResponse.getStatus().toString());
+        dataMap.put(CONCERT_NAME, confirmResponse.getConcertTitle());
+        dataMap.put(CONCERT_TIME, String.valueOf(confirmResponse.getConcertStartHour()));
+        dataMap.put(PAY_TIME, LocalDateTime.now().format(DateTimeFormatter.ofPattern(TIME)));
 
         String seatNumber = seatNumberConcat(confirmResponse);
 
-        dataMap.put("예약한 콘서트 좌석", seatNumber);
+        dataMap.put(RESERVATION_SEAT, seatNumber);
 
         slackService.setPaymentMessage("결제 완료!", dataMap);
 
     }
 
     private static String seatNumberConcat(ConfirmResponse confirmResponse) {
-        List<Long> seatsId = confirmResponse.getSeatsId();
+        List<Integer> seatsId = confirmResponse.getSeatNumbers();
 
         StringBuilder stringBuilder = new StringBuilder();
 
-        for(Long seatId : seatsId){
-            stringBuilder.append(seatId).append(" ");
+        for(Integer seatId : seatsId){
+            stringBuilder.append("좌석 번호: ").append(seatId).append(" ");
         }
 
       return stringBuilder.toString();

@@ -13,7 +13,22 @@ public final class Constants {
 
     public static final String EXCEPTION_METHOD ="HTTP METHOD";
 
-    public static final String ERROR_TIME = "yyyy-MM-dd HH:mm:ss";
+    public static final String TIME = "yyyy-MM-dd HH:mm:ss";
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
