@@ -62,6 +62,7 @@ class SeatCommandServiceRadissonLockTest extends IntegralTestSupport {
 
     @BeforeEach
     void setUp() {
+        redisTemplate.getConnectionFactory().getConnection().flushAll();
         savedUser = userRepository.save(new User("nickname", "username", "email@email.com","password"));
         AddConcertRequest request = new AddConcertRequest(
                 "제목1",
@@ -117,5 +118,7 @@ class SeatCommandServiceRadissonLockTest extends IntegralTestSupport {
         // then
         assertThat(successCount.get(), is(1));
         assertThat(failCount.get(), is(99));
+
+        executorService.shutdown();
     }
 }

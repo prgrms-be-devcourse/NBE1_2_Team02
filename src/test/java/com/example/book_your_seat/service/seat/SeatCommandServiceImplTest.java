@@ -62,6 +62,7 @@ class SeatCommandServiceImplTest extends IntegralTestSupport {
 
     @BeforeEach
     void setUp() {
+        redisTemplate.getConnectionFactory().getConnection().flushAll();
         savedUser = userRepository.save(new User("nickname", "username", "email@email.com","password"));
         AddConcertRequest request = new AddConcertRequest(
                 "제목1",
@@ -82,7 +83,6 @@ class SeatCommandServiceImplTest extends IntegralTestSupport {
     void tearDown() {
         dbCleaner.cleanDatabase();
         redisTemplate.getConnectionFactory().getConnection().flushAll();
-
     }
 
     @DisplayName("모든 남아있는 좌석을 선택하는 1000개의 요청이 들어 올 경우 99개의 요청은 실패한다")
@@ -119,6 +119,8 @@ class SeatCommandServiceImplTest extends IntegralTestSupport {
         // then
         assertThat(successCount.get(), is(1));
         assertThat(failCount.get(), is(999));
+
+        executorService.shutdown();
     }
 
 }
