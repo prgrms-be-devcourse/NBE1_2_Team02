@@ -15,25 +15,6 @@ public final class Constants {
 
     public static final String TIME = "yyyy-MM-dd HH:mm:ss";
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     private Constants() {
     }
 }

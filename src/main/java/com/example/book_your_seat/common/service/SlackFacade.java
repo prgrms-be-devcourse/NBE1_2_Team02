@@ -1,6 +1,7 @@
 package com.example.book_your_seat.common.service;
 
 import com.example.book_your_seat.common.entity.ErrorResult;
+import com.example.book_your_seat.common.entity.color.Color;
 import com.example.book_your_seat.payment.controller.dto.response.ConfirmResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -37,7 +38,7 @@ public class SlackFacade {
 
 
 
-        slackService.setErrorMessage(errorResult.code(), dataMap);
+        slackService.setMessage(errorResult.code(), dataMap, Color.RED);
 
     }
 
@@ -57,7 +58,7 @@ public class SlackFacade {
 
         dataMap.put(RESERVATION_SEAT, seatNumber);
 
-        slackService.setPaymentMessage("결제 완료!", dataMap);
+        slackService.setMessage("결제 완료!", dataMap, Color.BLUE);
 
     }
 
