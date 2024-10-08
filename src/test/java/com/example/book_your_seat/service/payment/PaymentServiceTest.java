@@ -90,7 +90,7 @@ class PaymentServiceTest extends IntegralTestSupport {
 
         Concert concert = concertRepository.save(new Concert("1234", LocalDate.now(), LocalDate.now(), 3333, 1));
 
-        Seat seat = seatRepository.save(new Seat(concert));
+        Seat seat = seatRepository.save(new Seat(concert, 1));
 
         FinalPriceRequest request = new FinalPriceRequest(Collections.singletonList(seat.getId()), userCoupon.getId());
 
@@ -124,6 +124,7 @@ class PaymentServiceTest extends IntegralTestSupport {
                 .concertTitle("title")
                 .concertStartHour(2)
                 .seatsId(List.of(1L, 2L))
+                .seatNumbers(List.of(1, 2))
                 .build();
 
         TossConfirmResponse confirmResponse = new TossConfirmResponse(

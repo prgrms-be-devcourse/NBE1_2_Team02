@@ -10,6 +10,8 @@ public interface SeatQueryService {
 
     List<Seat> findAllSeats(Long concertId);
 
+    List<Integer> findSeatNumbers(List<Long> seatIds);
+
     Integer getSeatPrice(final Long SeatId);
 
     List<Seat> getSeats(final List<Long> seatIds);

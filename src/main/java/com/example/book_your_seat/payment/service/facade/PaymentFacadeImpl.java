@@ -27,6 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.List;
 
 @Transactional
 @RequiredArgsConstructor
@@ -58,6 +59,8 @@ public class PaymentFacadeImpl implements PaymentFacade {
         couponCommandService.useUserCoupon(command.userCouponId);
         ConcertResponse concert = concertQueryService.findById(command.concertId);
 
+      
+        List<Integer> seatNumbers = seatQueryService.findSeatNumbers(command.seatIds);
         queueService.dequeueProcessingQueue(userId, token);
 
         return ConfirmResponse.builder()
@@ -68,6 +71,7 @@ public class PaymentFacadeImpl implements PaymentFacade {
                 .concertTitle(concert.getTitle())
                 .concertStartHour(concert.getStartHour())
                 .seatsId(command.seatIds)
+                .seatNumbers(seatNumbers)
                 .build();
     }
 
