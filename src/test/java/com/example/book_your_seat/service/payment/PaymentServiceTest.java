@@ -16,6 +16,10 @@ import com.example.book_your_seat.payment.controller.dto.response.FinalPriceResp
 import com.example.book_your_seat.payment.controller.dto.response.TossConfirmResponse;
 import com.example.book_your_seat.payment.service.dto.PaymentCommand;
 import com.example.book_your_seat.payment.service.facade.PaymentFacade;
+import com.example.book_your_seat.queue.repository.QueueRedisRepository;
+import com.example.book_your_seat.queue.util.QueueJwtUtil;
+import com.example.book_your_seat.queue.repository.QueueRedisRepository;
+import com.example.book_your_seat.queue.util.QueueJwtUtil;
 import com.example.book_your_seat.reservation.contorller.dto.PaymentRequest;
 import com.example.book_your_seat.reservation.domain.ReservationStatus;
 import com.example.book_your_seat.seat.domain.Seat;
@@ -30,6 +34,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -57,6 +62,7 @@ class PaymentServiceTest extends IntegralTestSupport {
 
     @Autowired
     private PaymentFacade paymentFacade;
+
     @Autowired
     private ConcertCommandService concertCommandService;
 
@@ -65,9 +71,19 @@ class PaymentServiceTest extends IntegralTestSupport {
         dbCleaner.cleanDatabase();
     }
 
+    @Autowired
+    private QueueRedisRepository queueRedisRepository;
+
+    @Autowired
+    private RedisTemplate<String, Object> redisTemplate;
+
+    @Autowired
+    private QueueJwtUtil queueJwtUtil;
+
     @AfterEach
     void tearDown() {
         dbCleaner.cleanDatabase();
+        redisTemplate.getConnectionFactory().getConnection().flushAll();
     }
 
     @Test
@@ -122,49 +138,55 @@ class PaymentServiceTest extends IntegralTestSupport {
     @Test
     void processPaymentTest() {
 
-        // Given
-        Concert concert = new Concert(
+        Concert concert = concertRepository.save(new Concert(
                 "title",
                 LocalDate.now().plusDays(30),
                 LocalDate.now().plusDays(60),
                 10000,
                 2
-        );
-        concertRepository.save(concert);
+        ));
 
-        User user = new User("khan_nickname", "khan_username", "khan_email", "password");
-        User savedUser = userRepository.save(user);
+        List<Long> seatIds = concert.getSeats().stream().map(Seat::getId).toList();
+        List<Integer> seatNumbers = concert.getSeats().stream().map(Seat::getSeatNumber).toList();
+        User user = userRepository.save(new User(
+                "khan_nickname",
+                "khan_username",
+                "khan_email",
+                "password"));
 
-        Address address = new Address("12345", "khan_detail", savedUser);
-        addressRepository.save(address);
-
-        Coupon coupon = new Coupon(100, DiscountRate.TEN, LocalDate.now().plusDays(10));
-        Coupon savedCoupon = couponRepository.save(coupon);
-
-        UserCoupon userCoupon = new UserCoupon(savedUser, savedCoupon);
-        userCouponRepository.save(userCoupon);
+        Address address = addressRepository.save(new Address(
+                "12345",
+                "khan_detail",
+                user));
 
 
+        Coupon coupon = couponRepository.save(new Coupon(100,
+                DiscountRate.TEN,
+                LocalDate.now().plusDays(10)));
+
+        UserCoupon userCoupon = userCouponRepository.save(new UserCoupon(user, coupon));
+
+
+        // Given
         PaymentRequest request = new PaymentRequest(
                 "paymentKey",
                 "orderId",
                 18000L,
-                List.of(1L, 2L),
+                seatIds.subList(0,2),
                 address.getId(),
-                savedUser.getId(),
                 concert.getId(),
                 userCoupon.getId()
         );
 
         ConfirmResponse response = ConfirmResponse.builder()
-                .userId(savedUser.getId())
+                .userId(user.getId())
                 .reservationId(1L)
                 .concludePrice(18000L)
                 .status(ReservationStatus.ORDERED)
                 .concertTitle("title")
                 .concertStartHour(2)
-                .seatsId(List.of(1L, 2L))
-                .seatNumbers(List.of(1, 2))
+                .seatsId(seatIds.subList(0,2))
+                .seatNumbers(seatNumbers.subList(0,2))
                 .build();
 
         TossConfirmResponse confirmResponse = new TossConfirmResponse(
@@ -174,11 +196,16 @@ class PaymentServiceTest extends IntegralTestSupport {
                 LocalDateTime.now()
         );
 
+
+        String token = queueJwtUtil.createJwt(user.getId());
+        queueRedisRepository.enqueueProcessingQueue(user.getId(), token);
+
+
         PaymentCommand command = PaymentCommand.from(request, confirmResponse);
 
 
         // When
-        ConfirmResponse result = paymentFacade.processPayment(command);
+        ConfirmResponse result = paymentFacade.processPayment(command, user.getId(), token);
 
 
         // Then

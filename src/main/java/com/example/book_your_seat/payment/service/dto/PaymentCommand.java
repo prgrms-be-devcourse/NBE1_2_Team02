@@ -16,7 +16,6 @@ public final class PaymentCommand {
     public final LocalDateTime approvedAt;
     public final List<Long> seatIds;
     public final Long addressId;
-    public final Long userId;
     public final Long userCouponId;
     public final Long concertId;
 
@@ -34,7 +33,6 @@ public final class PaymentCommand {
         this.approvedAt = confirmResponse.approvedAt();
         this.seatIds = request.seatIds();
         this.addressId = request.addressId();
-        this.userId = request.userId();
         this.userCouponId = request.userCouponId();
         this.concertId = request.concertId();
     }
