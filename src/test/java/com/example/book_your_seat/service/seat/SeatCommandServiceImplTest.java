@@ -69,7 +69,7 @@ class SeatCommandServiceImplTest extends IntegralTestSupport {
                 LocalDate.of(2024, 9, 24),
                 LocalDate.of(2024, 9, 25),
                 10000,
-                120
+                20
         );
 
         concertId = concertCommandService.add(request);
@@ -85,14 +85,13 @@ class SeatCommandServiceImplTest extends IntegralTestSupport {
         redisTemplate.getConnectionFactory().getConnection().flushAll();
     }
 
-    @DisplayName("모든 남아있는 좌석을 선택하는 1000개의 요청이 들어 올 경우 99개의 요청은 실패한다")
+    @DisplayName("모든 남아있는 좌석을 선택하는 1000개의 요청이 들어 올 경우 999개의 요청은 실패한다")
     @Test
     void selectSeatTest() throws InterruptedException {
         // given
         Long userId = savedUser.getId();
         SelectSeatRequest request = new SelectSeatRequest(seatIds);
         queueService.issueTokenAndEnqueue(userId);
-
 
         // when
         int threadCount = 1000;
@@ -107,6 +106,7 @@ class SeatCommandServiceImplTest extends IntegralTestSupport {
                     seatFacade.selectSeat(request, userId);
                     successCount.incrementAndGet();
                 } catch (Exception e) {
+                    e.printStackTrace();
                     failCount.incrementAndGet();
                 } finally {
                     latch.countDown();
