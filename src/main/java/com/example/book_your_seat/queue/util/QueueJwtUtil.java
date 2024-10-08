@@ -1,4 +1,4 @@
-package com.example.book_your_seat.common.util;
+package com.example.book_your_seat.queue.util;
 
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
@@ -19,12 +19,12 @@ import static com.example.book_your_seat.common.util.JwtConst.*;
 
 @Slf4j
 @Component
-public class JwtUtil {
+public class QueueJwtUtil {
     private final SecretKey secretKey;
     private final Integer expirationTime;
     private static final String SIGNATURE_ALGORITHM = Jwts.SIG.HS256.key().build().getAlgorithm();
 
-    JwtUtil(@Value("${jwt.secret}") String secretKey, @Value("${jwt.expiration_time}") Integer expirationTime) {
+    QueueJwtUtil(@Value("${jwt.secret}") String secretKey, @Value("${jwt.queue_expiration_time}") Integer expirationTime) {
         this.secretKey = new SecretKeySpec(secretKey.getBytes(StandardCharsets.UTF_8), SIGNATURE_ALGORITHM);
         this.expirationTime = expirationTime;
     }
