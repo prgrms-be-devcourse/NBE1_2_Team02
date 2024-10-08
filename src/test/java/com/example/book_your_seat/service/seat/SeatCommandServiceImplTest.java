@@ -106,7 +106,6 @@ class SeatCommandServiceImplTest extends IntegralTestSupport {
                     seatFacade.selectSeat(request, userId);
                     successCount.incrementAndGet();
                 } catch (Exception e) {
-                    e.printStackTrace();
                     failCount.incrementAndGet();
                 } finally {
                     latch.countDown();

@@ -18,8 +18,6 @@ import com.example.book_your_seat.payment.service.dto.PaymentCommand;
 import com.example.book_your_seat.payment.service.facade.PaymentFacade;
 import com.example.book_your_seat.queue.repository.QueueRedisRepository;
 import com.example.book_your_seat.queue.util.QueueJwtUtil;
-import com.example.book_your_seat.queue.repository.QueueRedisRepository;
-import com.example.book_your_seat.queue.util.QueueJwtUtil;
 import com.example.book_your_seat.reservation.contorller.dto.PaymentRequest;
 import com.example.book_your_seat.reservation.domain.ReservationStatus;
 import com.example.book_your_seat.seat.domain.Seat;
