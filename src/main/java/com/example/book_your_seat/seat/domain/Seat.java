@@ -23,6 +23,8 @@ public class Seat {
     @Column(name = "seat_id")
     private Long id;
 
+    private int seatNumber;
+
     private boolean isSold;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -33,9 +35,10 @@ public class Seat {
     @JoinColumn(name = "reservation_id")
     private Reservation reservation;
 
-    public Seat(Concert concert) {
+    public Seat(Concert concert, int seatNumber) {
         this.isSold = false;
         this.concert = concert;
+        this.seatNumber = seatNumber;
         concert.addSeat(this);
     }
     public void selectSeat() {

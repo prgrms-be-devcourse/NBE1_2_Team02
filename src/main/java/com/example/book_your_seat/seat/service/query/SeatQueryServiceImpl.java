@@ -32,6 +32,14 @@ public class SeatQueryServiceImpl implements SeatQueryService {
         validateConcertDate(concert);
         return seatRepository.findByConcertId(concertId);
     }
+
+    @Override
+    public List<Integer> findSeatNumbers(List<Long> seatIds) {
+        return seatRepository.findValidSeats(seatIds).stream()
+                .map(Seat::getSeatNumber)
+                .toList();
+    }
+
     @Override
     public Integer getSeatPrice(final Long seatId) {
         Seat seat = seatRepository.findById(seatId).orElseThrow(
