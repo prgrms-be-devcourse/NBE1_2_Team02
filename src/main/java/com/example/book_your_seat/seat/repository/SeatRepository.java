@@ -24,5 +24,5 @@ public interface SeatRepository extends JpaRepository<Seat, Long> {
     List<Seat> findAllById(List<Long> seatIds);
 
     @Query("SELECT s FROM Seat s WHERE s.id IN :seatsId AND s.isSold = false")
-    List<Seat> findValidSeats(List<Long> seats);
+    List<Seat> findValidSeats(List<Long> seatsId);
 }

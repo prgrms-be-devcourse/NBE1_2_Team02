@@ -17,16 +17,18 @@ public final class ConfirmResponse {
     private final String concertTitle;
     private final int concertStartHour;
     private final List<Long> seatsId;
+    private final List<Integer> seatNumbers;
 
 
     @Builder
     private ConfirmResponse(Long userId,
-                                Long reservationId,
-                                Long concludePrice,
-                                ReservationStatus status,
-                                List<Long> seatsId,
-                                String concertTitle,
-                                int concertStartHour
+                            Long reservationId,
+                            Long concludePrice,
+                            ReservationStatus status,
+                            List<Long> seatsId,
+                            String concertTitle,
+                            int concertStartHour,
+                            List<Integer> seatNumbers
     ) {
         this.userId = userId;
         this.reservationId = reservationId;
@@ -35,5 +37,6 @@ public final class ConfirmResponse {
         this.seatsId = seatsId;
         this.concertTitle = concertTitle;
         this.concertStartHour = concertStartHour;
+        this.seatNumbers = seatNumbers;
     }
 }

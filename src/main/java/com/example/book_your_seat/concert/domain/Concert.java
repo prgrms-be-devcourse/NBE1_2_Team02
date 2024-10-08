@@ -10,6 +10,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -79,8 +81,8 @@ public class Concert extends BaseEntity {
     }
 
     private void initializeSeats() {
-        IntStream.range(ZERO, TOTAL_STOCK)
-                .forEach(i -> new Seat(this));
+        IntStream.range(1, TOTAL_STOCK + 1)
+                .forEach(i -> new Seat(this, i));
     }
 
     public void addLikeConcert(LikeConcert likeConcert) {
