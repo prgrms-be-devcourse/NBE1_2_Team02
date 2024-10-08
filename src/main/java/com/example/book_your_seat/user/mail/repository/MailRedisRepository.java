@@ -32,7 +32,6 @@ public class MailRedisRepository implements Serializable {
         String key = VERIFIED_EMAIL_KEY + email;
         Duration timeoutDuration = Duration.ofMinutes(expirationTime);
         valueOperations.set(key,"verified", timeoutDuration);
-        System.out.println(valueOperations.get(key));
     }
 
     public String findVerifiedEmail(String email) {
