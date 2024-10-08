@@ -1,5 +1,6 @@
-package com.example.book_your_seat.service.coupon;
+package com.example.book_your_seat.service.user;
 
+import com.example.DbCleaner;
 import com.example.book_your_seat.IntegralTestSupport;
 import com.example.book_your_seat.config.security.jwt.SecurityJwtUtil;
 import com.example.book_your_seat.user.controller.dto.*;
@@ -26,7 +27,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class UserServiceTest extends IntegralTestSupport {
+
+@Transactional
+public class UserCommandServiceImplTest extends IntegralTestSupport {
+
+    @Autowired
+    private DbCleaner dbCleaner;
 
     @Autowired
     private UserCommandService userCommandService;
@@ -36,6 +42,7 @@ public class UserServiceTest extends IntegralTestSupport {
 
     @Autowired
     private UserFacade userFacade;
+
 
     @Autowired
     private UserRepository userRepository;
@@ -58,6 +65,7 @@ public class UserServiceTest extends IntegralTestSupport {
     @AfterEach
     void tearDown() {
         userRepository.deleteAll();
+        dbCleaner.cleanDatabase();
     }
 
     @Test
