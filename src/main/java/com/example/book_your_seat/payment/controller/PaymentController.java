@@ -37,6 +37,7 @@ public class PaymentController {
                 .status(HttpStatus.OK)
                 .body(finalPrice);
     }
+
     @PostMapping("/success")
     public ResponseEntity<ConfirmResponse> confirmPayment(@Valid @RequestBody final PaymentRequest request) {
 

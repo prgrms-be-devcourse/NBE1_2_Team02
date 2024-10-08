@@ -1,13 +1,17 @@
 package com.example.book_your_seat.service.seat;
 
+import com.example.DbCleaner;
 import com.example.book_your_seat.IntegralTestSupport;
 import com.example.book_your_seat.concert.controller.dto.AddConcertRequest;
 import com.example.book_your_seat.concert.repository.ConcertRepository;
 import com.example.book_your_seat.concert.service.ConcertCommandService;
+import com.example.book_your_seat.queue.service.facade.QueueService;
 import com.example.book_your_seat.seat.controller.dto.SelectSeatRequest;
 import com.example.book_your_seat.seat.domain.Seat;
 import com.example.book_your_seat.seat.repository.SeatRepository;
 import com.example.book_your_seat.seat.service.facade.SeatFacade;
+import com.example.book_your_seat.user.domain.User;
+import com.example.book_your_seat.user.repository.UserRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -37,12 +41,21 @@ class SeatCommandServiceImplTest extends IntegralTestSupport {
     private SeatFacade seatFacade;
     @Autowired
     private RedisTemplate<String, Object> redisTemplate;
+    @Autowired
+    private UserRepository userRepository;
+    @Autowired
+    private QueueService queueService;
+
+    @Autowired
+    DbCleaner dbCleaner;
 
     private Long concertId;
     private List<Long> seatIds;
+    private User savedUser;
 
     @BeforeEach
     void setUp() {
+        savedUser = userRepository.save(new User("nickname", "username", "email@email.com","password"));
         AddConcertRequest request = new AddConcertRequest(
                 "제목1",
                 LocalDate.of(2024, 9, 24),
@@ -60,8 +73,9 @@ class SeatCommandServiceImplTest extends IntegralTestSupport {
 
     @AfterEach
     void tearDown() {
-        concertRepository.deleteAll();
-        seatRepository.deleteAll();
+//        concertRepository.deleteAll();
+//        seatRepository.deleteAll();
+        dbCleaner.cleanDatabase();
         redisTemplate.getConnectionFactory().getConnection().flushAll();
 
     }
@@ -70,7 +84,10 @@ class SeatCommandServiceImplTest extends IntegralTestSupport {
     @Test
     void selectSeatTest() throws InterruptedException {
         // given
-        SelectSeatRequest request = new SelectSeatRequest(1L,seatIds);
+        Long userId = savedUser.getId();
+        SelectSeatRequest request = new SelectSeatRequest(seatIds);
+        String token = queueService.issueTokenAndEnqueue(userId).token();
+
 
         // when
         int threadCount = 1000;
@@ -82,7 +99,7 @@ class SeatCommandServiceImplTest extends IntegralTestSupport {
         for (int i = 0; i < threadCount; i++) {
             executorService.submit(() -> {
                 try {
-                    seatFacade.selectSeat(request);
+                    seatFacade.selectSeat(request, userId);
                     successCount.incrementAndGet();
                 } catch (Exception e) {
                     failCount.incrementAndGet();
