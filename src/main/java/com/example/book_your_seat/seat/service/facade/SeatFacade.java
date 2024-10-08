@@ -16,7 +16,6 @@ public interface SeatFacade {
 
     SelectSeatResponse selectSeatRedisson(final SelectSeatRequest request);
 
-    Integer getSeatPrice(final Long seatId);
 
     List<Seat> getSeats(final List<Long> seatIds);
 

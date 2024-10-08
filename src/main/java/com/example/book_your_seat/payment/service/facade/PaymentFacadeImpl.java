@@ -98,10 +98,10 @@ public class PaymentFacadeImpl implements PaymentFacade {
     @Override
     public FinalPriceResponse getFinalPrice(final FinalPriceRequest request) {
 
-        Integer concertPrice = seatQueryService.getSeatPrice(request.seatIds().get(0));
+        Integer originPrice = seatQueryService.getSeatPrice(request.seatIds());
         DiscountRate discountRate = couponQueryService.getDiscountRate(request.userCouponId());
 
-        return new FinalPriceResponse(calculateDiscountPrice(concertPrice, discountRate));
+        return new FinalPriceResponse(calculateDiscountPrice(originPrice, discountRate));
     }
 
     private BigDecimal calculateDiscountPrice(Integer seatPrice, DiscountRate discountRate) {

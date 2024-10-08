@@ -47,10 +47,6 @@ public class SeatFacadeImpl implements SeatFacade {
         return SelectSeatResponse.fromSeats(seats);
     }
 
-    @Override
-    public Integer getSeatPrice(final Long seatId) {
-        return seatQueryService.getSeatPrice(seatId);
-    }
 
 
     @Override

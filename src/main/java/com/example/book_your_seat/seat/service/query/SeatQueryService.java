@@ -12,7 +12,7 @@ public interface SeatQueryService {
 
     List<Integer> findSeatNumbers(List<Long> seatIds);
 
-    Integer getSeatPrice(final Long SeatId);
+    Integer getSeatPrice(List<Long> seatsId);
 
     List<Seat> getSeats(final List<Long> seatIds);
 
