@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Repository;
 
-import java.io.Serializable;
 import java.time.Duration;
 
 import static com.example.book_your_seat.user.UserConst.EMAIL_CERT_CODE_KEY;
@@ -14,7 +13,7 @@ import static com.example.book_your_seat.user.UserConst.VERIFIED_EMAIL_KEY;
 
 @Repository
 @RequiredArgsConstructor
-public class MailRedisRepository implements Serializable {
+public class MailRedisRepository {
 
     @Value("${mail.expiration_time}")
     private Integer expirationTime;
