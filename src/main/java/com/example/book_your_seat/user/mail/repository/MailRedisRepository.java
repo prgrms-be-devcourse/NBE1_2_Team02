@@ -10,6 +10,7 @@ import java.time.Duration;
 
 import static com.example.book_your_seat.user.UserConst.EMAIL_CERT_CODE_KEY;
 import static com.example.book_your_seat.user.UserConst.VERIFIED_EMAIL_KEY;
+import static com.example.book_your_seat.user.mail.MailConst.VERIFIED;
 
 @Repository
 @RequiredArgsConstructor
@@ -30,7 +31,7 @@ public class MailRedisRepository {
     public void saveVerifiedEmail(String email) {
         String key = VERIFIED_EMAIL_KEY + email;
         Duration timeoutDuration = Duration.ofMinutes(expirationTime);
-        valueOperations.set(key,"verified", timeoutDuration);
+        valueOperations.set(key, VERIFIED, timeoutDuration);
     }
 
     public String findVerifiedEmail(String email) {

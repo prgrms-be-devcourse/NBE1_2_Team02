@@ -32,7 +32,7 @@ public class MailUtil {
         MimeMessage message = mailSender.createMimeMessage();
 
         try {
-            MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+            MimeMessageHelper helper = new MimeMessageHelper(message, true, UTF8);
             helper.setTo(to);
             helper.setSubject(MAIL_SUBJECT);
             helper.setFrom(from);
