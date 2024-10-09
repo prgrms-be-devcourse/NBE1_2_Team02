@@ -16,7 +16,7 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/seats")
+@RequestMapping("/api/v1/seat")
 public class SeatController {
 
     private final SeatFacade seatFacade;

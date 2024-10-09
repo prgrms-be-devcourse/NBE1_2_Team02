@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/reservations")
+@RequestMapping("/api/v1/reservations")
 public class PaymentController {
 
     private final TossApiService tossApiService;
