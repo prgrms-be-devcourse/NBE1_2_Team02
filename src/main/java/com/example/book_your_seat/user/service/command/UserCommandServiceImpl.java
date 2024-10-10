@@ -57,4 +57,12 @@ public class UserCommandServiceImpl implements UserCommandService {
             throw new IllegalArgumentException(INVALID_LOGIN_REQUEST);
         }
     }
+
+    @Override
+    public TokenResponse changeRoleToAdmin(User user) {
+        user.changeRoleToAdmin();
+        userRepository.save(user);
+        return new TokenResponse(securityJwtUtil.createJwt(user));
+    }
+
 }

@@ -6,10 +6,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
 @RequestMapping("/admin/api/v1/concerts")
@@ -24,6 +21,12 @@ public class AdminConcertController {
     ) {
         concertCommandService.add(request);
         return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+
+    @DeleteMapping("/{concertId}")
+    public ResponseEntity<Void> deleteById(@PathVariable final Long concertId) {
+        concertCommandService.delete(concertId);
+        return ResponseEntity.noContent().build();
     }
 
 }

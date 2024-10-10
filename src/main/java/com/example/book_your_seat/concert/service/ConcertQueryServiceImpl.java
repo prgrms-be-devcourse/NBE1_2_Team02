@@ -41,7 +41,6 @@ public class ConcertQueryServiceImpl implements ConcertQueryService {
                 .toList();
     }
 
-
     @Override
     @Cacheable(cacheNames = "concerts", key = "'allConcerts'")
     public ResultRedisConcert findUsedRedisAllConcertList() {

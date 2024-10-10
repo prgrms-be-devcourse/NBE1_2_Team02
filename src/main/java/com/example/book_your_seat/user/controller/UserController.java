@@ -87,4 +87,10 @@ public class UserController {
                 .body(userQueryService.getUserAddressList(user));
     }
 
+    @PatchMapping("/role")
+    public ResponseEntity<TokenResponse> changeRoleToAdminForTest(@LoginUser User user) {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(userFacade.changeRoleToAdminForTest(user.getId()));
+    }
 }
