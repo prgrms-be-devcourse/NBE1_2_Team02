@@ -6,7 +6,6 @@ import com.example.book_your_seat.user.domain.User;
 import com.example.book_your_seat.user.service.command.UserCommandService;
 import com.example.book_your_seat.user.service.facade.UserFacade;
 import com.example.book_your_seat.user.service.query.UserQueryService;
-import io.lettuce.core.dynamic.annotation.Param;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
@@ -16,7 +15,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 
 @RestController
 @RequestMapping("/api/v1/users")
@@ -84,7 +82,7 @@ public class UserController {
     public ResponseEntity<List<AddressResponse>> getUserAddressList(@LoginUser User user) {
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(userQueryService.getUserAddressList(user));
+                .body(userQueryService.getUserAddressList(user.getId()));
     }
 
     @PatchMapping("/role")

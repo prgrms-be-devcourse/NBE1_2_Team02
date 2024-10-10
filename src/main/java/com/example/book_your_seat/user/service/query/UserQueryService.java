@@ -11,7 +11,7 @@ public interface UserQueryService {
 
     User getUserWithUserCoupons(Long userId);
 
-    List<AddressResponse> getUserAddressList(User user);
+    List<AddressResponse> getUserAddressList(Long userId);
 
     void checkEmail(String email);
 

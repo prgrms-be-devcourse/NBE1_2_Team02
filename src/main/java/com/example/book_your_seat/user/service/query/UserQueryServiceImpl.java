@@ -32,7 +32,8 @@ public class UserQueryServiceImpl implements UserQueryService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<AddressResponse> getUserAddressList(User user) {
+    public List<AddressResponse> getUserAddressList(Long userId) {
+        User user = getUserByUserId(userId);
         return user.getAddressList().stream()
                 .map(address -> new AddressResponse(
                         address.getPostcode(),

@@ -13,7 +13,6 @@ import com.example.book_your_seat.user.repository.UserRepository;
 import com.example.book_your_seat.user.service.command.UserCommandService;
 import com.example.book_your_seat.user.service.facade.UserFacade;
 import com.example.book_your_seat.user.service.query.UserQueryService;
-import jakarta.annotation.Resource;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -21,13 +20,11 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
 
-import static com.example.book_your_seat.queue.QueueConst.ALREADY_ISSUED_USER;
 import static com.example.book_your_seat.user.UserConst.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -236,7 +233,7 @@ public class UserCommandServiceImplTest extends IntegralTestSupport {
         userFacade.addAddress(existingUser.getId(), addAddressRequest2);
 
         // when
-        List<AddressResponse> list = userQueryService.getUserAddressList(existingUser);
+        List<AddressResponse> list = userQueryService.getUserAddressList(existingUser.getId());
 
         // then
         assertEquals(2, list.size());
