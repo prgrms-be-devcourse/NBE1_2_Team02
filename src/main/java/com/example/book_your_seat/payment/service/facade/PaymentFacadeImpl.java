@@ -21,7 +21,6 @@ import com.example.book_your_seat.seat.service.query.SeatQueryService;
 import com.example.book_your_seat.user.domain.Address;
 import com.example.book_your_seat.user.domain.User;
 import com.example.book_your_seat.user.service.query.AddressQueryService;
-import com.example.book_your_seat.user.service.query.UserQueryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

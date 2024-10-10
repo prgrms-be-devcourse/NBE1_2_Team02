@@ -6,13 +6,17 @@ import com.example.book_your_seat.user.domain.User;
 import com.example.book_your_seat.user.service.command.UserCommandService;
 import com.example.book_your_seat.user.service.facade.UserFacade;
 import com.example.book_your_seat.user.service.query.UserQueryService;
+import io.lettuce.core.dynamic.annotation.Param;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 @RestController
 @RequestMapping("/api/v1/users")
@@ -29,8 +33,22 @@ public class UserController {
     ) {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(userCommandService.join(joinRequest));
+                .body(userFacade.join(joinRequest));
     }
+
+    @GetMapping("/email/cert")
+    public ResponseEntity<Boolean> sendCertMail(
+            @RequestParam("email") @NotNull @Email String email) {
+        return ResponseEntity.ok(userFacade.sendCertMail(email));
+    }
+
+    @GetMapping("/email/check")
+    public ResponseEntity<Boolean> checkCertCode(
+            @RequestParam("email") @NotNull @Email String email,
+            @RequestParam("certCode") @NotNull String certCode) {
+        return ResponseEntity.ok(userFacade.checkCertCode(email, certCode));
+    }
+
 
     @PostMapping("/login")
     public ResponseEntity<TokenResponse> login(

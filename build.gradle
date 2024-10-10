@@ -49,6 +49,8 @@ dependencies {
 
 	//mail
 	implementation 'org.springframework.boot:spring-boot-starter-mail'
+	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+
 
 	compileOnly 'org.projectlombok:lombok'
 	runtimeOnly 'com.h2database:h2'
@@ -60,9 +62,6 @@ dependencies {
 
 	// Redisson
 	implementation 'org.redisson:redisson-spring-boot-starter:3.33.0'
-
-
-
 
 	//Querydsl 추가
 	implementation 'com.querydsl:querydsl-jpa:5.0.0:jakarta'

@@ -91,7 +91,6 @@ public class QueueServiceTest extends IntegralTestSupport {
     @DisplayName("토큰을 발급하고 진행열이 다 찬 경우 대기열에 넣는다.")
     void issueTokenAndEnqueueWaitingQueueTest() {
         //given
-
         for (int i = 1000; i < 2000; i++) {
             User savedUser = userRepository.save(new User("nickname", "username", "email@email.com", "passwordpassowrd"));
             queueCommandService.issueTokenAndEnqueue(savedUser.getId());
@@ -114,7 +113,6 @@ public class QueueServiceTest extends IntegralTestSupport {
             User savedUser = userRepository.save(new User("nickname", "username", "email@email.com", "passwordpassowrd"));
             queueCommandService.issueTokenAndEnqueue(savedUser.getId());
         }
-
 
         String token = queueService.issueTokenAndEnqueue(testUser.getId()).token();
 

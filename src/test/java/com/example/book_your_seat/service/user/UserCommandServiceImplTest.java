@@ -6,29 +6,34 @@ import com.example.book_your_seat.config.security.jwt.SecurityJwtUtil;
 import com.example.book_your_seat.user.controller.dto.*;
 import com.example.book_your_seat.user.domain.Address;
 import com.example.book_your_seat.user.domain.User;
+import com.example.book_your_seat.user.mail.repository.MailRedisRepository;
+import com.example.book_your_seat.user.mail.service.MailService;
 import com.example.book_your_seat.user.repository.AddressRepository;
 import com.example.book_your_seat.user.repository.UserRepository;
 import com.example.book_your_seat.user.service.command.UserCommandService;
 import com.example.book_your_seat.user.service.facade.UserFacade;
 import com.example.book_your_seat.user.service.query.UserQueryService;
+import jakarta.annotation.Resource;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
 
-import static com.example.book_your_seat.user.UserConst.ADDRESS_NOT_OWNED;
+import static com.example.book_your_seat.queue.QueueConst.ALREADY_ISSUED_USER;
+import static com.example.book_your_seat.user.UserConst.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 
-@Transactional
 public class UserCommandServiceImplTest extends IntegralTestSupport {
 
     @Autowired
@@ -43,7 +48,6 @@ public class UserCommandServiceImplTest extends IntegralTestSupport {
     @Autowired
     private UserFacade userFacade;
 
-
     @Autowired
     private UserRepository userRepository;
 
@@ -51,31 +55,40 @@ public class UserCommandServiceImplTest extends IntegralTestSupport {
     private AddressRepository addressRepository;
 
     @Autowired
+    private MailRedisRepository mailRedisRepository;
+
+    @Autowired
+    private MailService mailService;
+
+    @Autowired
     private SecurityJwtUtil securityJwtUtil;
+
+    @Autowired
+    private RedisTemplate<String, String> redisTemplate;
 
     private User existingUser;
 
     @BeforeEach
     void setUp() {
-        // given
         existingUser = new User("nickname", "username", "test@test.com", "passwordpassword");
         userRepository.save(existingUser);
     }
 
     @AfterEach
     void tearDown() {
-        userRepository.deleteAll();
         dbCleaner.cleanDatabase();
+        redisTemplate.getConnectionFactory().getConnection().flushAll();
     }
 
     @Test
     @DisplayName("회원 가입에 성공한다.")
     void joinWithValidDataTest() {
         // given
+        mailRedisRepository.saveVerifiedEmail("test2@test.com");
         JoinRequest joinRequest = new JoinRequest("nickname", "username", "test2@test.com", "passwordpassword");
 
         // when
-        UserResponse response = userCommandService.join(joinRequest);
+        UserResponse response = userFacade.join(joinRequest);
 
         // then
         assertThat(response).isNotNull();
@@ -83,21 +96,59 @@ public class UserCommandServiceImplTest extends IntegralTestSupport {
     }
 
     @Test
-    @DisplayName("중복되는 이메일로는 가입 할 수 없습니다.")
+    @DisplayName("인증되지 않은 이메일로 회원가입 할 경우, 예외가 발생한다.")
+    void joinEmailNotVerifiedTest() {
+        // given
+        JoinRequest joinRequest = new JoinRequest("nickname", "username", "test2@test.com", "passwordpassword");
+
+        //when
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+            userFacade.join(joinRequest);
+        });
+
+        //then
+        assertEquals(EMAIL_NOT_VERIFIED, exception.getMessage());
+    }
+
+    @Test
+    @DisplayName("중복되는 이메일로는 가입 할 수 없다.")
     void joinWithDuplicateEmailTest() {
         // given
-        JoinRequest joinRequest = new JoinRequest("nickname", "username", "test@test.com", "passwordpassword");
+        String mail = "test@test.com";
 
-        // when // then
-        assertThrows(IllegalArgumentException.class, () -> userCommandService.join(joinRequest));
+        //when
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+            userFacade.sendCertMail(mail);
+        });
+
+        //then
+        assertEquals(ALREADY_JOIN_EMAIL, exception.getMessage());
+    }
+
+    @Test
+    @DisplayName("인증 코드가 올바르지 않으면 예외가 발생한다.")
+    void checkCertCodeTest() {
+        //given
+        String mail = "test2@test.com";
+        String certCode = "C12345";
+        String certCode2 = "AABBC";
+        mailRedisRepository.saveEmailCertCode(mail, certCode);
+
+        //when
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+            mailService.checkCertCode(mail, certCode2);
+        });
+
+        //then
+        assertEquals(INVALID_CERT_CODE, exception.getMessage());
     }
 
     @Test
     @DisplayName("로그인에 성공한다.")
     void loginWithValidDataTest() {
+        // given
         JoinRequest joinRequest = new JoinRequest("nickname", "username", "test2@test.com", "passwordpassword");
         Long userId = userCommandService.join(joinRequest).userId();
-        // given
         LoginRequest loginRequest = new LoginRequest("test2@test.com", "passwordpassword");
 
         // when
@@ -115,8 +166,13 @@ public class UserCommandServiceImplTest extends IntegralTestSupport {
         // given
         LoginRequest loginRequest = new LoginRequest("test@test.com", "wrongpassword");
 
-        // when // then
-        assertThrows(IllegalArgumentException.class, () -> userCommandService.login(loginRequest));
+        //when
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+            userCommandService.login(loginRequest);
+        });
+
+        //then
+        assertEquals(INVALID_LOGIN_REQUEST, exception.getMessage());
     }
 
     @Test
@@ -166,9 +222,7 @@ public class UserCommandServiceImplTest extends IntegralTestSupport {
                 () -> userFacade.deleteAddress(existingUser.getId(), addressIdResponse.addressId()));
 
         //then
-        assertThat(exception)
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage(ADDRESS_NOT_OWNED);
+        assertEquals(ADDRESS_NOT_OWNED, exception.getMessage());
     }
 
     @Test

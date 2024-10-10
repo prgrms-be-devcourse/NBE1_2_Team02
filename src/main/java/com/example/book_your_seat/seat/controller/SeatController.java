@@ -21,7 +21,7 @@ public class SeatController {
 
     private final SeatFacade seatFacade;
 
-    @GetMapping
+    @GetMapping("/{concertId}")
     public ResponseEntity<List<SeatResponse>> findAllSeats(
             @PathVariable final Long concertId
     ) {

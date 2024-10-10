@@ -14,7 +14,7 @@ import static com.example.book_your_seat.queue.QueueConst.*;
 
 @Repository
 @RequiredArgsConstructor
-public class QueueRedisRepository implements Serializable {
+public class QueueRedisRepository {
 
     @Resource(name = "redisTemplate")
     private ZSetOperations<String, String> zSet;
