@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/concert")
+@RequestMapping("/api/v1/concerts")
 @RestController
 public class ConcertController {
 
@@ -31,14 +31,6 @@ public class ConcertController {
     public ResponseEntity<ConcertResponse> findById(@PathVariable final Long concertId) {
         ConcertResponse response = concertQueryService.findById(concertId);
         return ResponseEntity.ok(response);
-    }
-
-    @PostMapping
-    public ResponseEntity<Void> addConcert(
-            @Valid @RequestBody final AddConcertRequest request
-    ) {
-        concertCommandService.add(request);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @DeleteMapping("/{concertId}")

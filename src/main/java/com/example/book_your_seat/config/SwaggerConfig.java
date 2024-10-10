@@ -17,35 +17,34 @@ public class SwaggerConfig {
                         .version("1.0.0"));
     }
 
-    //UserController 설정
     @Bean
     public GroupedOpenApi userAPI() {
         return GroupedOpenApi.builder()
-                .group("user API")
+                .group("User API")
                 .pathsToMatch("/api/v1/users/**")
-                .build();
-    }
-
-    @Bean
-    public GroupedOpenApi userCouponAPI() {
-        return GroupedOpenApi.builder()
-                .group("userCoupon API")
-                .pathsToMatch("/api/v1/userCoupons/**")
                 .build();
     }
 
     @Bean
     public GroupedOpenApi couponAPI() {
         return GroupedOpenApi.builder()
-                .group("coupon API")
+                .group("Coupon API")
                 .pathsToMatch("/api/v1/coupons/**")
+                .build();
+    }
+
+    @Bean
+    public GroupedOpenApi adminCouponAPI() {
+        return GroupedOpenApi.builder()
+                .group("Admin Coupon API")
+                .pathsToMatch("/admin/api/v1/coupons/**")
                 .build();
     }
 
     @Bean
     public GroupedOpenApi reservationAPI() {
         return GroupedOpenApi.builder()
-                .group("reservations")
+                .group("Reservation API")
                 .pathsToMatch("/api/v1/reservations/**")
                 .build();
     }
@@ -54,7 +53,7 @@ public class SwaggerConfig {
     public GroupedOpenApi seatAPI() {
         return GroupedOpenApi.builder()
                 .group("Seat API")
-                .pathsToMatch("/api/v1/seat/**")
+                .pathsToMatch("/api/v1/seats/**")
                 .build();
     }
 
@@ -62,8 +61,23 @@ public class SwaggerConfig {
     public GroupedOpenApi concertAPI() {
         return GroupedOpenApi.builder()
                 .group("Concert API")
-                .pathsToMatch("/api/v1/concert")
+                .pathsToMatch("/api/v1/concerts/**")
                 .build();
     }
 
+    @Bean
+    public GroupedOpenApi adminConcertAPI() {
+        return GroupedOpenApi.builder()
+                .group("Admin Concert API")
+                .pathsToMatch("/admin/api/v1/concerts/**")
+                .build();
+    }
+
+    @Bean
+    public GroupedOpenApi queueAPI() {
+        return GroupedOpenApi.builder()
+                .group("Queue API")
+                .pathsToMatch("/api/v1/queues/**")
+                .build();
+    }
 }

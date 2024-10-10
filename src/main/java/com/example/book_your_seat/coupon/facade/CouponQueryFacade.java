@@ -18,17 +18,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CouponQueryFacade implements CouponQueryService {
 
-    private final UserQueryService userQueryService;
     private final UserCouponManager userCouponManager;
-
-    @Override
-    public List<CouponDetailResponse> getCouponDetail(Long userId) {
-        User user = userQueryService.getUserWithUserCoupons(userId);
-        return user.getUserCoupons().stream()
-                .map(UserCoupon::getCoupon)
-                .map(CouponDetailResponse::fromCoupon)
-                .toList();
-    }
 
     @Override
     public CouponDetailResponse getCouponDetailById(Long userCouponId) {

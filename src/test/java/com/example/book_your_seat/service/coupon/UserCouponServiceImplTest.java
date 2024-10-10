@@ -74,7 +74,7 @@ class UserCouponServiceImplTest extends IntegralTestSupport {
 
     @Test
     @DisplayName("동적쿼리를 활용한 페이징 처리(쿠폰 미사용)테스트")
-    public void couponNotUsed() throws Exception {
+    public void couponNotUsed() {
         //given
         PageRequest pageRequest = PageRequest.of(0, 5);
 
@@ -97,7 +97,7 @@ class UserCouponServiceImplTest extends IntegralTestSupport {
 
     @Test
     @DisplayName("동적쿼리를 활용한 페이징 처리(쿠폰 사용)테스트")
-    public void couponUsed() throws Exception {
+    public void couponUsed() {
         //given
         PageRequest pageRequest = PageRequest.of(0, 5);
 
@@ -117,7 +117,7 @@ class UserCouponServiceImplTest extends IntegralTestSupport {
 
     @Test
     @DisplayName("무한 스크롤로 다음 페이지 확인테스트")
-    public void infiniteScrolling() throws Exception {
+    public void infiniteScrolling() {
         //given
         UserCouponRequest userCouponRequest = new UserCouponRequest(true);
 
