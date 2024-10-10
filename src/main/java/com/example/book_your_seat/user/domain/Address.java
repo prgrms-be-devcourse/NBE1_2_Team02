@@ -24,9 +24,6 @@ public class Address extends BaseEntity {
     @Column(name = "address_id")
     private Long id;
 
-    private String postcode;
-    private String detail;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
@@ -34,6 +31,11 @@ public class Address extends BaseEntity {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "reservation_id")
     private Reservation reservation;
+
+    private String postcode;
+
+    private String detail;
+
 
     public Address(String postcode, String detail, User user) {
         this.postcode = postcode;

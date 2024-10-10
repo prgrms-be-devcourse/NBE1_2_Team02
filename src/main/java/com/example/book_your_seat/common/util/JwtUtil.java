@@ -12,33 +12,17 @@ import org.springframework.stereotype.Component;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
-import java.time.Instant;
-import java.util.Date;
 
 import static com.example.book_your_seat.common.util.JwtConst.*;
 
 @Slf4j
 @Component
-public class JwtUtil {
-    private final SecretKey secretKey;
-    private final Integer expirationTime;
+public abstract class JwtUtil {
+    protected final SecretKey secretKey;
     private static final String SIGNATURE_ALGORITHM = Jwts.SIG.HS256.key().build().getAlgorithm();
 
-    JwtUtil(@Value("${jwt.secret}") String secretKey, @Value("${jwt.expiration_time}") Integer expirationTime) {
+    protected JwtUtil(@Value("${jwt.secret}") String secretKey) {
         this.secretKey = new SecretKeySpec(secretKey.getBytes(StandardCharsets.UTF_8), SIGNATURE_ALGORITHM);
-        this.expirationTime = expirationTime;
-    }
-
-    public String createJwt(Long userId) {
-        final Instant now = Instant.now();
-        final Instant expiredAt = now.plusSeconds(expirationTime);
-
-        return Jwts.builder()
-                .claim("userId", userId.toString())
-                .issuedAt(Date.from(now))
-                .expiration(Date.from(expiredAt))
-                .signWith(secretKey)
-                .compact();
     }
 
     public boolean validateToken(String token) {
@@ -56,14 +40,4 @@ public class JwtUtil {
         }
     }
 
-    public Long getUserIdByToken(String token) {
-        String userId = Jwts.parser()
-                .verifyWith(secretKey)
-                .build()
-                .parseSignedClaims(token)
-                .getPayload()
-                .get("userId", String.class);
-
-        return Long.parseLong(userId);
-    }
 }

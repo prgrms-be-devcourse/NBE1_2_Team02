@@ -1,7 +1,7 @@
 package com.example.book_your_seat.service.queue;
 
 import com.example.book_your_seat.IntegralTestSupport;
-import com.example.book_your_seat.common.util.JwtUtil;
+import com.example.book_your_seat.queue.util.QueueJwtUtil;
 import com.example.book_your_seat.queue.controller.dto.QueueResponse;
 import com.example.book_your_seat.queue.service.QueueCommandService;
 import com.example.book_your_seat.queue.service.QueueQueryService;
@@ -41,7 +41,7 @@ public class QueueServiceTest extends IntegralTestSupport {
     private QueueQueryService queueQueryService;
 
     @Autowired
-    private JwtUtil jwtUtil;
+    private QueueJwtUtil queueJwtUtil;
 
     private ZSetOperations<String, String> zSet;
 
@@ -91,7 +91,6 @@ public class QueueServiceTest extends IntegralTestSupport {
     @DisplayName("토큰을 발급하고 진행열이 다 찬 경우 대기열에 넣는다.")
     void issueTokenAndEnqueueWaitingQueueTest() {
         //given
-
         for (int i = 1000; i < 2000; i++) {
             User savedUser = userRepository.save(new User("nickname", "username", "email@email.com", "passwordpassowrd"));
             queueCommandService.issueTokenAndEnqueue(savedUser.getId());
@@ -114,7 +113,6 @@ public class QueueServiceTest extends IntegralTestSupport {
             User savedUser = userRepository.save(new User("nickname", "username", "email@email.com", "passwordpassowrd"));
             queueCommandService.issueTokenAndEnqueue(savedUser.getId());
         }
-
 
         String token = queueService.issueTokenAndEnqueue(testUser.getId()).token();
 
@@ -203,7 +201,7 @@ public class QueueServiceTest extends IntegralTestSupport {
 
         //when 500개 완료했을 때 스케줄러를 실행하면
         for (String token : tokens) {
-            Long tokenUserId = jwtUtil.getUserIdByToken(token);
+            Long tokenUserId = queueJwtUtil.getUserIdByToken(token);
             queueCommandService.removeTokenInProcessingQueue(tokenUserId, token);
         }
 
@@ -240,7 +238,7 @@ public class QueueServiceTest extends IntegralTestSupport {
 
         // 초반 10명을 processing queue에서 삭제
         for (String token : tokens) {
-            Long tokenUserId = jwtUtil.getUserIdByToken(token);
+            Long tokenUserId = queueJwtUtil.getUserIdByToken(token);
             queueCommandService.removeTokenInProcessingQueue(tokenUserId, token);
         }
 

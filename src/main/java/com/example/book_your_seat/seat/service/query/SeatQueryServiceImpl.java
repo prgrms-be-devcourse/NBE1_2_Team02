@@ -12,7 +12,6 @@ import java.time.LocalDate;
 import java.util.List;
 
 import static com.example.book_your_seat.common.constants.Constants.INVALID_CONCERT;
-import static com.example.book_your_seat.seat.SeatConst.SEAT_NOT_FOUND;
 
 @Service
 @RequiredArgsConstructor
@@ -32,13 +31,23 @@ public class SeatQueryServiceImpl implements SeatQueryService {
         validateConcertDate(concert);
         return seatRepository.findByConcertId(concertId);
     }
-    @Override
-    public Integer getSeatPrice(final Long seatId) {
-        Seat seat = seatRepository.findById(seatId).orElseThrow(
-                () -> new IllegalArgumentException(SEAT_NOT_FOUND)
-        );
 
-        return seat.getConcert().getPrice();
+    @Override
+    public List<Integer> findSeatNumbers(List<Long> seatIds) {
+        return seatRepository.findValidSeats(seatIds).stream()
+                .map(Seat::getSeatNumber)
+                .toList();
+    }
+
+    @Override
+    public Integer getSeatPrice(final List<Long> seatsId) {
+        List<Seat> seats = seatRepository.findAllById(seatsId);
+        int concertPrice = seats.get(0).getConcert().getPrice();
+
+        return seats.stream()
+                .map(Seat::getZone)
+                .mapToInt(zone -> zone.applyZonePrice(concertPrice))
+                .sum();
     }
 
     @Override

@@ -1,6 +1,6 @@
 package com.example.book_your_seat.queue.service;
 
-import com.example.book_your_seat.common.util.JwtUtil;
+import com.example.book_your_seat.queue.util.QueueJwtUtil;
 import com.example.book_your_seat.queue.repository.QueueRedisRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -13,14 +13,14 @@ import static com.example.book_your_seat.queue.QueueConst.*;
 @RequiredArgsConstructor
 public class QueueCommandServiceImpl implements QueueCommandService {
     private final QueueRedisRepository queueRedisRepository;
-    public final JwtUtil jwtUtil;
+    public final QueueJwtUtil queueJwtUtil;
 
     /*
     토큰을 발급하고, Waiting Queue에 등록
      */
     @Override
     public String issueTokenAndEnqueue(Long userId) {
-        String token = jwtUtil.createJwt(userId);
+        String token = queueJwtUtil.createJwt(userId);
 
         checkAlreadyIssuedUser(userId);
 
@@ -59,7 +59,7 @@ public class QueueCommandServiceImpl implements QueueCommandService {
      */
     @Override
     public void removeTokenInWaitingQueue(Long userId, String token) {
-        Long tokenUserId = jwtUtil.getUserIdByToken(token);
+        Long tokenUserId = queueJwtUtil.getUserIdByToken(token);
         if(userId.equals(tokenUserId))
             queueRedisRepository.removeTokenInWaitingQueue(userId, token);
         else throw new IllegalArgumentException(REMOVE_BAD_REQUEST);
@@ -70,7 +70,7 @@ public class QueueCommandServiceImpl implements QueueCommandService {
    */
     @Override
     public void removeTokenInProcessingQueue(Long userId, String token) {
-        Long tokenUserId = jwtUtil.getUserIdByToken(token);
+        Long tokenUserId = queueJwtUtil.getUserIdByToken(token);
         if(userId.equals(tokenUserId))
             queueRedisRepository.removeTokenInProcessingQueue(userId, token);
         else throw new IllegalArgumentException(REMOVE_BAD_REQUEST);

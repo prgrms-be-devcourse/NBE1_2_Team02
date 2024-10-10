@@ -1,5 +1,8 @@
 package com.example.book_your_seat.config;
 
+import org.redisson.Redisson;
+import org.redisson.api.RedissonClient;
+import org.redisson.config.Config;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,16 +22,10 @@ public class RedisConfig {
     private String host;
     @Value("${spring.redis.port}")
     private int port;
-    @Value("${spring.redis.password}")
-    private String password;
 
     @Bean
-    public RedisConnectionFactory redisConnectionFactory() {
-        RedisStandaloneConfiguration redisConfiguration = new RedisStandaloneConfiguration();
-        redisConfiguration.setHostName(host);
-        redisConfiguration.setPort(port);
-        redisConfiguration.setPassword(password);
-        return new LettuceConnectionFactory(redisConfiguration);
+    public RedisConnectionFactory redisConnectionFactoryCustom() {
+        return new LettuceConnectionFactory(host, port);
     }
 
     @Bean
@@ -46,6 +43,15 @@ public class RedisConfig {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(connectionFactory);
         return container;
+    }
+
+    // Redisson 클라이언트 설정
+    @Bean
+    public RedissonClient redissonClient() {
+        Config config = new Config();
+        config.useSingleServer()
+                .setAddress("redis://" + host + ":" + port);
+        return Redisson.create(config);
     }
 }
 

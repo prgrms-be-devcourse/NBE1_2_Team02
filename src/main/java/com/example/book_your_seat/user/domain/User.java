@@ -30,8 +30,11 @@ public class User extends BaseEntity {
     private Long id;
 
     private String nickname;
+
     private String username;
+
     private String email;
+
     private String password;
 
     @Enumerated(EnumType.STRING)
@@ -58,6 +61,10 @@ public class User extends BaseEntity {
         this.email = email;
         this.password = password;
         this.userRole = UserRole.USER;
+    }
+
+    public void changeRoleToAdmin() {
+        this.userRole = UserRole.ADMIN;
     }
 
     public void setAddress(Address address) {

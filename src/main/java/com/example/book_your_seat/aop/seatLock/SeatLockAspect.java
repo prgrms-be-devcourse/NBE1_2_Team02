@@ -25,7 +25,7 @@ public class SeatLockAspect {
     private final RedissonClient redissonClient;
     private final AopForTransaction aopForTransaction;
 
-    @Around("@annotation(com.example.book_your_seat.aop.seatLock.SeatLock) && args(request)")
+    @Around("@annotation(com.example.book_your_seat.aop.seatLock.SeatLock) && args(request, ..)")
     public Object lock(final ProceedingJoinPoint joinPoint, final SelectSeatRequest request) throws Throwable {
         // 좌석 ID를 정렬하여 락 키를 생성
         String[] lockKeys = request.seatIds().stream()

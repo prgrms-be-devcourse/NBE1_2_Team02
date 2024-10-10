@@ -12,11 +12,9 @@ import java.util.List;
 public interface SeatFacade {
     List<SeatResponse> findAllSeats(Long concertId);
 
-    SelectSeatResponse selectSeat(final SelectSeatRequest request);
+    SelectSeatResponse selectSeat(final SelectSeatRequest request, Long userId);
 
-    SelectSeatResponse selectSeatRedisson(final SelectSeatRequest request);
-
-    Integer getSeatPrice(final Long seatId);
+    SelectSeatResponse selectSeatRedisson(final SelectSeatRequest request, Long userId);
 
     List<Seat> getSeats(final List<Long> seatIds);
 

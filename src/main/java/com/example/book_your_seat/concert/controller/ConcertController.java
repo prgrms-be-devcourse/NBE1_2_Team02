@@ -1,23 +1,22 @@
 package com.example.book_your_seat.concert.controller;
 
-import com.example.book_your_seat.concert.controller.dto.AddConcertRequest;
 import com.example.book_your_seat.concert.controller.dto.ConcertResponse;
-import com.example.book_your_seat.concert.service.ConcertCommandService;
+import com.example.book_your_seat.concert.controller.dto.ResultRedisConcert;
 import com.example.book_your_seat.concert.service.ConcertQueryService;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
 @RequiredArgsConstructor
-@RequestMapping("/concerts")
+@RequestMapping("/api/v1/concerts")
 @RestController
 public class ConcertController {
 
-    private final ConcertCommandService concertCommandService;
     private final ConcertQueryService concertQueryService;
 
     @GetMapping
@@ -32,17 +31,9 @@ public class ConcertController {
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping
-    public ResponseEntity<Void> addConcert(
-            @Valid @RequestBody final AddConcertRequest request
-    ) {
-        concertCommandService.add(request);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
-    }
-
-    @DeleteMapping("/{concertId}")
-    public ResponseEntity<Void> deleteById(@PathVariable final Long concertId) {
-        concertCommandService.delete(concertId);
-        return ResponseEntity.noContent().build();
+    @GetMapping("/redis/list")
+    public ResponseEntity<ResultRedisConcert> findAllRedisList(){
+        ResultRedisConcert resultRedisConcert = concertQueryService.findUsedRedisAllConcertList();
+        return ResponseEntity.ok(resultRedisConcert);
     }
 }
