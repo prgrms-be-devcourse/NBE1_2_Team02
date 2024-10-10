@@ -1,6 +1,7 @@
 package com.example.book_your_seat.user.service.facade;
 
 import com.example.book_your_seat.user.controller.dto.*;
+import com.example.book_your_seat.user.domain.User;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -16,5 +17,7 @@ public interface UserFacade {
     Boolean sendCertMail(String mail);
 
     Boolean checkCertCode(String mail, String certCode);
+
+    TokenResponse changeRoleToAdminForTest(Long userId);
 
 }

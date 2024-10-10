@@ -63,6 +63,10 @@ public class User extends BaseEntity {
         this.userRole = UserRole.USER;
     }
 
+    public void changeRoleToAdmin() {
+        this.userRole = UserRole.ADMIN;
+    }
+
     public void setAddress(Address address) {
         this.addressList.add(address);
     }

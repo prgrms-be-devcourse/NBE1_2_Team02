@@ -1,9 +1,6 @@
 package com.example.book_your_seat.user.service.facade;
 
-import com.example.book_your_seat.user.controller.dto.AddAddressRequest;
-import com.example.book_your_seat.user.controller.dto.AddressIdResponse;
-import com.example.book_your_seat.user.controller.dto.JoinRequest;
-import com.example.book_your_seat.user.controller.dto.UserResponse;
+import com.example.book_your_seat.user.controller.dto.*;
 import com.example.book_your_seat.user.domain.Address;
 import com.example.book_your_seat.user.domain.User;
 import com.example.book_your_seat.user.mail.service.MailService;
@@ -60,5 +57,11 @@ public class UserFacadeImpl implements UserFacade {
     @Override
     public Boolean checkCertCode(String email, String certCode) {
         return mailService.checkCertCode(email, certCode);
+    }
+
+    @Override
+    public TokenResponse changeRoleToAdminForTest(Long userId) {
+        User user = userQueryService.getUserByUserId(userId);
+        return userCommandService.changeRoleToAdmin(user);
     }
 }
