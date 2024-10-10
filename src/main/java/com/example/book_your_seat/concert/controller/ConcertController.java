@@ -2,11 +2,13 @@ package com.example.book_your_seat.concert.controller;
 
 import com.example.book_your_seat.concert.controller.dto.ConcertResponse;
 import com.example.book_your_seat.concert.controller.dto.ResultRedisConcert;
-import com.example.book_your_seat.concert.service.ConcertCommandService;
 import com.example.book_your_seat.concert.service.ConcertQueryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
@@ -15,7 +17,6 @@ import java.util.List;
 @RestController
 public class ConcertController {
 
-    private final ConcertCommandService concertCommandService;
     private final ConcertQueryService concertQueryService;
 
     @GetMapping
@@ -28,12 +29,6 @@ public class ConcertController {
     public ResponseEntity<ConcertResponse> findById(@PathVariable final Long concertId) {
         ConcertResponse response = concertQueryService.findById(concertId);
         return ResponseEntity.ok(response);
-    }
-
-    @DeleteMapping("/{concertId}")
-    public ResponseEntity<Void> deleteById(@PathVariable final Long concertId) {
-        concertCommandService.delete(concertId);
-        return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/redis/list")
