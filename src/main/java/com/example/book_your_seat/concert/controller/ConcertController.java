@@ -1,20 +1,17 @@
 package com.example.book_your_seat.concert.controller;
 
-import com.example.book_your_seat.concert.controller.dto.AddConcertRequest;
 import com.example.book_your_seat.concert.controller.dto.ConcertResponse;
 import com.example.book_your_seat.concert.controller.dto.ResultRedisConcert;
 import com.example.book_your_seat.concert.service.ConcertCommandService;
 import com.example.book_your_seat.concert.service.ConcertQueryService;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/concert")
+@RequestMapping("/api/v1/concerts")
 @RestController
 public class ConcertController {
 
@@ -31,14 +28,6 @@ public class ConcertController {
     public ResponseEntity<ConcertResponse> findById(@PathVariable final Long concertId) {
         ConcertResponse response = concertQueryService.findById(concertId);
         return ResponseEntity.ok(response);
-    }
-
-    @PostMapping
-    public ResponseEntity<Void> addConcert(
-            @Valid @RequestBody final AddConcertRequest request
-    ) {
-        concertCommandService.add(request);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @DeleteMapping("/{concertId}")

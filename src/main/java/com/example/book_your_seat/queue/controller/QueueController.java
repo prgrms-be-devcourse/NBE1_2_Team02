@@ -24,7 +24,7 @@ public class QueueController {
                 .body(queueService.issueTokenAndEnqueue(user.getId()));
     }
 
-    @GetMapping()
+    @GetMapping
     public ResponseEntity<QueueResponse> getQueueInfoWithToken(@LoginUser User user,
                                                                @RequestParam("token") String token)  {
         return ResponseEntity.ok()
