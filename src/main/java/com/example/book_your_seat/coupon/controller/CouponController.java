@@ -5,7 +5,6 @@ import com.example.book_your_seat.coupon.controller.dto.UserCouponIdResponse;
 import com.example.book_your_seat.coupon.controller.dto.UserCouponRequest;
 import com.example.book_your_seat.coupon.controller.dto.UserCouponResponse;
 import com.example.book_your_seat.coupon.facade.CouponCommandService;
-import com.example.book_your_seat.coupon.facade.CouponQueryService;
 import com.example.book_your_seat.coupon.facade.UserCouponService;
 import com.example.book_your_seat.user.domain.User;
 import lombok.RequiredArgsConstructor;
