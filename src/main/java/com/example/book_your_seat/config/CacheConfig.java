@@ -1,5 +1,6 @@
 package com.example.book_your_seat.config;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.cache.CacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,17 +15,17 @@ import java.time.Duration;
 
 @Configuration
 public class CacheConfig {
+
     @Bean
-    public CacheManager cacheManager(RedisConnectionFactory factory) {
+    public CacheManager cacheManager(RedisConnectionFactory redisConnectionFactory) {
         RedisCacheConfiguration redisCacheConfiguration = RedisCacheConfiguration.defaultCacheConfig()
                 .serializeKeysWith(RedisSerializationContext.SerializationPair.fromSerializer(new StringRedisSerializer()))
                 .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(new GenericJackson2JsonRedisSerializer()))
-                .entryTtl(Duration.ofSeconds(30)); // ttl 시간 30초로 조정
-
+                .entryTtl(Duration.ofSeconds(30));
 
         return RedisCacheManager
                 .RedisCacheManagerBuilder
-                .fromConnectionFactory(factory)
+                .fromConnectionFactory(redisConnectionFactory)
                 .cacheDefaults(redisCacheConfiguration)
                 .build();
     }
