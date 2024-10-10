@@ -1,5 +1,6 @@
 package com.example.book_your_seat.payment.controller;
 
+import com.example.book_your_seat.common.service.SlackFacade;
 import com.example.book_your_seat.config.security.auth.LoginUser;
 import com.example.book_your_seat.payment.controller.dto.request.FinalPriceRequest;
 import com.example.book_your_seat.payment.controller.dto.request.TossConfirmRequest;
@@ -15,11 +16,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
 @RestController
@@ -29,6 +26,7 @@ public class PaymentController {
     private final TossApiService tossApiService;
     private final PaymentFacade paymentFacade;
     private final SeatRedisService seatRedisService;
+    private final SlackFacade slackFacade;
 
     @PostMapping("/totalPrice")
     public ResponseEntity<FinalPriceResponse> getTotalPrice(
@@ -54,6 +52,8 @@ public class PaymentController {
 
         PaymentCommand command = PaymentCommand.from(request, confirmResponse);
         ConfirmResponse response = paymentFacade.processPayment(command, user.getId(), token);
+
+        slackFacade.sendPaymentSuccessMessage(response);
         return ResponseEntity.ok(response);
     }
 }
