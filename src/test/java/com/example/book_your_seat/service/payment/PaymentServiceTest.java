@@ -28,6 +28,7 @@ import com.example.book_your_seat.user.repository.AddressRepository;
 import com.example.book_your_seat.user.repository.UserRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,6 +64,11 @@ class PaymentServiceTest extends IntegralTestSupport {
     @Autowired
     private ConcertCommandService concertCommandService;
 
+    @BeforeEach
+    void setUp() {
+        dbCleaner.cleanDatabase();
+    }
+
     @Autowired
     private QueueRedisRepository queueRedisRepository;
 
@@ -79,7 +85,7 @@ class PaymentServiceTest extends IntegralTestSupport {
     }
 
     @Test
-    @DisplayName("3333원 짜리 공연을 10%할인 쿠폰을 적용하여 최종금액 계산시 2999원")
+    @DisplayName("3333원 짜리 공연을 일반 좌석에 10%할인 쿠폰을 적용하여 최종금액 계산시 2999원")
     void getFinalPriceTest() {
         // given
         User user = userRepository.save(new User("1234", "!234", "1234", "1234"));
@@ -90,7 +96,7 @@ class PaymentServiceTest extends IntegralTestSupport {
 
         Concert concert = concertRepository.save(new Concert("1234", LocalDate.now(), LocalDate.now(), 3333, 1));
 
-        Seat seat = seatRepository.save(new Seat(concert, 1));
+        Seat seat = seatRepository.save(new Seat(concert, 61));
 
         FinalPriceRequest request = new FinalPriceRequest(Collections.singletonList(seat.getId()), userCoupon.getId());
 
@@ -99,6 +105,31 @@ class PaymentServiceTest extends IntegralTestSupport {
 
         // then
         Assertions.assertThat(response.finalPrice()).isEqualTo(BigDecimal.valueOf(2999));
+    }
+
+    @Test
+    @DisplayName("10000원 짜리 공연을 스페셜 좌석 1개, 프리미엄 좌석 1개 예매하고 10% 쿠폰을 적용하면 45000원이 책정된다.")
+    void seatZonePriceTest() {
+        // given
+        User user = userRepository.save(new User("1234", "!234", "1234", "1234"));
+
+        Coupon coupon = couponRepository.save(new Coupon(1, DiscountRate.TEN, LocalDate.now().plusDays(30)));
+
+        UserCoupon userCoupon = userCouponRepository.save(new UserCoupon(user, coupon));
+
+        Concert concert = concertRepository.save(new Concert("1234", LocalDate.now(), LocalDate.now(), 10000, 1));
+
+        Seat seat1 = seatRepository.save(new Seat(concert, 1));
+        Seat seat2 = seatRepository.save(new Seat(concert, 31));
+
+        FinalPriceRequest request = new FinalPriceRequest(List.of(seat1.getId(), seat2.getId()), userCoupon.getId());
+
+
+        // when
+        FinalPriceResponse response = paymentFacade.getFinalPrice(request);
+
+        // then
+        Assertions.assertThat(response.finalPrice()).isEqualTo(BigDecimal.valueOf(45000));
     }
 
     @DisplayName("Toss 에서 결제가 성공하면 결제 기록을 저장하고 결제된 정보를 사용자에게 전달한다")

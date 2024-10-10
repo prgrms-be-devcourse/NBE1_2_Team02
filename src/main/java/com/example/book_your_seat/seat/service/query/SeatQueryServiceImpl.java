@@ -41,12 +41,14 @@ public class SeatQueryServiceImpl implements SeatQueryService {
     }
 
     @Override
-    public Integer getSeatPrice(final Long seatId) {
-        Seat seat = seatRepository.findById(seatId).orElseThrow(
-                () -> new IllegalArgumentException(SEAT_NOT_FOUND)
-        );
+    public Integer getSeatPrice(final List<Long> seatsId) {
+        List<Seat> seats = seatRepository.findAllById(seatsId);
+        int concertPrice = seats.get(0).getConcert().getPrice();
 
-        return seat.getConcert().getPrice();
+        return seats.stream()
+                .map(Seat::getZone)
+                .mapToInt(zone -> zone.applyZonePrice(concertPrice))
+                .sum();
     }
 
     @Override

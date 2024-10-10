@@ -39,7 +39,7 @@ class SeatQueryServiceTest extends IntegralTestSupport {
                 LocalDate.of(2024, 9, 24),
                 LocalDate.of(2024, 9, 25),
                 10000,
-                120
+                20
         );
 
         concertId = concertCommandService.add(request);
