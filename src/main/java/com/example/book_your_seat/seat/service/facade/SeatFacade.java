@@ -16,7 +16,6 @@ public interface SeatFacade {
 
     SelectSeatResponse selectSeatRedisson(final SelectSeatRequest request, Long userId);
 
-
     List<Seat> getSeats(final List<Long> seatIds);
 
     void seatReservationComplete(final List<Seat> seats, final Reservation reservation);

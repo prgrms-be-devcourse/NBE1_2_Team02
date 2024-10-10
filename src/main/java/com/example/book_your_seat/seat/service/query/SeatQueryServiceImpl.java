@@ -12,7 +12,6 @@ import java.time.LocalDate;
 import java.util.List;
 
 import static com.example.book_your_seat.common.constants.Constants.INVALID_CONCERT;
-import static com.example.book_your_seat.seat.SeatConst.SEAT_NOT_FOUND;
 
 @Service
 @RequiredArgsConstructor

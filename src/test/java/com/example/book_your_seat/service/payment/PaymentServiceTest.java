@@ -4,7 +4,6 @@ import com.example.DbCleaner;
 import com.example.book_your_seat.IntegralTestSupport;
 import com.example.book_your_seat.concert.domain.Concert;
 import com.example.book_your_seat.concert.repository.ConcertRepository;
-import com.example.book_your_seat.concert.service.ConcertCommandService;
 import com.example.book_your_seat.coupon.domain.Coupon;
 import com.example.book_your_seat.coupon.domain.DiscountRate;
 import com.example.book_your_seat.coupon.domain.UserCoupon;
@@ -57,12 +56,8 @@ class PaymentServiceTest extends IntegralTestSupport {
     private AddressRepository addressRepository;
     @Autowired
     private SeatRepository seatRepository;
-
     @Autowired
     private PaymentFacade paymentFacade;
-
-    @Autowired
-    private ConcertCommandService concertCommandService;
 
     @BeforeEach
     void setUp() {
