@@ -21,6 +21,7 @@ import com.example.book_your_seat.seat.service.query.SeatQueryService;
 import com.example.book_your_seat.user.domain.Address;
 import com.example.book_your_seat.user.domain.User;
 import com.example.book_your_seat.user.service.query.AddressQueryService;
+import com.example.book_your_seat.user.service.query.UserQueryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -59,7 +60,7 @@ public class PaymentFacadeImpl implements PaymentFacade {
         couponCommandService.useUserCoupon(command.userCouponId);
         ConcertResponse concert = concertQueryService.findById(command.concertId);
 
-      
+
         List<Integer> seatNumbers = seatQueryService.findSeatNumbers(command.seatIds);
         queueService.dequeueProcessingQueue(userId, token);
 
@@ -102,10 +103,10 @@ public class PaymentFacadeImpl implements PaymentFacade {
     @Override
     public FinalPriceResponse getFinalPrice(final FinalPriceRequest request) {
 
-        Integer concertPrice = seatQueryService.getSeatPrice(request.seatIds().get(0));
+        Integer originPrice = seatQueryService.getSeatPrice(request.seatIds());
         DiscountRate discountRate = couponQueryService.getDiscountRate(request.userCouponId());
 
-        return new FinalPriceResponse(calculateDiscountPrice(concertPrice, discountRate));
+        return new FinalPriceResponse(calculateDiscountPrice(originPrice, discountRate));
     }
 
     private BigDecimal calculateDiscountPrice(Integer seatPrice, DiscountRate discountRate) {

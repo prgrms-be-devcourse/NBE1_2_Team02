@@ -20,5 +20,9 @@ public final class ConcertConst {
 
     public static final Integer ZERO = 0;
 
+    public static final String CONCERT_NAME = "콘서트 제목";
+
+    public static final String CONCERT_TIME = "콘서트 시간";
+
     private ConcertConst() {}
 }
