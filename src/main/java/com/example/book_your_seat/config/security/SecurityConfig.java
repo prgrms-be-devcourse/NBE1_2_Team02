@@ -52,7 +52,7 @@ public class SecurityConfig {
         //경로별 인가
         http
                 .authorizeHttpRequests((auth) -> auth
-                        .requestMatchers(HttpMethod.GET, "/swagger-ui/**", "/api-docs/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/swagger-ui/**", "/api-docs/**", "/v3/api-docs/**").permitAll()
                         .requestMatchers("/api/v1/users","/api/v1/users/login").permitAll()
                         .requestMatchers("/admin/**").hasAnyAuthority(UserRole.ADMIN.getName())
                         .anyRequest().authenticated())
