@@ -22,6 +22,7 @@ public class SeatCommandServiceImpl implements SeatCommandService {
 
     private final SeatRepository seatRepository;
 
+    @Override
     public List<Seat> selectSeat(final SelectSeatRequest request) {
         List<Seat> seats = seatRepository.findAllByIdWithLock(request.seatIds());
 
@@ -36,6 +37,27 @@ public class SeatCommandServiceImpl implements SeatCommandService {
         return seatRepository.saveAll(seats);
     }
 
+    @Override
+    public List<Seat> selectSeatWrite(SelectSeatRequest request) {
+        List<Seat> seats = seatRepository.findAllByIdWithWrite(request.seatIds());
+
+        seats.forEach(seat -> {
+            if (seat.isSold()) {
+                log.info("seatId = {}", seat.getId());
+                log.info("seat isSold = {}", seat.isSold());
+                throw new IllegalArgumentException(SeatConst.SEAT_SOLD);
+            }
+            seat.selectSeat();
+        });
+        return seatRepository.saveAll(seats);
+    }
+
+    @Override
+    public int selectSeatRefactor(SelectSeatRequest request) {
+        return seatRepository.findAllByIdWithRefactor(request.seatIds());
+    }
+
+    @Override
     public List<Seat> selectSeatRedisson(final SelectSeatRequest request) {
         List<Seat> seats = seatRepository.findAllById(request.seatIds());
 

@@ -39,5 +39,4 @@ public class SeatController {
                 .status(HttpStatus.OK)
                 .body(selectSeatResponse);
     }
-
 }

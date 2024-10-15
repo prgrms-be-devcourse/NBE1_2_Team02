@@ -12,6 +12,7 @@ import com.example.book_your_seat.user.domain.Address;
 import com.example.book_your_seat.user.domain.User;
 import com.example.book_your_seat.user.repository.AddressRepository;
 import com.example.book_your_seat.user.repository.UserRepository;
+import jakarta.persistence.PersistenceContext;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -49,6 +50,7 @@ public class PaymentQueryServiceImpl implements PaymentQueryService {
     public BigDecimal applyCoupon(BigDecimal originalPrice, Long userCouponId) {
         if (userCouponId == null) {
             return originalPrice;
+
         }
 
         return userCouponRepository.findByIdAndIsUsed(userCouponId, false)

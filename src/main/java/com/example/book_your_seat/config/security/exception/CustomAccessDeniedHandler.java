@@ -14,7 +14,7 @@ import java.util.Map;
 
 import static com.example.book_your_seat.config.security.exception.SecurityConst.FORBIDDEN_MESSAGE;
 
-@Component
+//@Component
 public class CustomAccessDeniedHandler implements AccessDeniedHandler {
 
     private final ObjectMapper objectMapper = new ObjectMapper();

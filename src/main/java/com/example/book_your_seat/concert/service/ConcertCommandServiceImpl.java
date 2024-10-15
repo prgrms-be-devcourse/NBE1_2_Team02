@@ -3,7 +3,6 @@ package com.example.book_your_seat.concert.service;
 
 import com.example.book_your_seat.concert.domain.Concert;
 import com.example.book_your_seat.concert.controller.dto.AddConcertRequest;
-import com.example.book_your_seat.concert.controller.dto.ConcertResponse;
 import com.example.book_your_seat.concert.repository.ConcertRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

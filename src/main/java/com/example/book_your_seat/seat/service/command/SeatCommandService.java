@@ -11,8 +11,14 @@ public interface SeatCommandService {
 
     List<Seat> selectSeat(final SelectSeatRequest request);
 
+    List<Seat> selectSeatWrite(final SelectSeatRequest request);
+
+    int selectSeatRefactor(SelectSeatRequest request);
+
     List<Seat> selectSeatRedisson(final SelectSeatRequest request);
 
     void seatReservationComplete(final List<Seat> seats, final Reservation reservation);
+
+
 
 }

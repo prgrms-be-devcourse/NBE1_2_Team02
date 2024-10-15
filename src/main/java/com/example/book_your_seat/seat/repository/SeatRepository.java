@@ -1,12 +1,10 @@
 package com.example.book_your_seat.seat.repository;
 
 import com.example.book_your_seat.seat.domain.Seat;
+import feign.Param;
 import jakarta.persistence.LockModeType;
 import jakarta.persistence.QueryHint;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Lock;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.jpa.repository.QueryHints;
+import org.springframework.data.jpa.repository.*;
 
 import java.util.List;
 
@@ -16,9 +14,21 @@ public interface SeatRepository extends JpaRepository<Seat, Long> {
     List<Seat> findByConcertId(Long concertId);
 
     @Lock(LockModeType.PESSIMISTIC_READ)
-    @QueryHints({@QueryHint(name = "javax.persistence.lock.timeout", value = "3000")})
+//    @QueryHints({@QueryHint(name = "javax.persistence.lock.timeout", value = "3000")})
     @Query("SELECT s FROM Seat s WHERE s.id IN :seatIds")
     List<Seat> findAllByIdWithLock(List<Long> seatIds);
+
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
+//    @QueryHints({@QueryHint(name = "javax.persistence.lock.timeout", value = "3000")})
+    @Query("SELECT s FROM Seat s WHERE s.id IN :seatIds")
+    List<Seat> findAllByIdWithWrite(List<Long> seatIds);
+
+
+//    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    @Modifying
+    @Query("UPDATE Seat s SET s.isSold = true WHERE s.id IN :seatIds AND s.isSold = false ")
+    int findAllByIdWithRefactor(@Param("seatIds") List<Long> seatIds);
+
 
     @Query("SELECT s FROM Seat  s WHERE s.id IN :seatIds")
     List<Seat> findAllById(List<Long> seatIds);

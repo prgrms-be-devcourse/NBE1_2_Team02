@@ -73,8 +73,9 @@ public class Concert extends BaseEntity {
     }
 
     private void initializeSeats() {
-        IntStream.range(1, TOTAL_STOCK + 1)
-                .forEach(i -> new Seat(this, i));
+        IntStream.rangeClosed(1, TOTAL_STOCK)
+                .mapToObj(i -> new Seat(this, i))
+                .forEach(this::addSeat);
     }
 
     public void addLikeConcert(LikeConcert likeConcert) {
