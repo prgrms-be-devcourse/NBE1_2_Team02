@@ -13,7 +13,7 @@ import com.example.book_your_seat.payment.domain.Payment;
 import com.example.book_your_seat.payment.domain.PaymentStatus;
 import com.example.book_your_seat.payment.service.PaymentCommandService;
 import com.example.book_your_seat.payment.service.dto.PaymentCommand;
-import com.example.book_your_seat.queue.service.facade.QueueService;
+import com.example.book_your_seat.queue.service.facade.QueueFacade;
 import com.example.book_your_seat.reservation.domain.Reservation;
 import com.example.book_your_seat.reservation.domain.ReservationStatus;
 import com.example.book_your_seat.reservation.service.ReservationCommandService;
@@ -45,7 +45,7 @@ public class PaymentFacadeImpl implements PaymentFacade {
     private final ConcertQueryService concertQueryService;
     private final SeatQueryService seatQueryService;
 
-    private final QueueService queueService;
+    private final QueueFacade queueFacade;
 
     @Override
     public ConfirmResponse processPayment(final PaymentCommand command, Long userId, String token) {
@@ -61,7 +61,7 @@ public class PaymentFacadeImpl implements PaymentFacade {
 
 
         List<Integer> seatNumbers = seatQueryService.findSeatNumbers(command.seatIds);
-        queueService.dequeueProcessingQueue(userId, token);
+        queueFacade.dequeueProcessingQueue(userId, token);
 
         return ConfirmResponse.builder()
                 .userId(userId)
