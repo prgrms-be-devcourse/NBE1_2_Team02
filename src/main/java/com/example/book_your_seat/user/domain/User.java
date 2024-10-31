@@ -1,7 +1,7 @@
 package com.example.book_your_seat.user.domain;
 
 import com.example.book_your_seat.common.entity.BaseEntity;
-import com.example.book_your_seat.concert.domain.LikeConcert;
+import com.example.book_your_seat.likeconcert.domain.LikeConcert;
 import com.example.book_your_seat.coupon.domain.UserCoupon;
 import com.example.book_your_seat.reservation.domain.Reservation;
 import com.example.book_your_seat.review.domain.Review;

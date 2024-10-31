@@ -1,6 +1,7 @@
 package com.example.book_your_seat.concert.domain;
 
 import com.example.book_your_seat.common.entity.BaseEntity;
+import com.example.book_your_seat.likeconcert.domain.LikeConcert;
 import com.example.book_your_seat.review.domain.Review;
 import com.example.book_your_seat.seat.domain.Seat;
 import jakarta.persistence.*;
