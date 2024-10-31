@@ -1,7 +1,7 @@
 package com.example.book_your_seat.concert.controller;
 
 import com.example.book_your_seat.concert.controller.dto.AddConcertRequest;
-import com.example.book_your_seat.concert.service.ConcertCommandService;
+import com.example.book_your_seat.concert.service.command.ConcertCommandService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

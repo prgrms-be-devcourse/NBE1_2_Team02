@@ -6,9 +6,9 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import com.example.book_your_seat.IntegralTestSupport;
 import com.example.book_your_seat.coupon.domain.Coupon;
 import com.example.book_your_seat.coupon.domain.DiscountRate;
-import com.example.book_your_seat.coupon.facade.CouponCommandFacade;
 import com.example.book_your_seat.coupon.repository.CouponRepository;
 import com.example.book_your_seat.coupon.repository.UserCouponRepository;
+import com.example.book_your_seat.coupon.service.facade.CouponFacade;
 import com.example.book_your_seat.user.domain.User;
 import com.example.book_your_seat.user.repository.UserRepository;
 import java.time.LocalDate;
@@ -24,8 +24,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class PessimisticTest extends IntegralTestSupport {
+
     @Autowired
-    private CouponCommandFacade couponCommandServiceImpl;
+    private CouponFacade couponFacade;
 
     @Autowired
     private CouponRepository couponRepository;
@@ -69,7 +70,7 @@ public class PessimisticTest extends IntegralTestSupport {
         for (User testUser : testUsers) {
             executorService.submit(() -> {
                 try {
-                    couponCommandServiceImpl.issueCouponWithPessimistic(testUser.getId(), testCoupon.getId());
+                    couponFacade.issueCouponWithPessimistic(testUser.getId(), testCoupon.getId());
                 } finally {
                     latch.countDown();
                 }
@@ -98,7 +99,7 @@ public class PessimisticTest extends IntegralTestSupport {
         for (User testUser : testUsers) {
             executorService.submit(() -> {
                 try {
-                    assertThrows(IllegalArgumentException.class, () ->  couponCommandServiceImpl.issueCouponWithPessimistic(testUser.getId(), testCoupon.getId()));
+                    assertThrows(IllegalArgumentException.class, () ->  couponFacade.issueCouponWithPessimistic(testUser.getId(), testCoupon.getId()));
                 } finally {
                     latch.countDown();
                 }

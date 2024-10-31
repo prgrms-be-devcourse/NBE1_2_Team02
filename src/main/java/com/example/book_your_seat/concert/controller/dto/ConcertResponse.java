@@ -1,7 +1,6 @@
 package com.example.book_your_seat.concert.controller.dto;
 
 import com.example.book_your_seat.concert.domain.Concert;
-
 import com.example.book_your_seat.review.domain.Review;
 import com.example.book_your_seat.seat.domain.Seat;
 import lombok.Getter;

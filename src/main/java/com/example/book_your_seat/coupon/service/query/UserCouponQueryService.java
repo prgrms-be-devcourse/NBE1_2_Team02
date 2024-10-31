@@ -1,4 +1,4 @@
-package com.example.book_your_seat.coupon.manager;
+package com.example.book_your_seat.coupon.service.query;
 
 import com.example.book_your_seat.coupon.domain.UserCoupon;
 import com.example.book_your_seat.coupon.repository.UserCouponRepository;
@@ -11,7 +11,7 @@ import static com.example.book_your_seat.coupon.CouponConst.ALREADY_ISSUED_USER;
 @Component
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
-public class UserCouponManager {
+public class UserCouponQueryService {
 
     private final UserCouponRepository userCouponRepository;
 
