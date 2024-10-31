@@ -1,7 +1,6 @@
 package com.example.book_your_seat.concert.domain;
 
 import com.example.book_your_seat.common.entity.BaseEntity;
-import com.example.book_your_seat.likeconcert.domain.LikeConcert;
 import com.example.book_your_seat.review.domain.Review;
 import com.example.book_your_seat.seat.domain.Seat;
 import jakarta.persistence.*;
@@ -40,9 +39,6 @@ public class Concert extends BaseEntity {
 
     private LocalDateTime reservationStartAt;
 
-//    @OneToMany(mappedBy = "concert", cascade = CascadeType.ALL)
-//    private final List<LikeConcert> likeConcerts = new ArrayList<>();
-
     @OneToMany(mappedBy = "concert", cascade = CascadeType.ALL)
     private final List<Review> reviews = new ArrayList<>();
 
@@ -74,8 +70,9 @@ public class Concert extends BaseEntity {
     }
 
     private void initializeSeats() {
-        IntStream.range(1, TOTAL_STOCK + 1)
-                .forEach(i -> new Seat(this, i));
+        IntStream.rangeClosed(1, TOTAL_STOCK)
+                .mapToObj(i -> new Seat(this, i))
+                .forEach(this::addSeat);
     }
 
     public void addReview(Review review) {
