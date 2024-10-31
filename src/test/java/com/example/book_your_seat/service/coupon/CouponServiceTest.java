@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDate;
 import java.util.Optional;
+import org.springframework.transaction.annotation.Transactional;
 
 import static com.example.book_your_seat.coupon.CouponConst.ALREADY_ISSUED_USER;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -72,6 +73,7 @@ public class CouponServiceTest extends IntegralTestSupport {
     }
 
     @Test
+    @Transactional
     @DisplayName("쿠폰을 한 개 생성한다.")
     void issueCouponTest() {
         //given
@@ -91,6 +93,7 @@ public class CouponServiceTest extends IntegralTestSupport {
     }
 
     @Test
+    @Transactional
     @DisplayName("쿠폰 중복 발급 시도시 예외 처리")
     void issueCouponFailTest() {
         //given
