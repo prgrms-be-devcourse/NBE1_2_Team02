@@ -31,7 +31,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 
-public class UserCommandServiceImplTest extends IntegralTestSupport {
+public class UserCommandServiceTest extends IntegralTestSupport {
 
     @Autowired
     private DbCleaner dbCleaner;
