@@ -4,8 +4,8 @@ import com.example.book_your_seat.config.security.auth.LoginUser;
 import com.example.book_your_seat.coupon.controller.dto.UserCouponIdResponse;
 import com.example.book_your_seat.coupon.controller.dto.UserCouponRequest;
 import com.example.book_your_seat.coupon.controller.dto.UserCouponResponse;
-import com.example.book_your_seat.coupon.facade.CouponCommandService;
-import com.example.book_your_seat.coupon.facade.UserCouponService;
+import com.example.book_your_seat.coupon.service.facade.CouponFacade;
+import com.example.book_your_seat.coupon.service.facade.UserCouponFacade;
 import com.example.book_your_seat.user.domain.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -19,8 +19,9 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class CouponController {
 
-    private final CouponCommandService couponCommandService;
-    private final UserCouponService userCouponService;
+    private final UserCouponFacade userCouponFacade;
+    private final CouponFacade couponFacade;
+
 
     @PostMapping("/{couponId}")
     public ResponseEntity<UserCouponIdResponse> issueCoupon(
@@ -29,14 +30,14 @@ public class CouponController {
     ) {
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(couponCommandService.issueCouponWithPessimistic(user.getId(), couponId));
+                .body(couponFacade.issueCouponWithPessimistic(user.getId(), couponId));
     }
 
     @GetMapping("/user")
     public Slice<UserCouponResponse> getUserCoupons(@LoginUser User user,
                                                     UserCouponRequest userCouponRequest,
                                                     Pageable pageable) {
-        return userCouponService.getUserCoupons(userCouponRequest, user.getId(), pageable);
+        return userCouponFacade.getUserCoupons(userCouponRequest, user.getId(), pageable);
     }
 
 }
