@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import static com.example.book_your_seat.likeconcert.LikeConst.DUPLICATE_LIKE;
+import static com.example.book_your_seat.likeconcert.LikeConst.INVALID_LIKE;
 
 @Service
 @RequiredArgsConstructor
@@ -30,6 +31,15 @@ public class LikeConcertCommandService {
     }
 
     public void delete(Long likeConcertId) {
+        validateExists(likeConcertId);
         likeConcertRepository.deleteById(likeConcertId);
+    }
+
+    private void validateExists(Long likeConcertId) {
+        boolean isNotExists = likeConcertRepository.existsById(likeConcertId);
+
+        if (isNotExists) {
+            throw new IllegalArgumentException(INVALID_LIKE);
+        }
     }
 }
