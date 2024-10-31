@@ -1,4 +1,4 @@
-package com.example.book_your_seat.seat.service.redis;
+package com.example.book_your_seat.seat.redis;
 
 import com.example.book_your_seat.seat.domain.Seat;
 import com.example.book_your_seat.seat.repository.SeatRepository;

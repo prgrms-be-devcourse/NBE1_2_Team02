@@ -1,9 +1,21 @@
 package com.example.book_your_seat.user.service.query;
 
 import com.example.book_your_seat.user.domain.Address;
+import com.example.book_your_seat.user.repository.AddressRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
-public interface AddressQueryService {
+import static com.example.book_your_seat.user.UserConst.ADDRESS_NOT_FOUND;
 
-    Address getAddressWithUser(Long addressId);
+@Service
+@RequiredArgsConstructor
+public class AddressQueryService {
+
+    private final AddressRepository addressRepository;
+    
+    public Address getAddressWithUser(Long addressId) {
+        return addressRepository.findByIdWithUser(addressId)
+                .orElseThrow(() -> new IllegalArgumentException(ADDRESS_NOT_FOUND));
+    }
 
 }
