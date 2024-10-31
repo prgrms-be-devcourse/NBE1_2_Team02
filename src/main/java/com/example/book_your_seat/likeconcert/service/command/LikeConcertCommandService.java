@@ -5,6 +5,8 @@ import com.example.book_your_seat.likeconcert.repository.LikeConcertRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import static com.example.book_your_seat.likeconcert.LikeConst.DUPLICATE_LIKE;
+
 @Service
 @RequiredArgsConstructor
 public class LikeConcertCommandService {
@@ -12,9 +14,19 @@ public class LikeConcertCommandService {
 
     private final LikeConcertRepository likeConcertRepository;
 
-    public void like(Long userId, Long concertId) {
+    public Long like(Long userId, Long concertId) {
         LikeConcert likeConcert = new LikeConcert(userId, concertId);
-        likeConcertRepository.save(likeConcert);
+        validateDuplicate(userId, concertId);
+
+        return likeConcertRepository.save(likeConcert).getId();
+    }
+
+    private void validateDuplicate(Long userId, Long concertId) {
+        boolean isAlreadyExists = likeConcertRepository.existsByUserIdAndConcertId(userId, concertId);
+
+        if (isAlreadyExists) {
+            throw new IllegalArgumentException(DUPLICATE_LIKE);
+        }
     }
 
     public void delete(Long likeConcertId) {

@@ -4,11 +4,8 @@ import com.example.book_your_seat.likeconcert.domain.LikeConcert;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
-
 @Repository
-public interface LikeConcertRepository extends JpaRepository<LikeConcert, Long> {
+public interface LikeConcertRepository extends JpaRepository<LikeConcert, Long>, LikeConcertRepositoryCustom {
 
-    List<LikeConcert> findByUserId(Long userId);
-
+    boolean existsByUserIdAndConcertId(Long userId, Long concertId);
 }

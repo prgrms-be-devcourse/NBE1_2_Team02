@@ -20,22 +20,26 @@ public class LikeConcertController {
     private final LikeConcertFacade likeConcertFacade;
 
     @PostMapping
-    public ResponseEntity<Void> like(@LoginUser User user,
-                                     @RequestBody AddLikeRequest request
+    public ResponseEntity<Long> like(
+            @LoginUser User user,
+            @RequestBody AddLikeRequest request
     ) {
-        likeConcertFacade.addLike(user.getId(), request.concertId());
-        return ResponseEntity.noContent().build();
+        Long likeId = likeConcertFacade.addLike(user.getId(), request.concertId());
+        return ResponseEntity.ok(likeId);
     }
 
-    @GetMapping
-    public ResponseEntity<List<ConcertListResponse>> findAll(@LoginUser User user) {
-        List<ConcertListResponse> likesByUserId = likeConcertFacade.findLikesByUserId(user.getId());
+    @GetMapping("/{likeId}")
+    public ResponseEntity<List<ConcertListResponse>> findAll(
+            @LoginUser User user,
+            @PathVariable Long likeId
+    ) {
+        List<ConcertListResponse> likesByUserId
+                = likeConcertFacade.findLikesByUserId(user.getId(), likeId);
         return ResponseEntity.ok(likesByUserId);
     }
 
     @DeleteMapping
-    public ResponseEntity<Void> delete(DeleteLikeRequest request
-    ) {
+    public ResponseEntity<Void> delete(DeleteLikeRequest request) {
         likeConcertFacade.deleteLike(request.likeConcertId());
         return ResponseEntity.noContent().build();
     }

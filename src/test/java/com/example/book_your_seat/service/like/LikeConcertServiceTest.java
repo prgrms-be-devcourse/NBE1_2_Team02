@@ -65,7 +65,7 @@ class LikeConcertServiceTest extends IntegralTestSupport {
 
         // when
         likeConcertFacade.addLike(user.getId(), concert.getId());
-        List<ConcertListResponse> results = likeConcertFacade.findLikesByUserId(user.getId());
+        List<ConcertListResponse> results = likeConcertFacade.findLikesByUserId(user.getId(), null);
 
         // then
         Assertions.assertThat(results)

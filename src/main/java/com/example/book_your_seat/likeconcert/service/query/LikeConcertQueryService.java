@@ -20,8 +20,8 @@ public class LikeConcertQueryService {
     private final ConcertRepository concertRepository;
     private final LikeConcertRepository likeConcertRepository;
 
-    public List<ConcertListResponse> findAll(Long userId) {
-        List<Long> concertIds = likeConcertRepository.findByUserId(userId).stream()
+    public List<ConcertListResponse> findAll(Long userId, Long lastLikeId) {
+        List<Long> concertIds = likeConcertRepository.findByUserId(userId, lastLikeId).stream()
                 .map(LikeConcert::getConcertId)
                 .toList();
 
