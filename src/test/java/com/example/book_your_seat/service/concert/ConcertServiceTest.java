@@ -2,9 +2,10 @@ package com.example.book_your_seat.service.concert;
 
 import com.example.book_your_seat.IntegralTestSupport;
 import com.example.book_your_seat.concert.controller.dto.AddConcertRequest;
+import com.example.book_your_seat.concert.controller.dto.ConcertListResponse;
 import com.example.book_your_seat.concert.controller.dto.ConcertResponse;
-import com.example.book_your_seat.concert.service.ConcertCommandService;
-import com.example.book_your_seat.concert.service.ConcertQueryService;
+import com.example.book_your_seat.concert.service.command.ConcertCommandService;
+import com.example.book_your_seat.concert.service.query.ConcertQueryService;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -32,7 +33,7 @@ class ConcertServiceTest extends IntegralTestSupport {
                 LocalDate.of(2024, 9, 24),
                 LocalDate.of(2024,9,25),
                 10000,
-                120
+                10
         );
 
         // when
@@ -47,7 +48,7 @@ class ConcertServiceTest extends IntegralTestSupport {
                                 LocalDate.of(2024, 9, 24),
                                 LocalDate.of(2024, 9, 25),
                                 10000,
-                                120
+                                10
                         );
     }
 
@@ -80,24 +81,25 @@ class ConcertServiceTest extends IntegralTestSupport {
                 LocalDate.of(2024, 9, 24),
                 LocalDate.of(2024,9,25),
                 10000,
-                120
+                10
         );
         AddConcertRequest request2 = new AddConcertRequest(
                 "제목2",
                 LocalDate.of(2024, 10, 24),
                 LocalDate.of(2024,11,25),
                 90000,
-                999
+                10
         );
         concertCommandService.add(request1);
         concertCommandService.add(request2);
 
         // when
-        List<ConcertResponse> responses = concertQueryService.findAll();
+
+        List<ConcertListResponse> responses = concertQueryService.findAllConcertList().getConcertList();
 
         // then
         Assertions.assertThat(responses)
-                .extracting(ConcertResponse::getTitle)
+                .extracting(ConcertListResponse::getTitle)
                 .contains("제목1", "제목2");
     }
 
@@ -110,7 +112,7 @@ class ConcertServiceTest extends IntegralTestSupport {
                 LocalDate.of(2024, 9, 24),
                 LocalDate.of(2024,9,25),
                 10000,
-                120
+                10
         );
         Long id = concertCommandService.add(request);
 
@@ -125,7 +127,7 @@ class ConcertServiceTest extends IntegralTestSupport {
                         LocalDate.of(2024, 9, 24),
                         LocalDate.of(2024, 9, 25),
                         10000,
-                        120
+                        10
                 );
     }
 
@@ -140,7 +142,7 @@ class ConcertServiceTest extends IntegralTestSupport {
                 LocalDate.of(2024, 9, 24),
                 LocalDate.of(2024,9,25),
                 10000,
-                120
+                10
         );
         Long id = concertCommandService.add(request);
 
