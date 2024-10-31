@@ -5,7 +5,6 @@ import com.example.book_your_seat.user.domain.User;
 import com.example.book_your_seat.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -20,11 +19,6 @@ public class UserQueryService {
 
     public User getUserByUserId(Long userId) {
         return userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException(USER_NOT_FOUND));
-    }
-
-    public User getUserWithUserCoupons(Long userId) {
-        return userRepository.findByIdWithUserCoupons(userId)
                 .orElseThrow(() -> new IllegalArgumentException(USER_NOT_FOUND));
     }
 
