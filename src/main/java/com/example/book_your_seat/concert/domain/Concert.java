@@ -40,8 +40,8 @@ public class Concert extends BaseEntity {
 
     private LocalDateTime reservationStartAt;
 
-    @OneToMany(mappedBy = "concert", cascade = CascadeType.ALL)
-    private final List<LikeConcert> likeConcerts = new ArrayList<>();
+//    @OneToMany(mappedBy = "concert", cascade = CascadeType.ALL)
+//    private final List<LikeConcert> likeConcerts = new ArrayList<>();
 
     @OneToMany(mappedBy = "concert", cascade = CascadeType.ALL)
     private final List<Review> reviews = new ArrayList<>();
@@ -76,10 +76,6 @@ public class Concert extends BaseEntity {
     private void initializeSeats() {
         IntStream.range(1, TOTAL_STOCK + 1)
                 .forEach(i -> new Seat(this, i));
-    }
-
-    public void addLikeConcert(LikeConcert likeConcert) {
-        this.likeConcerts.add(likeConcert);
     }
 
     public void addReview(Review review) {
