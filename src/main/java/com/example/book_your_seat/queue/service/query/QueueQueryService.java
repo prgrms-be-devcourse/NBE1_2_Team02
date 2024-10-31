@@ -1,4 +1,4 @@
-package com.example.book_your_seat.queue.service;
+package com.example.book_your_seat.queue.service.query;
 
 import com.example.book_your_seat.queue.controller.dto.QueueResponse;
 import com.example.book_your_seat.queue.repository.QueueRedisRepository;
