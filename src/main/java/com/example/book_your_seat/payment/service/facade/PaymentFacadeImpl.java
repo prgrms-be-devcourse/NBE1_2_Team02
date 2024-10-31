@@ -1,7 +1,7 @@
 package com.example.book_your_seat.payment.service.facade;
 
 import com.example.book_your_seat.concert.controller.dto.ConcertResponse;
-import com.example.book_your_seat.concert.service.ConcertQueryService;
+import com.example.book_your_seat.concert.service.query.ConcertQueryService;
 import com.example.book_your_seat.coupon.controller.dto.CouponDetailResponse;
 import com.example.book_your_seat.coupon.domain.DiscountRate;
 import com.example.book_your_seat.coupon.facade.CouponCommandService;
