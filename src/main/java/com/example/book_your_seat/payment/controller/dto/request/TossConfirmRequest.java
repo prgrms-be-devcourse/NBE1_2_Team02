@@ -6,7 +6,7 @@ import jakarta.validation.constraints.NotNull;
 import static com.example.book_your_seat.payment.PaymentConst.*;
 
 public record TossConfirmRequest(
-        @NotNull(message = ENTER_PAYMENTKEY)
+        @NotNull(message = ENTER_PAYMENT_KEY)
         String paymentKey,
         @NotNull(message = ENTER_ORDER_ID)
         String orderId,

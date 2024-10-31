@@ -1,7 +1,7 @@
 package com.example.book_your_seat.payment.service.facade;
 
 import com.example.book_your_seat.concert.controller.dto.ConcertResponse;
-import com.example.book_your_seat.concert.service.ConcertQueryService;
+import com.example.book_your_seat.concert.service.query.ConcertQueryService;
 import com.example.book_your_seat.coupon.controller.dto.CouponDetailResponse;
 import com.example.book_your_seat.coupon.domain.DiscountRate;
 import com.example.book_your_seat.coupon.service.command.CouponCommandService;
@@ -17,7 +17,7 @@ import com.example.book_your_seat.payment.service.dto.PaymentCommand;
 import com.example.book_your_seat.queue.service.facade.QueueService;
 import com.example.book_your_seat.reservation.domain.Reservation;
 import com.example.book_your_seat.reservation.domain.ReservationStatus;
-import com.example.book_your_seat.reservation.service.ReservationCommandService;
+import com.example.book_your_seat.reservation.service.command.ReservationCommandService;
 import com.example.book_your_seat.seat.service.query.SeatQueryService;
 import com.example.book_your_seat.user.domain.Address;
 import com.example.book_your_seat.user.domain.User;
