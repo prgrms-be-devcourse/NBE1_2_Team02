@@ -1,4 +1,4 @@
-package com.example.book_your_seat.queue.service;
+package com.example.book_your_seat.queue.service.command;
 
 import com.example.book_your_seat.queue.util.QueueJwtUtil;
 import com.example.book_your_seat.queue.repository.QueueRedisRepository;
@@ -11,14 +11,15 @@ import static com.example.book_your_seat.queue.QueueConst.*;
 
 @Service
 @RequiredArgsConstructor
-public class QueueCommandServiceImpl implements QueueCommandService {
+public class QueueCommandService {
+
     private final QueueRedisRepository queueRedisRepository;
     public final QueueJwtUtil queueJwtUtil;
 
     /*
     토큰을 발급하고, Waiting Queue에 등록
      */
-    @Override
+
     public String issueTokenAndEnqueue(Long userId) {
         String token = queueJwtUtil.createJwt(userId);
 
@@ -37,7 +38,6 @@ public class QueueCommandServiceImpl implements QueueCommandService {
     /*
     Waiting Queue -> Processing Queue 로 이동시키기
      */
-    @Override
     public void updateWaitingToProcessing() {
         int count = calculateAvailableProcessingCount();
         if (count == 0) return;
@@ -49,7 +49,7 @@ public class QueueCommandServiceImpl implements QueueCommandService {
     /*
     스케줄러 실행 시 만료토큰 제거
      */
-    @Override
+
     public void removeExpiredToken() {
         queueRedisRepository.removeExpiredToken(System.currentTimeMillis());
     }
@@ -57,7 +57,7 @@ public class QueueCommandServiceImpl implements QueueCommandService {
     /*
     대기열에서 토큰 삭제
      */
-    @Override
+
     public void removeTokenInWaitingQueue(Long userId, String token) {
         Long tokenUserId = queueJwtUtil.getUserIdByToken(token);
         if(userId.equals(tokenUserId))
@@ -68,7 +68,7 @@ public class QueueCommandServiceImpl implements QueueCommandService {
     /*
     처리열에서 토큰 삭제 (API 완료 시, 예외 발생 시)
    */
-    @Override
+
     public void removeTokenInProcessingQueue(Long userId, String token) {
         Long tokenUserId = queueJwtUtil.getUserIdByToken(token);
         if(userId.equals(tokenUserId))

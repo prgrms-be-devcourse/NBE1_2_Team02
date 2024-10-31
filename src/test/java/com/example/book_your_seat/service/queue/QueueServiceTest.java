@@ -1,11 +1,11 @@
 package com.example.book_your_seat.service.queue;
 
 import com.example.book_your_seat.IntegralTestSupport;
-import com.example.book_your_seat.queue.util.QueueJwtUtil;
 import com.example.book_your_seat.queue.controller.dto.QueueResponse;
-import com.example.book_your_seat.queue.service.QueueCommandService;
-import com.example.book_your_seat.queue.service.QueueQueryService;
-import com.example.book_your_seat.queue.service.facade.QueueService;
+import com.example.book_your_seat.queue.service.command.QueueCommandService;
+import com.example.book_your_seat.queue.service.query.QueueQueryService;
+import com.example.book_your_seat.queue.service.facade.QueueFacade;
+import com.example.book_your_seat.queue.util.QueueJwtUtil;
 import com.example.book_your_seat.user.domain.User;
 import com.example.book_your_seat.user.repository.UserRepository;
 import org.junit.jupiter.api.AfterEach;
@@ -32,7 +32,7 @@ public class QueueServiceTest extends IntegralTestSupport {
     private UserRepository userRepository;
 
     @Autowired
-    private QueueService queueService;
+    private QueueFacade queueFacade;
 
     @Autowired
     private QueueCommandService queueCommandService;
@@ -79,7 +79,7 @@ public class QueueServiceTest extends IntegralTestSupport {
     @DisplayName("토큰을 발급하고 진행열이 다 차지 않은 경우 진행열에 넣는다.")
     void issueTokenAndEnqueueProcessingQueueTest() {
         //when
-        String token = queueService.issueTokenAndEnqueue(testUser.getId()).token();
+        String token = queueFacade.issueTokenAndEnqueue(testUser.getId()).token();
 
         //then
         String value = testUser.getId() + ":" + token;
@@ -97,7 +97,7 @@ public class QueueServiceTest extends IntegralTestSupport {
         }
 
         //when
-        String token = queueService.issueTokenAndEnqueue(testUser.getId()).token();
+        String token = queueFacade.issueTokenAndEnqueue(testUser.getId()).token();
 
         //then
         String value = testUser.getId() + ":" + token;
@@ -114,10 +114,10 @@ public class QueueServiceTest extends IntegralTestSupport {
             queueCommandService.issueTokenAndEnqueue(savedUser.getId());
         }
 
-        String token = queueService.issueTokenAndEnqueue(testUser.getId()).token();
+        String token = queueFacade.issueTokenAndEnqueue(testUser.getId()).token();
 
         //when
-        queueService.dequeueWaitingQueue(testUser.getId(), token);
+        queueFacade.dequeueWaitingQueue(testUser.getId(), token);
 
         //then
         String value = testUser.getId().toString() + ":" + token;
@@ -130,10 +130,10 @@ public class QueueServiceTest extends IntegralTestSupport {
     @DisplayName("현재 나의 대기열 상태를 조회한다.(진행열에 들어온 상황)")
     void findQueueStatusTest1() {
         //given
-        String token = queueService.issueTokenAndEnqueue(testUser.getId()).token();
+        String token = queueFacade.issueTokenAndEnqueue(testUser.getId()).token();
 
         //when
-        QueueResponse queueResponse = queueService.findQueueStatus(testUser.getId(), token);
+        QueueResponse queueResponse = queueFacade.findQueueStatus(testUser.getId(), token);
 
         //then
         assertEquals(PROCESSING, queueResponse.status());
@@ -149,7 +149,7 @@ public class QueueServiceTest extends IntegralTestSupport {
             queueCommandService.issueTokenAndEnqueue(savedUser.getId());
         }
 
-        String token = queueService.issueTokenAndEnqueue(testUser.getId()).token();
+        String token = queueFacade.issueTokenAndEnqueue(testUser.getId()).token();
 
         //when
         QueueResponse queueResponse = queueQueryService.findQueueStatus(testUser.getId(), token);
@@ -234,7 +234,7 @@ public class QueueServiceTest extends IntegralTestSupport {
         String lastUserToken = queueCommandService.issueTokenAndEnqueue(lastUserId);
 
         //when
-        QueueResponse queueResponse1 = queueService.findQueueStatus(lastUserId, lastUserToken);
+        QueueResponse queueResponse1 = queueFacade.findQueueStatus(lastUserId, lastUserToken);
 
         // 초반 10명을 processing queue에서 삭제
         for (String token : tokens) {
@@ -244,7 +244,7 @@ public class QueueServiceTest extends IntegralTestSupport {
 
         //update
         queueCommandService.updateWaitingToProcessing();
-        QueueResponse queueResponse2 = queueService.findQueueStatus(lastUserId, lastUserToken);
+        QueueResponse queueResponse2 = queueFacade.findQueueStatus(lastUserId, lastUserToken);
 
         //then
         assertThat(queueResponse1).isNotNull();

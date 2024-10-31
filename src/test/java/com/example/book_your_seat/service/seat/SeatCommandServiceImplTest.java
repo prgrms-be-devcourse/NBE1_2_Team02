@@ -5,7 +5,7 @@ import com.example.book_your_seat.IntegralTestSupport;
 import com.example.book_your_seat.concert.controller.dto.AddConcertRequest;
 import com.example.book_your_seat.concert.repository.ConcertRepository;
 import com.example.book_your_seat.concert.service.command.ConcertCommandService;
-import com.example.book_your_seat.queue.service.facade.QueueService;
+import com.example.book_your_seat.queue.service.facade.QueueFacade;
 import com.example.book_your_seat.seat.controller.dto.SelectSeatRequest;
 import com.example.book_your_seat.seat.domain.Seat;
 import com.example.book_your_seat.seat.repository.SeatRepository;
@@ -51,7 +51,7 @@ class SeatCommandServiceImplTest extends IntegralTestSupport {
     private UserRepository userRepository;
 
     @Autowired
-    private QueueService queueService;
+    private QueueFacade queueFacade;
 
     @Autowired
     DbCleaner dbCleaner;
@@ -91,7 +91,7 @@ class SeatCommandServiceImplTest extends IntegralTestSupport {
         // given
         Long userId = savedUser.getId();
         SelectSeatRequest request = new SelectSeatRequest(seatIds);
-        queueService.issueTokenAndEnqueue(userId);
+        queueFacade.issueTokenAndEnqueue(userId);
 
         // when
         int threadCount = 1000;
