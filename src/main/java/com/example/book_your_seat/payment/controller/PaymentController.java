@@ -10,7 +10,7 @@ import com.example.book_your_seat.payment.controller.dto.response.TossConfirmRes
 import com.example.book_your_seat.payment.service.dto.PaymentCommand;
 import com.example.book_your_seat.payment.service.facade.PaymentFacade;
 import com.example.book_your_seat.reservation.contorller.dto.PaymentRequest;
-import com.example.book_your_seat.seat.service.redis.SeatRedisService;
+import com.example.book_your_seat.seat.redis.SeatRedisService;
 import com.example.book_your_seat.user.domain.User;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
