@@ -1,4 +1,4 @@
-package com.example.book_your_seat.reservation.service;
+package com.example.book_your_seat.reservation.service.command;
 
 import com.example.book_your_seat.reservation.domain.Reservation;
 import com.example.book_your_seat.reservation.repository.ReservationRepository;

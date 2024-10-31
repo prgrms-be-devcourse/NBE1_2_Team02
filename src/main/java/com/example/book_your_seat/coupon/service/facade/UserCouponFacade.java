@@ -1,4 +1,4 @@
-package com.example.book_your_seat.coupon.facade;
+package com.example.book_your_seat.coupon.service.facade;
 
 import com.example.book_your_seat.coupon.controller.dto.UserCouponRequest;
 import com.example.book_your_seat.coupon.controller.dto.UserCouponResponse;
@@ -10,12 +10,10 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class UserCouponServiceImpl implements UserCouponService {
-
+public class UserCouponFacade {
 
     private final CouponRepository couponRepository;
 
-    @Override
     public Slice<UserCouponResponse> getUserCoupons(UserCouponRequest userCouponRequest, Long userId, Pageable pageable) {
         return couponRepository.selectUserCoupons(userCouponRequest, userId, pageable);
     }

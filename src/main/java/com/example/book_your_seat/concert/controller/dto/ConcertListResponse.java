@@ -4,13 +4,17 @@ import com.example.book_your_seat.concert.domain.Concert;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Getter
-
+@NoArgsConstructor
 public class ConcertListResponse {
 
     private Long id;
@@ -31,6 +35,10 @@ public class ConcertListResponse {
 
     private int startHour;  // Hour, 시작시간
 
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    private LocalDateTime reservationStartAt;
+
 
     public ConcertListResponse(Concert concert) {
         this.id = concert.getId();
@@ -40,8 +48,6 @@ public class ConcertListResponse {
         this.endDate = concert.getEndDate();
         this.price = concert.getPrice();
         this.startHour = concert.getStartHour();
-    }
-
-    public ConcertListResponse() {
+        this.reservationStartAt = concert.getReservationStartAt();
     }
 }
