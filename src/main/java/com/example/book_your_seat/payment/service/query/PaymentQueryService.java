@@ -1,4 +1,4 @@
-package com.example.book_your_seat.payment.service;
+package com.example.book_your_seat.payment.service.query;
 
 import com.example.book_your_seat.concert.repository.ConcertRepository;
 import com.example.book_your_seat.coupon.domain.Coupon;
@@ -28,7 +28,7 @@ import static com.example.book_your_seat.seat.SeatConst.INVALID_ADDRESS;
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 @Service
-public class PaymentQueryServiceImpl {
+public class PaymentQueryService {
 
     private final UserRepository userRepository;
     private final AddressRepository addressRepository;
