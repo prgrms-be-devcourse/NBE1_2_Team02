@@ -9,7 +9,7 @@ import org.springframework.data.repository.query.Param;
 
 public interface ReservationRepository extends JpaRepository<Reservation, Long> {
 
-    @Query("SELECT r.user.id FROM Reservation r WHERE r.status = 'SHIPPED' AND r.lastModifiedAt BETWEEN :startDate AND :endDate order by r.user.id limit 50")
+    @Query(value = "SELECT r.user_id FROM reservation r WHERE r.status = 'SHIPPED' AND r.last_modified_at BETWEEN :startDate AND :endDate ORDER BY RAND() LIMIT 50", nativeQuery = true)
     List<Long> findShippedReservationsLastMonth(@Param("startDate") LocalDateTime startDate, @Param("endDate") LocalDateTime endDate);
 
 }
