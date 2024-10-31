@@ -1,4 +1,4 @@
-package com.example.book_your_seat.queue.service;
+package com.example.book_your_seat.queue.service.command;
 
 import com.example.book_your_seat.queue.util.QueueJwtUtil;
 import com.example.book_your_seat.queue.repository.QueueRedisRepository;

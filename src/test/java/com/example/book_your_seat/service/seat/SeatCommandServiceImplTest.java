@@ -4,7 +4,7 @@ import com.example.DbCleaner;
 import com.example.book_your_seat.IntegralTestSupport;
 import com.example.book_your_seat.concert.controller.dto.AddConcertRequest;
 import com.example.book_your_seat.concert.repository.ConcertRepository;
-import com.example.book_your_seat.concert.service.ConcertCommandService;
+import com.example.book_your_seat.concert.service.command.ConcertCommandService;
 import com.example.book_your_seat.queue.service.facade.QueueFacade;
 import com.example.book_your_seat.seat.controller.dto.SelectSeatRequest;
 import com.example.book_your_seat.seat.domain.Seat;

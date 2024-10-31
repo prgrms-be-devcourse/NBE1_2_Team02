@@ -2,8 +2,8 @@ package com.example.book_your_seat.queue.service.facade;
 
 import com.example.book_your_seat.queue.controller.dto.QueueResponse;
 import com.example.book_your_seat.queue.controller.dto.TokenResponse;
-import com.example.book_your_seat.queue.service.QueueCommandService;
-import com.example.book_your_seat.queue.service.QueueQueryService;
+import com.example.book_your_seat.queue.service.command.QueueCommandService;
+import com.example.book_your_seat.queue.service.query.QueueQueryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

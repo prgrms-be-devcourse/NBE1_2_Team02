@@ -2,8 +2,8 @@ package com.example.book_your_seat.service.queue;
 
 import com.example.book_your_seat.IntegralTestSupport;
 import com.example.book_your_seat.queue.controller.dto.QueueResponse;
-import com.example.book_your_seat.queue.service.QueueCommandService;
-import com.example.book_your_seat.queue.service.QueueQueryService;
+import com.example.book_your_seat.queue.service.command.QueueCommandService;
+import com.example.book_your_seat.queue.service.query.QueueQueryService;
 import com.example.book_your_seat.queue.service.facade.QueueFacade;
 import com.example.book_your_seat.queue.util.QueueJwtUtil;
 import com.example.book_your_seat.user.domain.User;

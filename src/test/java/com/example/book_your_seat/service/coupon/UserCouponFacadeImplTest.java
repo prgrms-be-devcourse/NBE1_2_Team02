@@ -7,9 +7,9 @@ import com.example.book_your_seat.coupon.controller.dto.UserCouponResponse;
 import com.example.book_your_seat.coupon.domain.Coupon;
 import com.example.book_your_seat.coupon.domain.DiscountRate;
 import com.example.book_your_seat.coupon.domain.UserCoupon;
-import com.example.book_your_seat.coupon.facade.UserCouponService;
 import com.example.book_your_seat.coupon.repository.CouponRepository;
 import com.example.book_your_seat.coupon.repository.UserCouponRepository;
+import com.example.book_your_seat.coupon.service.facade.UserCouponFacade;
 import com.example.book_your_seat.user.domain.User;
 import com.example.book_your_seat.user.repository.UserRepository;
 import org.junit.jupiter.api.AfterEach;
@@ -25,7 +25,7 @@ import java.time.LocalDate;
 import static org.assertj.core.api.Assertions.assertThat;
 
 
-class UserCouponServiceImplTest extends IntegralTestSupport {
+class UserCouponFacadeImplTest extends IntegralTestSupport {
 
     @Autowired
     private UserCouponRepository userCouponRepository;
@@ -37,7 +37,7 @@ class UserCouponServiceImplTest extends IntegralTestSupport {
     private UserRepository userRepository;
 
     @Autowired
-    private UserCouponService userCouponService;
+    private UserCouponFacade userCouponService;
 
     User user;
 
@@ -60,8 +60,6 @@ class UserCouponServiceImplTest extends IntegralTestSupport {
             userCouponRepository.save(userCoupon);
 
         }
-
-
     }
 
     @AfterEach
@@ -77,19 +75,17 @@ class UserCouponServiceImplTest extends IntegralTestSupport {
     public void couponNotUsed() {
         //given
         PageRequest pageRequest = PageRequest.of(0, 5);
-
         UserCouponRequest userCouponRequest = new UserCouponRequest(false);
+
         //when
         Slice<UserCouponResponse> userCoupons = userCouponService.getUserCoupons(userCouponRequest, user.getId(), pageRequest);
-
         System.out.println("userCoupons.getSize() = " + userCoupons.getSize());
         System.out.println("userCoupons.getContent() = " + userCoupons.getContent());
+
         //then
         for (UserCouponResponse userCouponResponse : userCoupons) {
             System.out.println("userCouponResponse = " + userCouponResponse);
         }
-
-
         assertThat(userCoupons.getSize()).isEqualTo(5);
         assertThat(userCoupons.getContent().get(0).isUsed()).isFalse();
     }
@@ -100,8 +96,8 @@ class UserCouponServiceImplTest extends IntegralTestSupport {
     public void couponUsed() {
         //given
         PageRequest pageRequest = PageRequest.of(0, 5);
-
         UserCouponRequest userCouponRequest = new UserCouponRequest(true);
+
         //when
         Slice<UserCouponResponse> userCoupons = userCouponService.getUserCoupons(userCouponRequest, user.getId(), pageRequest);
 
@@ -109,8 +105,6 @@ class UserCouponServiceImplTest extends IntegralTestSupport {
         for (UserCouponResponse userCouponResponse : userCoupons) {
             System.out.println("userCouponResponse = " + userCouponResponse);
         }
-
-
         assertThat(userCoupons.getSize()).isEqualTo(5);
         assertThat(userCoupons.getContent().get(0).isUsed()).isTrue();
     }
@@ -127,8 +121,8 @@ class UserCouponServiceImplTest extends IntegralTestSupport {
 
         assertThat(userCoupons.getSize()).isEqualTo(5);
         assertThat(userCoupons.hasNext()).isTrue();
-        //then
 
+        //then
         PageRequest pageRequest2 = PageRequest.of(1, 20); //10장 남음
         Slice<UserCouponResponse> userCoupons2 = userCouponService.getUserCoupons(userCouponRequest, user.getId(), pageRequest2);
 
