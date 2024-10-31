@@ -1,4 +1,4 @@
-package com.example.book_your_seat.user.mail.repository.util;
+package com.example.book_your_seat.user.mail.util;
 
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
