@@ -1,4 +1,4 @@
-package com.example.book_your_seat.payment.service.facade;
+package com.example.book_your_seat.payment.service;
 
 import com.example.book_your_seat.concert.controller.dto.ConcertResponse;
 import com.example.book_your_seat.concert.service.ConcertQueryService;
@@ -32,7 +32,7 @@ import java.util.List;
 @Transactional
 @RequiredArgsConstructor
 @Service
-public class PaymentFacadeImpl implements PaymentFacade {
+public class PaymentFacadeImpl {
 
     private final AddressQueryService addressQueryService;
 
@@ -47,7 +47,6 @@ public class PaymentFacadeImpl implements PaymentFacade {
 
     private final QueueService queueService;
 
-    @Override
     public ConfirmResponse processPayment(final PaymentCommand command, Long userId, String token) {
 
         Payment payment = createPayment(command);
@@ -99,7 +98,6 @@ public class PaymentFacadeImpl implements PaymentFacade {
     }
 
     @Transactional(readOnly = true)
-    @Override
     public FinalPriceResponse getFinalPrice(final FinalPriceRequest request) {
 
         Integer originPrice = seatQueryService.getSeatPrice(request.seatIds());

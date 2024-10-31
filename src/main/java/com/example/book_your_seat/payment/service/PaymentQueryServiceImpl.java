@@ -28,7 +28,7 @@ import static com.example.book_your_seat.seat.SeatConst.INVALID_ADDRESS;
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 @Service
-public class PaymentQueryServiceImpl implements PaymentQueryService {
+public class PaymentQueryServiceImpl {
 
     private final UserRepository userRepository;
     private final AddressRepository addressRepository;
@@ -37,7 +37,6 @@ public class PaymentQueryServiceImpl implements PaymentQueryService {
     private final UserCouponRepository userCouponRepository;
     private final PaymentRepository paymentRepository;
 
-    @Override
     public BigDecimal getOriginalPrice(Long concertId, int quantity) {
         return concertRepository.findById(concertId)
                 .map(concert -> concert.getPrice() * quantity)
@@ -45,7 +44,6 @@ public class PaymentQueryServiceImpl implements PaymentQueryService {
                 .orElseThrow(() -> new IllegalArgumentException(INVALID_CONCERT));
     }
 
-    @Override
     public BigDecimal applyCoupon(BigDecimal originalPrice, Long userCouponId) {
         if (userCouponId == null) {
             return originalPrice;
@@ -59,25 +57,20 @@ public class PaymentQueryServiceImpl implements PaymentQueryService {
                 .orElse(originalPrice);
     }
 
-
-    @Override
     public User getUser(Long userId) {
         return userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException(INVALID_USER));
     }
 
-    @Override
     public Address getAddress(Long addressId) {
         return addressRepository.findById(addressId)
                 .orElseThrow(() -> new IllegalArgumentException(INVALID_ADDRESS));
     }
 
-    @Override
     public List<Seat> getSeats(List<Long> seatsId) {
         return seatRepository.findValidSeats(seatsId);
     }
 
-    @Override
     public Payment getPayment(UUID paymentId) {
         return paymentRepository.findById(paymentId)
                 .orElseThrow();

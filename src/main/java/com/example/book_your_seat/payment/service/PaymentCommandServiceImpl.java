@@ -7,11 +7,11 @@ import org.springframework.stereotype.Service;
 
 @RequiredArgsConstructor
 @Service
-public class PaymentCommandServiceImpl implements PaymentCommandService {
+public class PaymentCommandServiceImpl {
 
     private final PaymentRepository paymentRepository;
 
-    @Override
+
     public Payment savePayment(Payment payment) {
         return paymentRepository.save(payment);
     }
