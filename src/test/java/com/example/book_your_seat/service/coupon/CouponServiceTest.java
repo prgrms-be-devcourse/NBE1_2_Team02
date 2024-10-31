@@ -6,9 +6,9 @@ import com.example.book_your_seat.coupon.controller.dto.CouponResponse;
 import com.example.book_your_seat.coupon.controller.dto.UserCouponIdResponse;
 import com.example.book_your_seat.coupon.domain.Coupon;
 import com.example.book_your_seat.coupon.domain.UserCoupon;
-import com.example.book_your_seat.coupon.facade.CouponCommandService;
 import com.example.book_your_seat.coupon.repository.CouponRepository;
 import com.example.book_your_seat.coupon.repository.UserCouponRepository;
+import com.example.book_your_seat.coupon.service.facade.CouponFacade;
 import com.example.book_your_seat.user.domain.User;
 import com.example.book_your_seat.user.repository.UserRepository;
 import org.junit.jupiter.api.AfterEach;
@@ -27,7 +27,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 public class CouponServiceTest extends IntegralTestSupport {
 
     @Autowired
-    private CouponCommandService couponCommandService;
+    private CouponFacade couponCommandService;
 
     @Autowired
     private UserRepository userRepository;
