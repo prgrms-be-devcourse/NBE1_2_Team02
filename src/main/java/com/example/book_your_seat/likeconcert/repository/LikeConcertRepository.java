@@ -8,4 +8,5 @@ import org.springframework.stereotype.Repository;
 public interface LikeConcertRepository extends JpaRepository<LikeConcert, Long>, LikeConcertRepositoryCustom {
 
     boolean existsByUserIdAndConcertId(Long userId, Long concertId);
+    void deleteByUserIdAndConcertId(Long userId, Long concertId);
 }

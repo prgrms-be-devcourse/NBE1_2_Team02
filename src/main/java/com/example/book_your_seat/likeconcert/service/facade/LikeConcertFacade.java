@@ -18,8 +18,8 @@ public class LikeConcertFacade {
     private final LikeConcertCommandService commandService;
     private final LikeConcertQueryService queryService;
 
-    public Long addLike(Long userId, Long concertId) {
-        return commandService.like(userId, concertId);
+    public void addLike(Long userId, Long concertId) {
+        commandService.like(userId, concertId);
     }
 
     @Transactional(readOnly = true)
@@ -31,10 +31,5 @@ public class LikeConcertFacade {
     public ConcertResponse findById(Long likeId) {
         return queryService.findById(likeId);
     }
-
-    public void deleteLike(Long likeConcertId) {
-        commandService.delete(likeConcertId);
-    }
-
 
 }
