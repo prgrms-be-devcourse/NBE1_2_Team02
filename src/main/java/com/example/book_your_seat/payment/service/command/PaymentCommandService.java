@@ -1,4 +1,4 @@
-package com.example.book_your_seat.payment.service;
+package com.example.book_your_seat.payment.service.command;
 
 import com.example.book_your_seat.payment.domain.Payment;
 import com.example.book_your_seat.payment.repository.PaymentRepository;
@@ -7,11 +7,11 @@ import org.springframework.stereotype.Service;
 
 @RequiredArgsConstructor
 @Service
-public class PaymentCommandServiceImpl implements PaymentCommandService {
+public class PaymentCommandService {
 
     private final PaymentRepository paymentRepository;
 
-    @Override
+
     public Payment savePayment(Payment payment) {
         return paymentRepository.save(payment);
     }
