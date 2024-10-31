@@ -1,5 +1,7 @@
 package com.example.book_your_seat.luckydraw.service;
 
+import static com.example.book_your_seat.user.UserConst.USER_NOT_FOUND;
+
 import com.example.book_your_seat.coupon.domain.DiscountRate;
 import com.example.book_your_seat.luckydraw.domain.LuckyDrawHistory;
 import com.example.book_your_seat.luckydraw.repository.LuckyDrawHistoryRepository;
@@ -9,8 +11,6 @@ import com.example.book_your_seat.user.mail.util.MailUtil;
 import com.example.book_your_seat.user.repository.UserRepository;
 import java.time.LocalDateTime;
 import java.time.YearMonth;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -34,7 +34,6 @@ public class LuckyDrawScheduler {
         LocalDateTime endOfLastMonth = lastMonth.atEndOfMonth().atTime(23, 59, 59);
 
         List<Long> reservedUserIds = getReservedUserIds(startOfLastMonth, endOfLastMonth);
-        Collections.shuffle(new ArrayList<>(reservedUserIds));
 
         pickWinnerAndSendMail(reservedUserIds.subList(0, 5), DiscountRate.TWENTY);
         pickWinnerAndSendMail(reservedUserIds.subList(5, 15), DiscountRate.FIFTEEN);
@@ -49,9 +48,9 @@ public class LuckyDrawScheduler {
         }
     }
 
-    public User getUser(Long userId) {
+    private User getUser(Long userId) {
         return userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("user not found"));
+                .orElseThrow(() -> new IllegalArgumentException(USER_NOT_FOUND));
     }
 
     private List<Long> getReservedUserIds(LocalDateTime startOfLastMonth, LocalDateTime endOfLastMonth) {
