@@ -6,12 +6,13 @@ import com.example.book_your_seat.coupon.controller.dto.CouponDetailResponse;
 import com.example.book_your_seat.coupon.domain.DiscountRate;
 import com.example.book_your_seat.coupon.service.command.CouponCommandService;
 import com.example.book_your_seat.coupon.service.query.CouponQueryService;
+
 import com.example.book_your_seat.payment.controller.dto.request.FinalPriceRequest;
 import com.example.book_your_seat.payment.controller.dto.response.ConfirmResponse;
 import com.example.book_your_seat.payment.controller.dto.response.FinalPriceResponse;
 import com.example.book_your_seat.payment.domain.Payment;
 import com.example.book_your_seat.payment.domain.PaymentStatus;
-import com.example.book_your_seat.payment.service.PaymentCommandService;
+import com.example.book_your_seat.payment.service.command.PaymentCommandService;
 import com.example.book_your_seat.payment.service.dto.PaymentCommand;
 import com.example.book_your_seat.queue.service.facade.QueueService;
 import com.example.book_your_seat.reservation.domain.Reservation;
