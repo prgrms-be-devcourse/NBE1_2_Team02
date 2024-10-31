@@ -8,7 +8,7 @@ import static com.example.book_your_seat.payment.PaymentConst.*;
 
 public record PaymentRequest(
 
-        @NotNull(message = ENTER_PAYMENTKEY)
+        @NotNull(message = ENTER_PAYMENT_KEY)
         String paymentKey,
         @NotNull(message = ENTER_ORDER_ID)
         String orderId,
