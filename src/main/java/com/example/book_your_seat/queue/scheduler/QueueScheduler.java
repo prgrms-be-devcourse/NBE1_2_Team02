@@ -1,6 +1,6 @@
 package com.example.book_your_seat.queue.scheduler;
 
-import com.example.book_your_seat.queue.service.command.QueueCommandService;
+import com.example.book_your_seat.queue.service.QueueCommandService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
