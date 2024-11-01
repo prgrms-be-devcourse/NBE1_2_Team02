@@ -1,7 +1,5 @@
 package com.example.book_your_seat.seat.service.facade;
 
-import static com.example.book_your_seat.queue.QueueConst.NOT_IN_PROCESSING_QUEUE;
-
 import com.example.book_your_seat.aop.seatLock.SeatLock;
 import com.example.book_your_seat.queue.repository.QueueRedisRepository;
 import com.example.book_your_seat.reservation.domain.Reservation;
@@ -9,13 +7,15 @@ import com.example.book_your_seat.seat.controller.dto.SeatResponse;
 import com.example.book_your_seat.seat.controller.dto.SelectSeatRequest;
 import com.example.book_your_seat.seat.controller.dto.SelectSeatResponse;
 import com.example.book_your_seat.seat.domain.Seat;
+import com.example.book_your_seat.seat.redis.SeatRedisService;
 import com.example.book_your_seat.seat.service.command.SeatCommandService;
 import com.example.book_your_seat.seat.service.query.SeatQueryService;
-import com.example.book_your_seat.seat.redis.SeatRedisService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+
+import static com.example.book_your_seat.queue.QueueConst.NOT_IN_PROCESSING_QUEUE;
 
 @Service
 @RequiredArgsConstructor
