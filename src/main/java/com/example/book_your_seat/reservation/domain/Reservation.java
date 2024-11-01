@@ -1,5 +1,6 @@
 package com.example.book_your_seat.reservation.domain;
 
+import com.example.book_your_seat.common.entity.BaseEntity;
 import com.example.book_your_seat.payment.domain.Payment;
 import com.example.book_your_seat.seat.domain.Seat;
 import com.example.book_your_seat.user.domain.Address;
@@ -18,7 +19,7 @@ import static com.example.book_your_seat.reservation.domain.ReservationStatus.CA
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Reservation {
+public class Reservation extends BaseEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "reservation_id")
@@ -41,7 +42,6 @@ public class Reservation {
 
     @OneToMany(mappedBy = "reservation", cascade = CascadeType.ALL)
     private final List<Seat> seats = new ArrayList<>();
-
 
     @Builder
     public Reservation(ReservationStatus status, User user, Address address,Payment payment) {

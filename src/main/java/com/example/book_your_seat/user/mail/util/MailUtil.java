@@ -1,5 +1,6 @@
 package com.example.book_your_seat.user.mail.util;
 
+import com.example.book_your_seat.coupon.domain.DiscountRate;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
@@ -50,6 +51,33 @@ public class MailUtil {
             //메일 전송
             mailSender.send(message);
             return CompletableFuture.completedFuture(certCode);
+
+        } catch (MessagingException e) {
+            throw new IllegalStateException(MAIL_CREATION_FAILED);
+        }
+    }
+
+    @Async
+    public void sendWinningMail(String to, DiscountRate discountRate) {
+        MimeMessage message = mailSender.createMimeMessage();
+
+        try {
+            MimeMessageHelper helper = new MimeMessageHelper(message, true, UTF8);
+            helper.setTo(to);
+            helper.setSubject(LUCKY_DRAW_SUBJECT);
+            helper.setFrom(from);
+
+            //데이터 설정
+            Context context = new Context();
+            context.setVariable(MAIL, to);
+            context.setVariable(DISCOUNT_RATE, discountRate.getValue());
+
+            //html 매핑
+            String htmlContent = templateEngine.process(LUCKY_DRAW_TEMPLATE, context);
+            helper.setText(htmlContent, true);
+
+            //메일 전송
+            mailSender.send(message);
 
         } catch (MessagingException e) {
             throw new IllegalStateException(MAIL_CREATION_FAILED);
