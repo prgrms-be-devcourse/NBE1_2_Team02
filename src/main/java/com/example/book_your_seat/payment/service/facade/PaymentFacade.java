@@ -6,7 +6,6 @@ import com.example.book_your_seat.coupon.controller.dto.CouponDetailResponse;
 import com.example.book_your_seat.coupon.domain.DiscountRate;
 import com.example.book_your_seat.coupon.service.command.CouponCommandService;
 import com.example.book_your_seat.coupon.service.query.CouponQueryService;
-
 import com.example.book_your_seat.payment.controller.dto.request.FinalPriceRequest;
 import com.example.book_your_seat.payment.controller.dto.response.ConfirmResponse;
 import com.example.book_your_seat.payment.controller.dto.response.FinalPriceResponse;
@@ -14,7 +13,7 @@ import com.example.book_your_seat.payment.domain.Payment;
 import com.example.book_your_seat.payment.domain.PaymentStatus;
 import com.example.book_your_seat.payment.service.command.PaymentCommandService;
 import com.example.book_your_seat.payment.service.dto.PaymentCommand;
-import com.example.book_your_seat.queue.service.facade.QueueFacade;
+import com.example.book_your_seat.queue.service.command.QueueCommandService;
 import com.example.book_your_seat.reservation.domain.Reservation;
 import com.example.book_your_seat.reservation.domain.ReservationStatus;
 import com.example.book_your_seat.reservation.service.command.ReservationCommandService;
@@ -46,7 +45,7 @@ public class PaymentFacade {
     private final ConcertQueryService concertQueryService;
     private final SeatQueryService seatQueryService;
 
-    private final QueueFacade queueFacade;
+    private final QueueCommandService queueCommandService;
 
     public ConfirmResponse processPayment(final PaymentCommand command, Long userId, String token) {
 
@@ -61,7 +60,7 @@ public class PaymentFacade {
 
 
         List<Integer> seatNumbers = seatQueryService.findSeatNumbers(command.seatIds);
-        queueFacade.dequeueProcessingQueue(userId, token);
+        queueCommandService.removeTokenInProcessingQueue(userId, command.concertId, token);
 
         return ConfirmResponse.builder()
                 .userId(userId)

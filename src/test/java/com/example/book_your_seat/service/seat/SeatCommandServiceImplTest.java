@@ -3,9 +3,8 @@ package com.example.book_your_seat.service.seat;
 import com.example.DbCleaner;
 import com.example.book_your_seat.IntegralTestSupport;
 import com.example.book_your_seat.concert.controller.dto.AddConcertRequest;
-import com.example.book_your_seat.concert.repository.ConcertRepository;
 import com.example.book_your_seat.concert.service.command.ConcertCommandService;
-import com.example.book_your_seat.queue.service.facade.QueueFacade;
+import com.example.book_your_seat.queue.service.command.QueueCommandService;
 import com.example.book_your_seat.seat.controller.dto.SelectSeatRequest;
 import com.example.book_your_seat.seat.domain.Seat;
 import com.example.book_your_seat.seat.repository.SeatRepository;
@@ -36,7 +35,7 @@ class SeatCommandServiceImplTest extends IntegralTestSupport {
     private ConcertCommandService concertCommandService;
 
     @Autowired
-    private ConcertRepository concertRepository;
+    private QueueCommandService queueCommandService;
 
     @Autowired
     private SeatRepository seatRepository;
@@ -51,14 +50,13 @@ class SeatCommandServiceImplTest extends IntegralTestSupport {
     private UserRepository userRepository;
 
     @Autowired
-    private QueueFacade queueFacade;
-
-    @Autowired
     DbCleaner dbCleaner;
 
     private Long concertId;
     private List<Long> seatIds;
     private User savedUser;
+    private static final Long CONCERT_ID = 1L;
+
 
     @BeforeEach
     void setUp() {
@@ -90,8 +88,8 @@ class SeatCommandServiceImplTest extends IntegralTestSupport {
     void selectSeatTest() throws InterruptedException {
         // given
         Long userId = savedUser.getId();
-        SelectSeatRequest request = new SelectSeatRequest(seatIds);
-        queueFacade.issueTokenAndEnqueue(userId);
+        String queueToken = queueCommandService.issueTokenAndEnqueue(userId, CONCERT_ID).token();
+        SelectSeatRequest request = new SelectSeatRequest(queueToken, CONCERT_ID, seatIds);
 
         // when
         int threadCount = 1000;

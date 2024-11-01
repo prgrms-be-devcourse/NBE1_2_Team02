@@ -6,6 +6,9 @@ public final class SeatConst {
     public static final String INVALID_ADDRESS = "addressId를 입력하세요";
     public static final String ENTER_SEATS = "seats를 입력하세요";
 
+    public static final String ENTER_QUEUE_TOKEN = "Queue Token을 입력하세요";
+    public static final String ENTER_CONCERT_ID = "Concert Id를 입력하세요";
+
     public static final String SEAT_SOLD = "이미 예약된 좌석 입니다.";
     public static final String REDISSON_LOCK_KEY = "LOCK_SEAT:";
 

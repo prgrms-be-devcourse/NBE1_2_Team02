@@ -33,7 +33,7 @@ public class SeatFacade {
     }
 
     public SelectSeatResponse selectSeat(final SelectSeatRequest request, final Long userId) {
-        checkInProcessingQueue(userId);
+        checkInProcessingQueue(request.concertId(), request.queueToken());
 
         List<Seat> seats = seatCommandService.selectSeat(request);
 
@@ -44,15 +44,15 @@ public class SeatFacade {
 
     @SeatLock
     public SelectSeatResponse selectSeatRedisson(final SelectSeatRequest request, final Long userId) {
-        checkInProcessingQueue(userId);
+        checkInProcessingQueue(request.concertId(), request.queueToken());
         List<Seat> seats = seatCommandService.selectSeatRedisson(request);
         redisService.cacheSeatIds(seats, userId);
 
         return SelectSeatResponse.fromSeats(seats);
     }
 
-    private void checkInProcessingQueue(Long userId) {
-        if (!queueRedisRepository.isInProcessingQueue(userId)) {
+    private void checkInProcessingQueue(Long concertId, String queueToken) {
+        if (!queueRedisRepository.isInProcessingQueue(concertId, queueToken)) {
             throw new IllegalArgumentException(NOT_IN_PROCESSING_QUEUE);
         }
     }
