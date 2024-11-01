@@ -95,6 +95,7 @@ public class PaymentFacade {
                 .paymentStatus(PaymentStatus.COMPLETED)
                 .expiryAt(command.approvedAt)
                 .discountRate(couponResponse.discountRate())
+                .paymentKey(command.paymentKey)
                 .build();
     }
 

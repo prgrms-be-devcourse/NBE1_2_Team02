@@ -1,7 +1,7 @@
 package com.example.book_your_seat.seat.redis.impl;
 
 
-import com.example.book_your_seat.reservation.contorller.dto.PaymentRequest;
+import com.example.book_your_seat.reservation.contorller.dto.request.PaymentRequest;
 import com.example.book_your_seat.seat.domain.Seat;
 import com.example.book_your_seat.seat.redis.SeatRedisService;
 import lombok.RequiredArgsConstructor;

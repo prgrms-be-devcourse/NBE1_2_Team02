@@ -11,6 +11,7 @@ public final class UserConst {
     public static final String MAIL_CREATION_FAILED = "메일을 생성할 수 없습니다.";
     public static final String INVALID_CERT_CODE = "인증 코드가 올바르지 않습니다.";
     public static final String EMAIL_NOT_VERIFIED = "인증되지 않은 이메일입니다.";
+    public static final String USER_NOT_FOUND = "해당 유저를 찾을 수 없습니다.";
 
     public static final String EMAIL_CERT_CODE_KEY = "emailCertCode:";
     public static final String VERIFIED_EMAIL_KEY = "email:";

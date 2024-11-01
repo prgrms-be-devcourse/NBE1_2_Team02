@@ -1,4 +1,4 @@
-package com.example.book_your_seat.reservation.contorller.dto;
+package com.example.book_your_seat.reservation.contorller.dto.response;
 
 import com.example.book_your_seat.reservation.domain.ReservationStatus;
 import com.example.book_your_seat.seat.domain.Seat;
