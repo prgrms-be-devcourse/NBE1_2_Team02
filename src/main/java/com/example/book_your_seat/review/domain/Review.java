@@ -24,6 +24,7 @@ public class Review {
     private Long id;
 
     private String content;
+
     private int starCount;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -41,5 +42,10 @@ public class Review {
         this.concert = concert;
         user.addReview(this);
         concert.addReview(this);
+    }
+
+
+    public static Review from(String content, int starCount, User user, Concert concert){
+        return new Review(content, starCount, user, concert);
     }
 }
