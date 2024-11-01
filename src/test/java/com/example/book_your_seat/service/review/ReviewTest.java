@@ -5,6 +5,7 @@ import com.example.book_your_seat.IntegralTestSupport;
 import com.example.book_your_seat.concert.domain.Concert;
 import com.example.book_your_seat.concert.repository.ConcertRepository;
 import com.example.book_your_seat.review.controller.dto.ReviewCreateResDTO;
+import com.example.book_your_seat.review.controller.dto.ReviewResDTO;
 import com.example.book_your_seat.review.domain.Review;
 import com.example.book_your_seat.review.repository.ReviewRepository;
 import com.example.book_your_seat.review.service.facade.ReviewService;
@@ -75,15 +76,43 @@ public class ReviewTest extends IntegralTestSupport {
     @DisplayName("유저가 해당 콘서트에 대한 리뷰를 쓴다")
     public void makeReview() throws Exception {
        //given
-
-        //when
         ReviewCreateResDTO resDTO = reviewService.saveReview(user.getId(), concert.getId(), "테스트1", 5);
-
-
+        //when
+        
         Review review = reviewRepository.findById(resDTO.id()).get();
 
         //then
         Assertions.assertThat(review.getContent()).isEqualTo("테스트1");
         Assertions.assertThat(review.getStarCount()).isEqualTo(5);
+    }
+    
+    
+    @Test
+    @DisplayName("유저는 콘서트의 리뷰를 조회 할 수 있다.")
+    public void findAll() throws Exception {
+       //given
+        ReviewCreateResDTO resDTO = reviewService.saveReview(user.getId(), concert.getId(), "테스트1", 5);
+       
+       //when
+        List<ReviewResDTO> reviewResDTO = reviewService.reviewAll(concert.getId());
+
+
+        //then
+        Assertions.assertThat(reviewResDTO.size()).isEqualTo(3);
+        Assertions.assertThat(reviewResDTO.get(1).username()).isEqualTo(user.getUsername());
+    }
+
+    @Test
+    @DisplayName("유저가 작성한 리뷰를 조회할 수 있다.")
+    public void userReviewAll() throws Exception {
+       //given
+        ReviewCreateResDTO resDTO = reviewService.saveReview(user.getId(), concert.getId(), "테스트1", 5);
+
+       //when
+        List<ReviewResDTO> reviewResDTO = reviewService.findUserReview(user.getId());
+
+        //then
+        Assertions.assertThat(reviewResDTO.size()).isEqualTo(3);
+        Assertions.assertThat(reviewResDTO.get(1).username()).isEqualTo(user.getUsername());
     }
 }

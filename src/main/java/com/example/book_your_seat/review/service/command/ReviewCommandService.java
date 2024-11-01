@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import static com.example.book_your_seat.concert.ConcertConst.INVALID_CONCERT_ID;
+import static com.example.book_your_seat.user.UserConst.USER_NOT_FOUND;
 
 @Service
 @Transactional
@@ -45,7 +46,7 @@ public class ReviewCommandService {
     }
 
     private User getUser(Long userId) {
-        return userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException(INVALID_CONCERT_ID ));
+        return userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException(USER_NOT_FOUND));
     }
 
 
