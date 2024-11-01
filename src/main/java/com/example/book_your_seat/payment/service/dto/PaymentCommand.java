@@ -1,7 +1,7 @@
 package com.example.book_your_seat.payment.service.dto;
 
 import com.example.book_your_seat.payment.controller.dto.response.TossConfirmResponse;
-import com.example.book_your_seat.reservation.contorller.dto.PaymentRequest;
+import com.example.book_your_seat.reservation.contorller.dto.request.PaymentRequest;
 
 import java.time.LocalDateTime;
 import java.util.List;

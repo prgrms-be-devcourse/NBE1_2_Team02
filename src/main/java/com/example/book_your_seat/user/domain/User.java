@@ -1,24 +1,16 @@
 package com.example.book_your_seat.user.domain;
 
 import com.example.book_your_seat.common.entity.BaseEntity;
-import com.example.book_your_seat.concert.domain.LikeConcert;
 import com.example.book_your_seat.coupon.domain.UserCoupon;
 import com.example.book_your_seat.reservation.domain.Reservation;
 import com.example.book_your_seat.review.domain.Review;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
-import java.util.ArrayList;
-import java.util.List;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -47,9 +39,6 @@ public class User extends BaseEntity {
     private final List<UserCoupon> userCoupons = new ArrayList<>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private final List<LikeConcert> likeConcerts = new ArrayList<>();
-
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private final List<Review> reviews = new ArrayList<>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
@@ -73,10 +62,6 @@ public class User extends BaseEntity {
 
     public void adduserCoupon(UserCoupon userCoupon) {
         this.userCoupons.add(userCoupon);
-    }
-
-    public void addLikeConcert(LikeConcert likeConcert) {
-        this.likeConcerts.add(likeConcert);
     }
 
     public void addReview(Review review) {
