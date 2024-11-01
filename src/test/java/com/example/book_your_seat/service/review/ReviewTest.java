@@ -17,6 +17,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -114,5 +115,23 @@ public class ReviewTest extends IntegralTestSupport {
         //then
         Assertions.assertThat(reviewResDTO.size()).isEqualTo(3);
         Assertions.assertThat(reviewResDTO.get(1).username()).isEqualTo(user.getUsername());
+    }
+
+
+    @Test
+    @DisplayName("유저의 콘서트 리뷰 페이지네이션 ")
+    public void reviewPageNationAll() throws Exception {
+       //given
+         reviewService.saveReview(user.getId(), concert.getId(), "테스트1", 5);
+         reviewService.saveReview(user.getId(), concert.getId(), "테스트1", 5);
+         reviewService.saveReview(user.getId(), concert.getId(), "테스트1", 5);
+
+        PageRequest pageRequest = PageRequest.of(0, 5);//no-offset 이므로 임으로 페이지 number를 0으로 설정
+
+        //when
+        List<ReviewResDTO> reviewResDTOS = reviewService.pageNationReview(null, concert.getId(), pageRequest);//첫 페이지 조회
+
+        //then
+        Assertions.assertThat(reviewResDTOS.size()).isEqualTo(5);
     }
 }

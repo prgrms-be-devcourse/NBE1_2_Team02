@@ -8,6 +8,7 @@ import com.example.book_your_seat.review.service.facade.ReviewService;
 import com.example.book_your_seat.user.domain.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -36,8 +37,11 @@ public class ReviewController {
     }
 
     @GetMapping("/{concertId}")
-    public ResponseEntity< List<ReviewResDTO>> findAll(@PathVariable("concertId") Long concertId){
-        List<ReviewResDTO> reviewResDTOS = reviewService.reviewAll(concertId);
+    public ResponseEntity< List<ReviewResDTO>> findAll(
+            @RequestParam("concertId") Long concertId,
+            @RequestParam("reviewId") Long reviewId,
+            Pageable pageable){
+        List<ReviewResDTO> reviewResDTOS = reviewService.pageNationReview(concertId, reviewId, pageable);
 
         return ResponseEntity.ok(reviewResDTOS);
     }

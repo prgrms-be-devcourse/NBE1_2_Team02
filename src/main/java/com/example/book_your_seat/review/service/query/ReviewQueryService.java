@@ -4,6 +4,8 @@ import com.example.book_your_seat.review.controller.dto.ReviewResDTO;
 import com.example.book_your_seat.review.domain.Review;
 import com.example.book_your_seat.review.repository.ReviewRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,6 +26,12 @@ public class ReviewQueryService {
 
         return reviews.stream().map(ReviewResDTO::fromReview).toList();
 
+    }
+
+    public List<ReviewResDTO> reviewPageList(Long reviewId, Long concertId, Pageable pageable){
+        Slice<Review> reviews = reviewRepository.pageNationReviewList(reviewId, concertId, pageable);
+
+        return reviews.stream().map(ReviewResDTO::fromReview).toList();
     }
 
 
