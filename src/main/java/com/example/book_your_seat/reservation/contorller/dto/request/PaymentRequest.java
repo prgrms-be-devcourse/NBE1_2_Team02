@@ -1,4 +1,4 @@
-package com.example.book_your_seat.reservation.contorller.dto;
+package com.example.book_your_seat.reservation.contorller.dto.request;
 
 import jakarta.validation.constraints.NotNull;
 

@@ -1,7 +1,9 @@
 package com.example.book_your_seat.service.tossPayment;
 
 import com.example.book_your_seat.IntegralTestSupport;
+import com.example.book_your_seat.payment.controller.dto.request.TossCancelRequest;
 import com.example.book_your_seat.payment.controller.dto.request.TossConfirmRequest;
+import com.example.book_your_seat.payment.controller.dto.response.TossCancelResponse;
 import com.example.book_your_seat.payment.controller.dto.response.TossConfirmResponse;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.DisplayName;
@@ -52,5 +54,44 @@ class TossPaymentTest extends IntegralTestSupport {
         assertThrows(IllegalArgumentException.class, () -> {
             tossApiService.confirm(request);
         });
+    }
+
+    @Test
+    @DisplayName("토스페이먼츠 결재 취소 api 성공")
+    void testCancelSuccess() {
+        //given
+        TossCancelRequest request = new TossCancelRequest(
+                "고객 요청"
+        );
+
+        TossCancelResponse mockResponse = new TossCancelResponse(
+                "취소 완료", 1000L
+        );
+        when(tossApiService.cancel("1234", request)).thenReturn(mockResponse);
+
+        //when
+        TossCancelResponse response = tossApiService.cancel("1234", request);
+
+        //then
+        assertThat(response, Matchers.equalTo(mockResponse));
+
+    }
+
+    @Test
+    @DisplayName("토스페이먼츠 결재 취소 api 실패")
+    void testCancelException() {
+        //given
+        TossCancelRequest request = new TossCancelRequest(
+                "고객 요청"
+        );
+
+        when(tossApiService.cancel("1234", request))
+                .thenThrow(new IllegalArgumentException());
+
+        //then
+        assertThrows(IllegalArgumentException.class,() ->{
+            tossApiService.cancel("1234", request);
+        });
+
     }
 }

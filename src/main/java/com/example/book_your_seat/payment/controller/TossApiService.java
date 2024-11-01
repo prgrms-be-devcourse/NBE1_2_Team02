@@ -1,6 +1,8 @@
 package com.example.book_your_seat.payment.controller;
 
+import com.example.book_your_seat.payment.controller.dto.request.TossCancelRequest;
 import com.example.book_your_seat.payment.controller.dto.request.TossConfirmRequest;
+import com.example.book_your_seat.payment.controller.dto.response.TossCancelResponse;
 import com.example.book_your_seat.payment.controller.dto.response.TossConfirmResponse;
 import com.example.book_your_seat.payment.controller.dto.response.TossErrorResponse;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -27,6 +29,17 @@ public class TossApiService {
         try {
             return tossOpenFeign.confirm("Basic " + auth, request);
         } catch (HttpClientErrorException | HttpServerErrorException httpException) {
+            handleTossException(httpException);
+            return null;
+        }
+    }
+
+    public TossCancelResponse cancel(String paymentKey, TossCancelRequest request) {
+        String auth = Base64.getEncoder().encodeToString((SECRET_KEY + ":").getBytes());
+
+        try {
+            return tossOpenFeign.cancel("Basic " + auth, paymentKey, request);
+        }catch (HttpClientErrorException | HttpServerErrorException httpException) {
             handleTossException(httpException);
             return null;
         }

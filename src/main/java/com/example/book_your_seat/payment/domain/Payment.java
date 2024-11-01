@@ -9,6 +9,8 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
+import static com.example.book_your_seat.payment.domain.PaymentStatus.CANCELLED;
+
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -21,6 +23,7 @@ public class Payment {
     private Long totalPrice;
     private LocalDateTime expiryAt;
     private String discountRate;
+    private String paymentKey;
 
     @Enumerated(EnumType.STRING)
     private PaymentStatus paymentStatus;
@@ -30,16 +33,20 @@ public class Payment {
     private Reservation reservation;
 
     @Builder
-    public Payment(Long totalPrice, LocalDateTime expiryAt, String discountRate, PaymentStatus paymentStatus, Reservation reservation) {
+    public Payment(Long totalPrice, LocalDateTime expiryAt, String discountRate, PaymentStatus paymentStatus, Reservation reservation,String paymentKey) {
         this.totalPrice = totalPrice;
         this.expiryAt = expiryAt;
         this.discountRate = discountRate;
         this.paymentStatus = paymentStatus;
-
+        this.paymentKey = paymentKey;
         this.reservation = reservation;
     }
 
     public void addReservation(Reservation reservation) {
         this.reservation = reservation;
+    }
+
+    public void cancelPayment() {
+        this.paymentStatus = CANCELLED;
     }
 }
