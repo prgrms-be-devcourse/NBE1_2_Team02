@@ -1,6 +1,6 @@
 package com.example.book_your_seat.payment.controller.dto.request;
 
-import com.example.book_your_seat.reservation.contorller.dto.PaymentRequest;
+import com.example.book_your_seat.reservation.contorller.dto.request.PaymentRequest;
 import jakarta.validation.constraints.NotNull;
 
 import static com.example.book_your_seat.payment.PaymentConst.*;

@@ -13,6 +13,8 @@ import lombok.NoArgsConstructor;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.example.book_your_seat.reservation.domain.ReservationStatus.CANCELLED;
+
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -55,6 +57,10 @@ public class Reservation {
 
     public void addSeat(Seat seat) {
         this.seats.add(seat);
+    }
+
+    public void cancelReservation() {
+        this.status = CANCELLED;
     }
 
 }
