@@ -37,7 +37,7 @@ public class Seat {
         this.seatNumber = seatNumber;
 
         this.zone = Zone.setZone(seatNumber);
-        concert.addSeat(this);
+//        concert.addSeat(this);
     }
 
     public void selectSeat() {
