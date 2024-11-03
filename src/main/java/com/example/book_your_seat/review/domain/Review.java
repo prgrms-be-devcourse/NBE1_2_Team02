@@ -47,4 +47,10 @@ public class Review extends BaseEntity {
     public static Review from(String content, int starCount, User user, Concert concert){
         return new Review(content, starCount, user, concert);
     }
+
+
+    public void updateReview(String content, int startContent){
+        this.content = content;
+        this.starCount = startContent;
+    }
 }

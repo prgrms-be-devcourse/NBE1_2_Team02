@@ -4,6 +4,7 @@ import com.example.book_your_seat.config.security.auth.LoginUser;
 import com.example.book_your_seat.review.controller.dto.ReviewCreateReqDTO;
 import com.example.book_your_seat.review.controller.dto.ReviewCreateResDTO;
 import com.example.book_your_seat.review.controller.dto.ReviewResDTO;
+import com.example.book_your_seat.review.controller.dto.ReviewUpdateDTO;
 import com.example.book_your_seat.review.service.facade.ReviewService;
 import com.example.book_your_seat.user.domain.User;
 import lombok.RequiredArgsConstructor;
@@ -24,15 +25,15 @@ public class ReviewController {
     private final ReviewService reviewService;
 
     @PostMapping()
-    public ResponseEntity<ReviewCreateResDTO> saveReview(
+    public ResponseEntity<Long> saveReview(
             @RequestBody ReviewCreateReqDTO req,
             @LoginUser User loginUser) {
 
-        ReviewCreateResDTO resDTO = reviewService.saveReview(loginUser.getId(), req.concertId(), req.content(), req.startCount());
+        Long reviewId = reviewService.saveReview(loginUser.getId(), req.concertId(), req.content(), req.startCount());
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(resDTO);
+                .body(reviewId);
 
     }
 
@@ -58,6 +59,30 @@ public class ReviewController {
 
         return ResponseEntity.ok(reviewResDTOS);
     }
+
+    @PatchMapping()
+    public ResponseEntity<Long> updateReview(
+            @RequestBody ReviewUpdateDTO reviewUpdateDTO,
+            @LoginUser User user
+            ){
+
+        Long updateReviewId = reviewService.updateReview(user.getId(), reviewUpdateDTO.reviewId(), reviewUpdateDTO.content(), reviewUpdateDTO.startCount());
+
+        return ResponseEntity.ok(updateReviewId);
+
+    }
+
+
+    @DeleteMapping({"/{reviewId}"})
+    public ResponseEntity<Long> deleteReview(
+            @LoginUser User user,
+            @PathVariable Long reviewId){
+
+        Long deleteReviewId = reviewService.deleteReview(user.getId(), reviewId);
+
+        return ResponseEntity.ok(deleteReviewId);
+    }
+
 
 
 

@@ -23,9 +23,17 @@ public class ReviewService {
 
 
 
-    public ReviewCreateResDTO saveReview(Long userId, Long concertId, String content, int startCount){
+    public Long saveReview(Long userId, Long concertId, String content, int startCount){
 
         return reviewCommandService.createReview(userId, concertId, content, startCount);
+    }
+
+    public Long updateReview(Long userId, Long reviewId, String content, int startCount){
+        return reviewCommandService.updateReview(userId, reviewId, content, startCount);
+    }
+
+    public Long deleteReview(Long userId, Long concertId){
+        return reviewCommandService.deleteReview(userId, concertId);
     }
 
 
@@ -36,4 +44,7 @@ public class ReviewService {
     public List<ReviewResDTO> pageNationUserReview(Long userId, Long reviewId, Pageable pageable){
         return reviewQueryService.reviewUserList(userId, reviewId, pageable);
     }
+
+
+
 }

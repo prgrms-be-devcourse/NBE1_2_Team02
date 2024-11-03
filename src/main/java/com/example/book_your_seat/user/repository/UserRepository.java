@@ -16,4 +16,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query("select distinct u from User u join fetch u.userCoupons uc join fetch uc.coupon where u.id = :userId")
     Optional<User> findByIdWithUserCoupons(@Param("userId") Long userId);
 
+
+
 }
