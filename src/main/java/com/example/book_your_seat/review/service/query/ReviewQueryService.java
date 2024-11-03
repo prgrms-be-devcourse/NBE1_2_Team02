@@ -21,12 +21,6 @@ public class ReviewQueryService {
     private final ReviewRepository reviewRepository;
 
 
-    public List<ReviewResDTO> reviewFindAll(Long concertId){
-        List<Review> reviews = reviewRepository.findAllByConcertId(concertId).orElseThrow(()-> new IllegalArgumentException(NOT_FOUND_REVIEW));
-
-        return reviews.stream().map(ReviewResDTO::fromReview).toList();
-
-    }
 
     public List<ReviewResDTO> reviewPageList(Long reviewId, Long concertId, Pageable pageable){
         Slice<Review> reviews = reviewRepository.pageNationReviewList(reviewId, concertId, pageable);
@@ -34,9 +28,8 @@ public class ReviewQueryService {
         return reviews.stream().map(ReviewResDTO::fromReview).toList();
     }
 
-
-    public List<ReviewResDTO> userReviewAll(Long userId){
-        List<Review> reviews = reviewRepository.findAllByUserId(userId).orElseThrow(()-> new IllegalArgumentException(NOT_FOUND_REVIEW));
+    public List<ReviewResDTO> reviewUserList(Long userId, Long reviewId, Pageable pageable){
+        Slice<Review> reviews = reviewRepository.pageNationUserReviewList(reviewId, userId, pageable);
 
         return reviews.stream().map(ReviewResDTO::fromReview).toList();
     }

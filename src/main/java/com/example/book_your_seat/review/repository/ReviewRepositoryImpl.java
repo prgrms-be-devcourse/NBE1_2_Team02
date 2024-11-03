@@ -41,8 +41,33 @@ public class ReviewRepositoryImpl implements ReviewRepositoryCustom{
         return new SliceImpl<>(reviewList, pageable, hasNext);
     }
 
+    @Override
+    public Slice<Review> pageNationUserReviewList(Long reviewId, Long userId, Pageable pageable) {
+
+        List<Review> reviewList = queryFactory.selectFrom(review)
+                .where(eqUserId(userId).and(ltReviewId(reviewId)))
+                .join(review.user, user).fetchJoin()
+                .limit(pageable.getPageSize() + 1) //후에 값이 더 있나 체크하기 위해 하나 더 가져옴
+                .orderBy(review.createdAt.desc())
+                .fetch();
+
+        boolean hasNext = false;
+
+        if(reviewList.size()> pageable.getPageSize()){
+            hasNext = true; //값이 더 있는지 체크
+            reviewList.remove(pageable.getPageSize()); // 후에 값이 더 있으면 마지막 값을 지워줌
+        }
+
+
+        return new SliceImpl<>(reviewList, pageable, hasNext);
+    }
+
     private BooleanExpression ltReviewId(Long reviewId) {
         return reviewId != null ? review.id.lt(reviewId) : null;
+    }
+
+    private BooleanExpression eqUserId(Long userId){
+        return review.user.id.eq(userId);
     }
 
     private BooleanExpression eqConcertId(Long concertId){

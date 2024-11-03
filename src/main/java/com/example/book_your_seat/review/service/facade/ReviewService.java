@@ -28,15 +28,12 @@ public class ReviewService {
         return reviewCommandService.createReview(userId, concertId, content, startCount);
     }
 
-    public List<ReviewResDTO> reviewAll(Long concertId){
-        return reviewQueryService.reviewFindAll(concertId);
-    }
-
-    public List<ReviewResDTO> findUserReview(Long userId){
-        return reviewQueryService.userReviewAll(userId);
-    }
 
     public List<ReviewResDTO> pageNationReview(Long reviewId, Long concertId, Pageable pageable){
         return reviewQueryService.reviewPageList(reviewId, concertId, pageable);
+    }
+
+    public List<ReviewResDTO> pageNationUserReview(Long reviewId, Long userId, Pageable pageable){
+        return reviewQueryService.reviewUserList(userId, reviewId, pageable);
     }
 }

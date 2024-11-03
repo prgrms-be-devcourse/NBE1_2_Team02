@@ -7,4 +7,6 @@ import org.springframework.data.domain.Slice;
 public interface ReviewRepositoryCustom {
 
     Slice<Review> pageNationReviewList(Long reviewId, Long concertId, Pageable pageable);
+
+    Slice<Review> pageNationUserReviewList(Long reviewId, Long userId, Pageable pageable);
 }

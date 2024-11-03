@@ -86,36 +86,7 @@ public class ReviewTest extends IntegralTestSupport {
         Assertions.assertThat(review.getContent()).isEqualTo("테스트1");
         Assertions.assertThat(review.getStarCount()).isEqualTo(5);
     }
-    
-    
-    @Test
-    @DisplayName("유저는 콘서트의 리뷰를 조회 할 수 있다.")
-    public void findAll() throws Exception {
-       //given
-        ReviewCreateResDTO resDTO = reviewService.saveReview(user.getId(), concert.getId(), "테스트1", 5);
-       
-       //when
-        List<ReviewResDTO> reviewResDTO = reviewService.reviewAll(concert.getId());
 
-
-        //then
-        Assertions.assertThat(reviewResDTO.size()).isEqualTo(3);
-        Assertions.assertThat(reviewResDTO.get(1).username()).isEqualTo(user.getUsername());
-    }
-
-    @Test
-    @DisplayName("유저가 작성한 리뷰를 조회할 수 있다.")
-    public void userReviewAll() throws Exception {
-       //given
-        ReviewCreateResDTO resDTO = reviewService.saveReview(user.getId(), concert.getId(), "테스트1", 5);
-
-       //when
-        List<ReviewResDTO> reviewResDTO = reviewService.findUserReview(user.getId());
-
-        //then
-        Assertions.assertThat(reviewResDTO.size()).isEqualTo(3);
-        Assertions.assertThat(reviewResDTO.get(1).username()).isEqualTo(user.getUsername());
-    }
 
 
     @Test

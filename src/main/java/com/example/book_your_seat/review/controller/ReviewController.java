@@ -47,8 +47,11 @@ public class ReviewController {
     }
 
     @GetMapping("/{userId}")
-    public ResponseEntity<List<ReviewResDTO>> findUserReviewAll(@PathVariable("userId") Long userId){
-        List<ReviewResDTO> reviewResDTOS = reviewService.findUserReview(userId);
+    public ResponseEntity<List<ReviewResDTO>> findUserReviewAll(
+            @RequestParam("userId") Long userId,
+            @RequestParam("reviewId") Long reviewId,
+            Pageable pageable){
+        List<ReviewResDTO> reviewResDTOS = reviewService.pageNationUserReview(reviewId, userId, pageable);
 
         return ResponseEntity.ok(reviewResDTOS);
     }
