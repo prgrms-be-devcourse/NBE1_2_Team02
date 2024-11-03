@@ -36,22 +36,25 @@ public class ReviewController {
 
     }
 
-    @GetMapping("/{concertId}")
+    @GetMapping()
     public ResponseEntity< List<ReviewResDTO>> findAll(
             @RequestParam("concertId") Long concertId,
-            @RequestParam("reviewId") Long reviewId,
+            @RequestParam(value = "reviewId", required = false) Long reviewId,
             Pageable pageable){
+
+        log.info("concertId: {}, reviewId: {}", concertId, reviewId);
+
         List<ReviewResDTO> reviewResDTOS = reviewService.pageNationReview(concertId, reviewId, pageable);
 
         return ResponseEntity.ok(reviewResDTOS);
     }
 
-    @GetMapping("/{userId}")
+    @GetMapping("/userConcert")
     public ResponseEntity<List<ReviewResDTO>> findUserReviewAll(
             @RequestParam("userId") Long userId,
-            @RequestParam("reviewId") Long reviewId,
+            @RequestParam(value = "reviewId", required = false) Long reviewId,
             Pageable pageable){
-        List<ReviewResDTO> reviewResDTOS = reviewService.pageNationUserReview(reviewId, userId, pageable);
+        List<ReviewResDTO> reviewResDTOS = reviewService.pageNationUserReview(userId, reviewId, pageable);
 
         return ResponseEntity.ok(reviewResDTOS);
     }

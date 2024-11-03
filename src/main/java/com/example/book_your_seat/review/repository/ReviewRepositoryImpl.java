@@ -21,7 +21,7 @@ public class ReviewRepositoryImpl implements ReviewRepositoryCustom{
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public Slice<Review> pageNationReviewList(Long reviewId, Long concertId, Pageable pageable) {
+    public Slice<Review> pageNationReviewList(Long concertId, Long reviewId, Pageable pageable) {
 
         List<Review> reviewList = queryFactory.selectFrom(review)
                 .where(eqConcertId(concertId).and(ltReviewId(reviewId)))
@@ -42,7 +42,7 @@ public class ReviewRepositoryImpl implements ReviewRepositoryCustom{
     }
 
     @Override
-    public Slice<Review> pageNationUserReviewList(Long reviewId, Long userId, Pageable pageable) {
+    public Slice<Review> pageNationUserReviewList(Long userId, Long reviewId, Pageable pageable) {
 
         List<Review> reviewList = queryFactory.selectFrom(review)
                 .where(eqUserId(userId).and(ltReviewId(reviewId)))

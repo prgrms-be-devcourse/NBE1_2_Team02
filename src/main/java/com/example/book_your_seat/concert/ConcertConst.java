@@ -19,5 +19,7 @@ public final class ConcertConst {
     public static final String CONCERT_NAME = "콘서트 제목";
     public static final String CONCERT_TIME = "콘서트 시간";
 
+    public static final String NOT_NULL_CONCERT_ID = "콘서트 아이디는 필수 값 입니다.";
+
     private ConcertConst() {}
 }

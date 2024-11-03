@@ -29,11 +29,11 @@ public class ReviewService {
     }
 
 
-    public List<ReviewResDTO> pageNationReview(Long reviewId, Long concertId, Pageable pageable){
-        return reviewQueryService.reviewPageList(reviewId, concertId, pageable);
+    public List<ReviewResDTO> pageNationReview(Long concertId, Long reviewId, Pageable pageable){
+        return reviewQueryService.reviewPageList(concertId, reviewId, pageable);
     }
 
-    public List<ReviewResDTO> pageNationUserReview(Long reviewId, Long userId, Pageable pageable){
+    public List<ReviewResDTO> pageNationUserReview(Long userId, Long reviewId, Pageable pageable){
         return reviewQueryService.reviewUserList(userId, reviewId, pageable);
     }
 }
