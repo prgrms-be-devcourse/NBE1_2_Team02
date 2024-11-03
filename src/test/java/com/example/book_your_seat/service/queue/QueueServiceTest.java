@@ -38,9 +38,6 @@ public class QueueServiceTest extends IntegralTestSupport {
     private QueueQueryService queueQueryService;
 
     @Autowired
-    private QueueRedisRepository queueRedisRepository;
-
-    @Autowired
     private QueueJwtUtil queueJwtUtil;
 
     private ZSetOperations<String, String> zSet;
@@ -48,8 +45,6 @@ public class QueueServiceTest extends IntegralTestSupport {
     private User testUser;
 
     private static final Long CONCERT_ID = 1L;
-    private static final Long CONCERT_ID2 = 2L;
-
 
     @BeforeEach
     void beforeEach() {
@@ -131,13 +126,14 @@ public class QueueServiceTest extends IntegralTestSupport {
 
     @Test
     @DisplayName("현재 나의 대기열 상태를 조회한다.(대기열에 있는 상황)")
-    void findQueueStatusTest2() {
+    void findQueueStatusTest2() throws InterruptedException {
         //given
-        for (int i = 0; i < 1100; i++) {
+        for (int i = 0; i < 1010; i++) {
             User savedUser = userRepository.save(new User("nickname", "username", "email@email.com", "passwordpassowrd"));
             queueCommandService.issueTokenAndEnqueue(savedUser.getId(), CONCERT_ID);
         }
 
+        Thread.sleep(10);
         String token = queueCommandService.issueTokenAndEnqueue(testUser.getId(), CONCERT_ID).token();
 
         //when
@@ -145,7 +141,7 @@ public class QueueServiceTest extends IntegralTestSupport {
 
         //then
         assertEquals(WAITING, queueResponse.status());
-        assertEquals(101, queueResponse.waitingQueueCount());
+        assertEquals(11, queueResponse.waitingQueueCount());
     }
 
     @Test
