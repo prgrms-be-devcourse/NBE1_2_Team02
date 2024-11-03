@@ -12,8 +12,8 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(indexes = {
-        @Index(name = "inx_reviews", columnList = "concert_id, create_at"),
-        @Index(name = "inx_user_create", columnList = "user_id, create_at")
+        @Index(name = "inx_reviews", columnList = "concert_id, created_at"),
+        @Index(name = "inx_user_create", columnList = "user_id, created_at")
 })
 
 public class Review extends BaseEntity {
