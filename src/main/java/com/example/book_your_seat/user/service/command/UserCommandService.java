@@ -70,7 +70,7 @@ public class UserCommandService {
 
     public void deleteAddress(User user, Address address) {
         List<Address> addressList = user.getAddressList();
-        if(addressList.contains(address)) {
+        if(!addressList.contains(address)) {
             throw new IllegalArgumentException(ADDRESS_NOT_OWNED);
         }
         addressList.remove(address);

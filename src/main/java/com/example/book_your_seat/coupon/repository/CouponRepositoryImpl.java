@@ -27,10 +27,15 @@ public class CouponRepositoryImpl implements CouponRepositoryCustom{
     @Override
     public Slice<UserCouponResponse> selectUserCoupons(UserCouponRequest userCouponRequest,Long memberId, Pageable pageable) {
         List<UserCouponResponse> result = queryFactory
-                .select(Projections.constructor(UserCouponResponse.class))
+                .select(Projections.constructor(UserCouponResponse.class,
+                        userCoupon.couponId,
+                        userCoupon.isUsed,
+                        coupon.expirationDate,
+                        coupon.discountRate
+                        ))
                 .from(userCoupon)
-                .join(user).on(user.id.eq(userCoupon.id))
-                .join(coupon).on(coupon.id.eq(userCoupon.id))
+                .join(user).on(user.id.eq(userCoupon.userId))
+                .join(coupon).on(coupon.id.eq(userCoupon.couponId))
                 .where(isUsed(userCouponRequest.used()), isMember(memberId))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize() + 1) // 한개를 더 반환

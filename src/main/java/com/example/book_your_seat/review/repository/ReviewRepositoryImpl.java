@@ -31,10 +31,11 @@ public class ReviewRepositoryImpl implements ReviewRepositoryCustom{
                         review.starCount,
                         review.id
                 ))
+                .from(review)
+                .join(user).on(review.userId.eq(user.id))
                 .where(ltReviewId(reviewId))
-                .join(user).on(user.id.eq(review.userId))
-                .limit(pageable.getPageSize() + 1) //후에 값이 더 있나 체크하기 위해 하나 더 가져옴
                 .orderBy(review.createdAt.desc())
+                .limit(pageable.getPageSize() + 1) //후에 값이 더 있나 체크하기 위해 하나 더 가져옴
                 .fetch();
 
         boolean hasNext = false;
@@ -58,8 +59,9 @@ public class ReviewRepositoryImpl implements ReviewRepositoryCustom{
                         review.starCount,
                         review.id
                 ))
+                .from(review)
+                .join(user).on(review.userId.eq(user.id))
                 .where(ltReviewId(reviewId))
-                .join(user).on(user.id.eq(review.userId))
                 .limit(pageable.getPageSize() + 1) //후에 값이 더 있나 체크하기 위해 하나 더 가져옴
                 .orderBy(review.createdAt.desc())
                 .fetch();

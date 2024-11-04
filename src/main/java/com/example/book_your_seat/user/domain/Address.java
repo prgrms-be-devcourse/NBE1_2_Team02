@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @Embeddable
 @EqualsAndHashCode(callSuper = false)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Address extends BaseEntity {
+public class Address {
 
     private String postcode;
 

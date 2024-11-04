@@ -1,7 +1,6 @@
 package com.example.book_your_seat.reservation.domain;
 
 import com.example.book_your_seat.common.entity.BaseEntity;
-import com.example.book_your_seat.common.event.Events;
 import com.example.book_your_seat.seat.domain.SeatId;
 import com.example.book_your_seat.user.domain.Address;
 import jakarta.persistence.*;
