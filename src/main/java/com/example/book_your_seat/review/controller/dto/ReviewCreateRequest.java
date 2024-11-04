@@ -6,7 +6,7 @@ import static com.example.book_your_seat.concert.ConcertConst.NOT_NULL_CONCERT_I
 import static com.example.book_your_seat.review.ReviewConst.NOT_CONTENT;
 import static com.example.book_your_seat.review.ReviewConst.NOT_STAR_COUNT;
 
-public record ReviewCreateReqDTO(
+public record ReviewCreateRequest(
 
         @NotEmpty(message = NOT_CONTENT)
         String content,

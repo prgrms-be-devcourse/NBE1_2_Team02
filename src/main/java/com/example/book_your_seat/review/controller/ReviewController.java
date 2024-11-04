@@ -1,11 +1,11 @@
 package com.example.book_your_seat.review.controller;
 
 import com.example.book_your_seat.config.security.auth.LoginUser;
-import com.example.book_your_seat.review.controller.dto.ReviewCreateReqDTO;
-import com.example.book_your_seat.review.controller.dto.ReviewCreateResDTO;
-import com.example.book_your_seat.review.controller.dto.ReviewResDTO;
+import com.example.book_your_seat.review.controller.dto.ReviewCreateRequest;
+import com.example.book_your_seat.review.controller.dto.ReviewListResponse;
+import com.example.book_your_seat.review.controller.dto.ReviewResponse;
 import com.example.book_your_seat.review.controller.dto.ReviewUpdateDTO;
-import com.example.book_your_seat.review.service.facade.ReviewService;
+import com.example.book_your_seat.review.service.facade.ReviewFacade;
 import com.example.book_your_seat.user.domain.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,71 +19,81 @@ import java.util.List;
 @RestController
 @Slf4j
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/review")
+@RequestMapping("/api/v1/reviews")
 public class ReviewController {
 
-    private final ReviewService reviewService;
+    private final ReviewFacade reviewService;
 
-    @PostMapping()
-    public ResponseEntity<Long> saveReview(
-            @RequestBody ReviewCreateReqDTO req,
+    @PostMapping
+    public ResponseEntity<ReviewResponse> saveReview(
+            @RequestBody ReviewCreateRequest req,
             @LoginUser User loginUser) {
 
-        Long reviewId = reviewService.saveReview(loginUser.getId(), req.concertId(), req.content(), req.startCount());
+        ReviewResponse reviewResponse = reviewService.saveReview(
+                loginUser.getId(),
+                req.concertId(),
+                req.content(),
+                req.startCount()
+        );
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(reviewId);
-
+                .body(reviewResponse);
     }
 
-    @GetMapping()
-    public ResponseEntity< List<ReviewResDTO>> findAll(
+    @GetMapping
+    public ResponseEntity<List<ReviewListResponse>> findAll(
             @RequestParam("concertId") Long concertId,
             @RequestParam(value = "reviewId", required = false) Long reviewId,
-            Pageable pageable){
+            Pageable pageable) {
 
         log.info("concertId: {}, reviewId: {}", concertId, reviewId);
 
-        List<ReviewResDTO> reviewResDTOS = reviewService.pageNationReview(concertId, reviewId, pageable);
+        List<ReviewListResponse> reviewResDTOS = reviewService.pageNationReview(
+                concertId,
+                reviewId,
+                pageable
+        );
 
         return ResponseEntity.ok(reviewResDTOS);
     }
 
     @GetMapping("/userConcert")
-    public ResponseEntity<List<ReviewResDTO>> findUserReviewAll(
+    public ResponseEntity<List<ReviewListResponse>> findUserReviewAll(
             @RequestParam("userId") Long userId,
             @RequestParam(value = "reviewId", required = false) Long reviewId,
-            Pageable pageable){
-        List<ReviewResDTO> reviewResDTOS = reviewService.pageNationUserReview(userId, reviewId, pageable);
+            Pageable pageable) {
+
+        List<ReviewListResponse> reviewResDTOS = reviewService.pageNationUserReview(
+                userId,
+                reviewId,
+                pageable
+        );
 
         return ResponseEntity.ok(reviewResDTOS);
     }
 
-    @PatchMapping()
-    public ResponseEntity<Long> updateReview(
+    @PatchMapping
+    public ResponseEntity<ReviewResponse> updateReview(
             @RequestBody ReviewUpdateDTO reviewUpdateDTO,
-            @LoginUser User user
-            ){
+            @LoginUser User user) {
 
-        Long updateReviewId = reviewService.updateReview(user.getId(), reviewUpdateDTO.reviewId(), reviewUpdateDTO.content(), reviewUpdateDTO.startCount());
+        ReviewResponse reviewResponse = reviewService.updateReview(
+                user.getId(),
+                reviewUpdateDTO.reviewId(),
+                reviewUpdateDTO.content(),
+                reviewUpdateDTO.startCount()
+        );
 
-        return ResponseEntity.ok(updateReviewId);
-
+        return ResponseEntity.ok(reviewResponse);
     }
 
-
-    @DeleteMapping({"/{reviewId}"})
-    public ResponseEntity<Long> deleteReview(
+    @DeleteMapping("/{reviewId}")
+    public ResponseEntity<Void> deleteReview(
             @LoginUser User user,
-            @PathVariable Long reviewId){
+            @PathVariable Long reviewId) {
 
-        Long deleteReviewId = reviewService.deleteReview(user.getId(), reviewId);
-
-        return ResponseEntity.ok(deleteReviewId);
+        reviewService.deleteReview(user.getId(), reviewId);
+        return ResponseEntity.ok().build();
     }
-
-
-
-
 }

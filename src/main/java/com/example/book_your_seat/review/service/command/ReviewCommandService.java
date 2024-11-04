@@ -1,21 +1,18 @@
 package com.example.book_your_seat.review.service.command;
 
-
 import com.example.book_your_seat.concert.domain.Concert;
-import com.example.book_your_seat.concert.repository.ConcertRepository;
-import com.example.book_your_seat.review.controller.dto.ReviewCreateResDTO;
+import com.example.book_your_seat.concert.service.query.ConcertQueryService;
+import com.example.book_your_seat.review.controller.dto.ReviewResponse;
 import com.example.book_your_seat.review.domain.Review;
 import com.example.book_your_seat.review.repository.ReviewRepository;
 import com.example.book_your_seat.user.domain.User;
-import com.example.book_your_seat.user.repository.UserRepository;
+import com.example.book_your_seat.user.service.query.UserQueryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import static com.example.book_your_seat.concert.ConcertConst.INVALID_CONCERT_ID;
 import static com.example.book_your_seat.review.ReviewConst.NOT_FOUND_REVIEW;
 import static com.example.book_your_seat.review.ReviewConst.NOT_UPDATE_ACCESS;
-import static com.example.book_your_seat.user.UserConst.USER_NOT_FOUND;
 
 @Service
 @Transactional
@@ -23,58 +20,54 @@ import static com.example.book_your_seat.user.UserConst.USER_NOT_FOUND;
 public class ReviewCommandService {
 
     private final ReviewRepository reviewRepository;
+    private final UserQueryService userQueryService;
+    private final ConcertQueryService concertQueryService;
 
-    private final UserRepository userRepository;
-
-    private final ConcertRepository concertRepository;
-
-
-    public Long createReview(Long userId, Long concertId, String content, int startCount){
-
-        User user = getUser(userId);
-        Concert concert = getConcert(concertId);
+    /**
+     * 새로운 리뷰를 생성하고 저장합니다.
+     */
+    public ReviewResponse createReview(Long userId, Long concertId, String content, int startCount) {
+        User user = userQueryService.getUserByUserId(userId);
+        Concert concert = concertQueryService.findByConcertId(concertId);
 
         Review review = Review.from(content, startCount, user, concert);
+        Review savedReview = reviewRepository.save(review);
 
-        Review saveReview = reviewRepository.save(review);
-
-        return saveReview.getId();
+        return ReviewResponse.from(savedReview);
     }
 
-    public Long updateReview(Long userId, Long reviewId, String content, int startCount){
-        validationReview(userId);
+    /**
+     * 특정 리뷰를 업데이트합니다.
+     */
+    public ReviewResponse updateReview(Long userId, Long reviewId, String content, int starCount) {
+        validateUserReviewAccess(userId);
 
-        Review review = reviewRepository.findById(reviewId).orElseThrow(() -> new IllegalArgumentException(NOT_FOUND_REVIEW));
+        Review review = reviewRepository.findById(reviewId)
+                .orElseThrow(() -> new IllegalArgumentException(NOT_FOUND_REVIEW));
 
-        review.updateReview(content, startCount);
-
-        return reviewId;
-
+        review.updateReview(content, starCount);
+        return ReviewResponse.from(review);
     }
 
-
-    public Long deleteReview(Long userId, Long reviewId){
-
-        validationReview(userId);
-
+    /**
+     * 특정 리뷰를 삭제합니다.
+     */
+    public void deleteReview(Long userId, Long reviewId) {
+        validateUserReviewAccess(userId);
         reviewRepository.deleteById(reviewId);
-
-        return reviewId;
     }
 
-    private void validationReview(Long userId) {
-        if(!reviewRepository.existsByUserId(userId)){
+    /**
+     * 사용자가 해당 리뷰에 접근 권한이 있는지 검증합니다.
+     */
+    private void validateUserReviewAccess(Long userId) {
+        if (!reviewRepository.existsByUserId(userId)) {
             throw new IllegalArgumentException(NOT_UPDATE_ACCESS);
         }
     }
+}
 
-    private Concert getConcert(Long concertId) {
-       return concertRepository.findById(concertId).orElseThrow(() -> new IllegalArgumentException(INVALID_CONCERT_ID + concertId));
-    }
 
-    private User getUser(Long userId) {
-        return userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException(USER_NOT_FOUND));
-    }
 
 
 }

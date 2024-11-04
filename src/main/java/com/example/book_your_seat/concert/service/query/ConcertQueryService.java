@@ -3,6 +3,7 @@ package com.example.book_your_seat.concert.service.query;
 import com.example.book_your_seat.concert.controller.dto.ConcertListResponse;
 import com.example.book_your_seat.concert.controller.dto.ConcertResponse;
 import com.example.book_your_seat.concert.controller.dto.ResultRedisConcert;
+import com.example.book_your_seat.concert.domain.Concert;
 import com.example.book_your_seat.concert.repository.ConcertRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.Cacheable;
@@ -34,4 +35,10 @@ public class ConcertQueryService {
 
         return new ResultRedisConcert(list);
     }
+
+    public Concert findByConcertId(final Long id){
+        return concertRepository.findById(id).orElseThrow(() -> new IllegalArgumentException(INVALID_CONCERT_ID + id));
+    }
+
+
 }

@@ -10,7 +10,7 @@ public final class ReviewConst {
 
     public static final String NOT_STAR_COUNT = "별점을 입력해주세요.";
 
-    public static final String NOT_UPDATE_ACCESS = "해당 회원만 리뷰엡 접근 가능합니다.";
+    public static final String NOT_UPDATE_ACCESS = "해당 회원만 리뷰 접근 가능합니다.";
 
     public static final String NOT_EMPTY_ID = "리뷰 아이디는 필수값입니다.";
 
