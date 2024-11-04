@@ -7,6 +7,10 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
+@Table(indexes = {
+        @Index(name = "idx_like_concert_user_id", columnList = "like_concert_user_id"),
+        @Index(name = "idx_like_concert_concert_id", columnList = "like_concert_concert_id")
+})
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class LikeConcert {
 

@@ -14,6 +14,7 @@ import static com.example.book_your_seat.concert.ConcertConst.*;
 
 @Entity
 @Getter
+@Table(indexes = @Index(name = "idx_concert_title", columnList = "concert_title"))
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Concert extends BaseEntity {
 

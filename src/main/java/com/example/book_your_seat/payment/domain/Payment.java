@@ -1,6 +1,5 @@
 package com.example.book_your_seat.payment.domain;
 
-import com.example.book_your_seat.reservation.domain.Reservation;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
