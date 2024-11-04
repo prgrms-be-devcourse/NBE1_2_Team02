@@ -58,7 +58,8 @@
 ## 프로젝트 구조
 * 레이어드 아키텍처 + 도메인 기반 패키지 구조
 * Facade : CommandService + QueryService
-ex) User 도메인
+  
+**EX) User 도메인**
 ```
 book_your_seat
 │
