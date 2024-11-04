@@ -13,7 +13,6 @@ import com.example.book_your_seat.payment.service.dto.PaymentCommand;
 import com.example.book_your_seat.payment.service.facade.PaymentFacade;
 import com.example.book_your_seat.reservation.contorller.dto.request.CancelReservationRequest;
 import com.example.book_your_seat.reservation.contorller.dto.request.PaymentRequest;
-import com.example.book_your_seat.reservation.domain.Reservation;
 import com.example.book_your_seat.reservation.service.facade.ReservationFacade;
 import com.example.book_your_seat.seat.redis.SeatRedisService;
 import com.example.book_your_seat.user.domain.User;
@@ -69,10 +68,9 @@ public class PaymentController {
             @LoginUser User user,
             @RequestParam("token") String token
     ){
-        Reservation reservation = reservationFacade.validateReservation(request);
+        String paymentKey = reservationFacade.getValidPaymentKey(request);
 
-        TossCancelResponse response = tossApiService.cancel(reservation.getPayment().getPaymentKey(), new TossCancelRequest("고객 요청"));
-
+        TossCancelResponse response = tossApiService.cancel(paymentKey, new TossCancelRequest("고객 요청"));
         reservationFacade.cancelReservation(request);
 
         return ResponseEntity

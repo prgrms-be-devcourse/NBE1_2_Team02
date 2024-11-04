@@ -2,10 +2,8 @@ package com.example.book_your_seat.seat.service.facade;
 
 import com.example.book_your_seat.aop.seatLock.SeatLock;
 import com.example.book_your_seat.queue.repository.QueueRedisRepository;
-import com.example.book_your_seat.reservation.domain.Reservation;
 import com.example.book_your_seat.seat.controller.dto.SeatResponse;
 import com.example.book_your_seat.seat.controller.dto.SelectSeatRequest;
-import com.example.book_your_seat.seat.controller.dto.SelectSeatResponse;
 import com.example.book_your_seat.seat.domain.Seat;
 import com.example.book_your_seat.seat.redis.SeatRedisService;
 import com.example.book_your_seat.seat.service.command.SeatCommandService;
@@ -26,20 +24,17 @@ public class SeatFacade {
     private final SeatRedisService redisService;
     private final QueueRedisRepository queueRedisRepository;
 
-    public List<SeatResponse> findAllSeats(Long concertId) {
-        return seatQueryService.findAllSeats(concertId).stream()
-                .map(SeatResponse::from)
-                .toList();
+    public SeatResponse findAllSeats(Long concertId) {
+        List<Seat> allSeats = seatQueryService.findAllSeats(concertId);
+        return SeatResponse.from(allSeats);
     }
 
     public SelectSeatResponse selectSeat(final SelectSeatRequest request, final Long userId) {
         checkInProcessingQueue(request.concertId(), request.queueToken());
 
-        List<Seat> seats = seatCommandService.selectSeat(request);
-
+        List<Seat> seats = seatCommandService.selectSeat(concertId, request);
         redisService.cacheSeatIds(seats, userId);
-
-        return SelectSeatResponse.fromSeats(seats);
+        return SeatResponse.from(seats);
     }
 
     @SeatLock
@@ -57,13 +52,5 @@ public class SeatFacade {
         }
     }
 
-
-    public List<Seat> getSeats(final List<Long> seatIds) {
-        return seatQueryService.getSeats(seatIds);
-    }
-
-    public void seatReservationComplete(final List<Seat> seats, final Reservation reservation) {
-        seatCommandService.seatReservationComplete(seats, reservation);
-    }
 
 }

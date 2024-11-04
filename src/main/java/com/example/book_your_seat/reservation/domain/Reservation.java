@@ -1,20 +1,19 @@
 package com.example.book_your_seat.reservation.domain;
 
 import com.example.book_your_seat.common.entity.BaseEntity;
-import com.example.book_your_seat.payment.domain.Payment;
-import com.example.book_your_seat.seat.domain.Seat;
+import com.example.book_your_seat.common.event.Events;
+import com.example.book_your_seat.seat.domain.SeatId;
 import com.example.book_your_seat.user.domain.Address;
-import com.example.book_your_seat.user.domain.User;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static com.example.book_your_seat.reservation.domain.ReservationStatus.CANCELLED;
+import static com.example.book_your_seat.reservation.domain.ReservationStatus.ORDERED;
 
 @Entity
 @Getter
@@ -28,39 +27,27 @@ public class Reservation extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private ReservationStatus status;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private User user;
+    private Long userId;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "address_id")
+    @Embedded
     private Address address;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "payment_id")
-    private Payment payment;
+    private Long paymentId;
 
-    @OneToMany(mappedBy = "reservation", cascade = CascadeType.ALL)
-    private final List<Seat> seats = new ArrayList<>();
-
-    @Builder
-    public Reservation(ReservationStatus status, User user, Address address,Payment payment) {
-        this.status = status;
-        this.user = user;
-        this.address = address;
-        this.payment = payment;
-
-        user.addReservation(this);
-        address.addReservation(this);
-        payment.addReservation(this);
-    }
-
-    public void addSeat(Seat seat) {
-        this.seats.add(seat);
-    }
+    @ElementCollection
+    @Column(name = "seat_id")
+    private List<SeatId> seatIds;
 
     public void cancelReservation() {
         this.status = CANCELLED;
     }
 
+    @Builder
+    public Reservation(Long userId, Address address, Long paymentId, List<SeatId> seatIds) {
+        this.userId = userId;
+        this.address = address;
+        this.paymentId = paymentId;
+        this.seatIds = seatIds;
+        this.status = ORDERED;
+    }
 }

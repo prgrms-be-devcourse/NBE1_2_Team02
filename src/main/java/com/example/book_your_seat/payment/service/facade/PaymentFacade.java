@@ -6,6 +6,7 @@ import com.example.book_your_seat.coupon.controller.dto.CouponDetailResponse;
 import com.example.book_your_seat.coupon.domain.DiscountRate;
 import com.example.book_your_seat.coupon.service.command.CouponCommandService;
 import com.example.book_your_seat.coupon.service.query.CouponQueryService;
+
 import com.example.book_your_seat.payment.controller.dto.request.FinalPriceRequest;
 import com.example.book_your_seat.payment.controller.dto.response.ConfirmResponse;
 import com.example.book_your_seat.payment.controller.dto.response.FinalPriceResponse;
@@ -17,6 +18,7 @@ import com.example.book_your_seat.queue.service.command.QueueCommandService;
 import com.example.book_your_seat.reservation.domain.Reservation;
 import com.example.book_your_seat.reservation.domain.ReservationStatus;
 import com.example.book_your_seat.reservation.service.command.ReservationCommandService;
+import com.example.book_your_seat.seat.domain.SeatId;
 import com.example.book_your_seat.seat.service.query.SeatQueryService;
 import com.example.book_your_seat.user.domain.Address;
 import com.example.book_your_seat.user.domain.User;
@@ -53,7 +55,7 @@ public class PaymentFacade {
         Reservation reservation = createReservation(command, payment);
 
         paymentCommandService.savePayment(payment);
-        Reservation savedReservation = reservationCommandService.saveReservation(reservation);
+        reservationCommandService.saveReservation(reservation);
 
         couponCommandService.useUserCoupon(command.userCouponId);
         ConcertResponse concert = concertQueryService.findById(command.concertId);
@@ -64,13 +66,16 @@ public class PaymentFacade {
 
         return ConfirmResponse.builder()
                 .userId(userId)
-                .reservationId(savedReservation.getId())
+                .reservationId(reservation.getId())
                 .concludePrice(command.totalAmount)
-                .status(savedReservation.getStatus())
+                .status(reservation.getStatus())
                 .concertTitle(concert.getTitle())
                 .concertStartHour(concert.getStartHour())
-                .seatsId(command.seatIds)
-                .seatNumbers(seatNumbers)
+                .seatNumbers(
+                        command.seatIds.stream()
+                        .map(SeatId::getSeatNumber)
+                        .toList()
+                )
                 .build();
     }
 
@@ -79,10 +84,10 @@ public class PaymentFacade {
         User user = address.getUser();
 
         return Reservation.builder()
-                .user(user)
+                .userId(user.getId())
                 .address(address)
-                .payment(payment)
-                .status(ReservationStatus.ORDERED)
+                .paymentId(payment.getId())
+                .seatIds(command.seatIds)
                 .build();
     }
 
@@ -101,7 +106,7 @@ public class PaymentFacade {
     @Transactional(readOnly = true)
     public FinalPriceResponse getFinalPrice(final FinalPriceRequest request) {
 
-        Integer originPrice = seatQueryService.getSeatPrice(request.seatIds());
+        Integer originPrice = seatQueryService.getSeatPrice(request);
         DiscountRate discountRate = couponQueryService.getDiscountRate(request.userCouponId());
 
         return new FinalPriceResponse(calculateDiscountPrice(originPrice, discountRate));

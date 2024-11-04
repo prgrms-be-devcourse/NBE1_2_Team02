@@ -15,7 +15,7 @@ public record PaymentRequest(
         @NotNull(message = ENTER_AMOUNT)
         Long amount,
         @NotNull(message = ENTER_SEAT_ID)
-        List<Long> seatIds,
+        List<Long> seatNumbers,
         @NotNull(message = ENTER_ADDRESS_ID)
         Long addressId,
 

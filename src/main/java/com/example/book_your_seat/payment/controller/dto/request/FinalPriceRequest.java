@@ -7,8 +7,11 @@ import java.util.List;
 import static com.example.book_your_seat.payment.PaymentConst.ENTER_ORDER_ID;
 
 public record FinalPriceRequest(
+
+        Long concertId,
+
         @NotNull(message = ENTER_ORDER_ID)
-        List<Long> seatIds,
+        List<Long> seatNumbers,
 
         Long userCouponId
 ) {

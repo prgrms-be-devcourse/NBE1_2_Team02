@@ -19,7 +19,7 @@ public class ReservationFacade {
         return reservationCommandService.saveReservation(reservation);
     }
 
-    public Reservation validateReservation(final CancelReservationRequest request){
+    public String getValidPaymentKey(final CancelReservationRequest request){
         return reservationQueryService.validateReservation(request);
     }
 

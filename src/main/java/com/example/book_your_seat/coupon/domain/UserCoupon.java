@@ -25,20 +25,14 @@ public class UserCoupon extends BaseEntity {
 
     private boolean isUsed;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private User user;
+    private Long userId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "coupon_id")
-    private Coupon coupon;
+    private Long couponId;
 
-    public UserCoupon(User user, Coupon coupon) {
-        this.user = user;
-        this.coupon = coupon;
+    public UserCoupon(Long couponId, Long userId) {
+        this.couponId = couponId;
+        this.userId = userId;
         this.isUsed = false;
-        user.adduserCoupon(this);
-        coupon.addUserCoupon(this);
     }
 
     public void setUsed() {

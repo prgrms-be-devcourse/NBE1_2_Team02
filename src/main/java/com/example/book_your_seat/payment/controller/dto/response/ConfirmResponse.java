@@ -16,8 +16,7 @@ public final class ConfirmResponse {
 
     private final String concertTitle;
     private final int concertStartHour;
-    private final List<Long> seatsId;
-    private final List<Integer> seatNumbers;
+    private final List<Long> seatNumbers;
 
 
     @Builder
@@ -25,16 +24,14 @@ public final class ConfirmResponse {
                             Long reservationId,
                             Long concludePrice,
                             ReservationStatus status,
-                            List<Long> seatsId,
                             String concertTitle,
                             int concertStartHour,
-                            List<Integer> seatNumbers
+                            List<Long> seatNumbers
     ) {
         this.userId = userId;
         this.reservationId = reservationId;
         this.concludePrice = concludePrice;
         this.status = status;
-        this.seatsId = seatsId;
         this.concertTitle = concertTitle;
         this.concertStartHour = concertStartHour;
         this.seatNumbers = seatNumbers;

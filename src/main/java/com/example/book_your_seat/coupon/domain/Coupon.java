@@ -33,18 +33,12 @@ public class Coupon extends BaseEntity {
 
     private LocalDate expirationDate;
 
-    @OneToMany(mappedBy = "coupon", cascade = CascadeType.ALL)
-    private final List<UserCoupon> userCoupons = new ArrayList<>();
-
     public Coupon(int amount, DiscountRate discountRate, LocalDate expirationDate) {
         this.amount = amount;
         this.discountRate = discountRate;
         this.expirationDate = expirationDate;
     }
 
-    public void addUserCoupon(UserCoupon userCoupon) {
-        this.userCoupons.add(userCoupon);
-    }
 
     public void issue() {
         if (this.amount <= 0) {

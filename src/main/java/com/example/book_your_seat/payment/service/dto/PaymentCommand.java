@@ -2,6 +2,7 @@ package com.example.book_your_seat.payment.service.dto;
 
 import com.example.book_your_seat.payment.controller.dto.response.TossConfirmResponse;
 import com.example.book_your_seat.reservation.contorller.dto.request.PaymentRequest;
+import com.example.book_your_seat.seat.domain.SeatId;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -14,7 +15,7 @@ public final class PaymentCommand {
     public final Long totalAmount;
     public final String paymentKey;
     public final LocalDateTime approvedAt;
-    public final List<Long> seatIds;
+    public final List<SeatId> seatIds;
     public final Long addressId;
     public final Long userCouponId;
     public final Long concertId;
@@ -31,7 +32,9 @@ public final class PaymentCommand {
         this.totalAmount = confirmResponse.totalAmount();
         this.paymentKey = confirmResponse.paymentKey();
         this.approvedAt = confirmResponse.approvedAt();
-        this.seatIds = request.seatIds();
+        this.seatIds = request.seatNumbers().stream()
+                .map(number -> new SeatId(request.concertId(), number))
+                .toList();
         this.addressId = request.addressId();
         this.userCouponId = request.userCouponId();
         this.concertId = request.concertId();

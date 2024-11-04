@@ -28,23 +28,16 @@ public class Payment {
     @Enumerated(EnumType.STRING)
     private PaymentStatus paymentStatus;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "reservation_id")
-    private Reservation reservation;
 
     @Builder
-    public Payment(Long totalPrice, LocalDateTime expiryAt, String discountRate, PaymentStatus paymentStatus, Reservation reservation,String paymentKey) {
+    public Payment(Long totalPrice, LocalDateTime expiryAt, String discountRate, PaymentStatus paymentStatus, String paymentKey) {
         this.totalPrice = totalPrice;
         this.expiryAt = expiryAt;
         this.discountRate = discountRate;
         this.paymentStatus = paymentStatus;
         this.paymentKey = paymentKey;
-        this.reservation = reservation;
     }
 
-    public void addReservation(Reservation reservation) {
-        this.reservation = reservation;
-    }
 
     public void cancelPayment() {
         this.paymentStatus = CANCELLED;

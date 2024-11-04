@@ -20,7 +20,6 @@ public final class ConcertResponse {
     private final Integer startHour;
     private final LocalDateTime reservationStartAt;
     private final List<Review> reviews;
-    private final List<Seat> seats;
 
     private ConcertResponse(final Concert concert) {
         this.id = concert.getId();
@@ -32,7 +31,6 @@ public final class ConcertResponse {
         this.startHour = concert.getStartHour();
         this.reviews = concert.getReviews();
         this.reservationStartAt = concert.getReservationStartAt();
-        this.seats = concert.getSeats();
     }
 
     public static ConcertResponse from(final Concert concert) {

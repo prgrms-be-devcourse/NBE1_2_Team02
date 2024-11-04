@@ -63,12 +63,12 @@ public class SlackFacade {
     }
 
     private static String seatNumberConcat(ConfirmResponse confirmResponse) {
-        List<Integer> seatsId = confirmResponse.getSeatNumbers();
+        List<Long> seatNumbers = confirmResponse.getSeatNumbers();
 
         StringBuilder stringBuilder = new StringBuilder();
 
-        for(Integer seatId : seatsId){
-            stringBuilder.append("좌석 번호: ").append(seatId).append(" ");
+        for(Long number : seatNumbers){
+            stringBuilder.append("좌석 번호: ").append(number).append(" ");
         }
 
       return stringBuilder.toString();

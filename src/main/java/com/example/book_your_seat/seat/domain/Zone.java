@@ -20,7 +20,7 @@ public enum Zone {
         return expression.apply(price);
     }
 
-    public static Zone setZone(int seatNumber) {
+    public static Zone setZone(Long seatNumber) {
         if (seatNumber <= 30) {
             return SPECIAL;
         }
