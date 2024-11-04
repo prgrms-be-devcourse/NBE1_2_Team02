@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
-@Table(indexes = @Index(name = "idx_lucky_draw_history_user_id", columnList = "lucky_draw_history_user_id"))
+@Table(indexes = @Index(name = "idx_lucky_draw_history_user_id", columnList = "user_id"))
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class LuckyDrawHistory {
 

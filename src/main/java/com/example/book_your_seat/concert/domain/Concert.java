@@ -1,7 +1,6 @@
 package com.example.book_your_seat.concert.domain;
 
 import com.example.book_your_seat.common.entity.BaseEntity;
-import com.example.book_your_seat.review.domain.Review;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -14,7 +13,7 @@ import static com.example.book_your_seat.concert.ConcertConst.*;
 
 @Entity
 @Getter
-@Table(indexes = @Index(name = "idx_concert_title", columnList = "concert_title"))
+@Table(indexes = @Index(name = "idx_concert_title", columnList = "title"))
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Concert extends BaseEntity {
 

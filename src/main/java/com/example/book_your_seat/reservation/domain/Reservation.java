@@ -17,8 +17,8 @@ import static com.example.book_your_seat.reservation.domain.ReservationStatus.OR
 @Entity
 @Getter
 @Table(indexes = {
-        @Index(name = "idx_reservation_user_id", columnList = "reservation_user_id"),
-        @Index(name = "idx_reservation_seat_id", columnList = "reservation_seat_id")
+        @Index(name = "idx_reservation_user_id", columnList = "user_id"),
+        @Index(name = "idx_reservation_seat_id", columnList = "seat_id")
 })
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Reservation extends BaseEntity {
