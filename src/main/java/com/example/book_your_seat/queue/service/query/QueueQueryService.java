@@ -15,12 +15,12 @@ public class QueueQueryService {
     /*
     유저의 현재 큐 상태 확인
      */
-    public QueueResponse findQueueStatus(Long userId, String token) {
-        if (queueRedisRepository.isInProcessingQueue(userId)) {
+    public QueueResponse findQueueStatus(Long concertId, String token) {
+        if (queueRedisRepository.isInProcessingQueue(concertId, token)) {
             return QueueResponse.processing();
         }
 
-        Integer position = queueRedisRepository.getWaitingQueuePosition(userId, token);
+        Integer position = queueRedisRepository.getWaitingQueuePosition(concertId, token);
         if (position != null) {
             return QueueResponse.waiting(position, calculateEstimatedWaitSeconds(position));
         } else {

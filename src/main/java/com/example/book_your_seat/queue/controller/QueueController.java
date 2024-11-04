@@ -3,7 +3,8 @@ package com.example.book_your_seat.queue.controller;
 import com.example.book_your_seat.config.security.auth.LoginUser;
 import com.example.book_your_seat.queue.controller.dto.QueueResponse;
 import com.example.book_your_seat.queue.controller.dto.TokenResponse;
-import com.example.book_your_seat.queue.service.facade.QueueFacade;
+import com.example.book_your_seat.queue.service.command.QueueCommandService;
+import com.example.book_your_seat.queue.service.query.QueueQueryService;
 import com.example.book_your_seat.user.domain.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -15,33 +16,34 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class QueueController {
 
-    private final QueueFacade queueFacade;
+    private final QueueCommandService queueCommandService;
+    private final QueueQueryService queueQueryService;
 
-    @PostMapping("/token")
-    public ResponseEntity<TokenResponse> issueTokenAndEnqueue(@LoginUser User user) {
+    @PostMapping("/token/{concertId}")
+    public ResponseEntity<TokenResponse> issueTokenAndEnqueue(@LoginUser User user, @PathVariable("concertId") Long concertId) {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(queueFacade.issueTokenAndEnqueue(user.getId()));
+                .body(queueCommandService.issueTokenAndEnqueue(user.getId(), concertId));
     }
 
-    @GetMapping
-    public ResponseEntity<QueueResponse> getQueueInfoWithToken(@LoginUser User user,
-                                                               @RequestParam("token") String token)  {
+    @GetMapping("/{concertId}")
+    public ResponseEntity<QueueResponse> getQueueInfoWithToken(@PathVariable("concertId") Long concertId,
+                                                               @RequestParam("token") String token) {
         return ResponseEntity.ok()
-                .body(queueFacade.findQueueStatus(user.getId(), token));
+                .body(queueQueryService.findQueueStatus(concertId, token));
     }
 
-    @PostMapping("/wait/quit")
-    public ResponseEntity<Void> dequeueWaitingQueue(@LoginUser User user,
+    @PostMapping("/wait/quit/{concertId}")
+    public ResponseEntity<Void> dequeueWaitingQueue(@LoginUser User user, @PathVariable("concertId") Long concertId,
                                                     @RequestParam("token") String token) {
-        queueFacade.dequeueWaitingQueue(user.getId(), token);
+        queueCommandService.removeTokenInWaitingQueue(user.getId(), concertId, token);
         return ResponseEntity.ok(null);
     }
 
-    @PostMapping("/process/quit")
-    public ResponseEntity<Void> dequeueProcessingQueue(@LoginUser User user,
-                                                    @RequestParam("token") String token) {
-        queueFacade.dequeueProcessingQueue(user.getId(), token);
+    @PostMapping("/process/quit/{concertId}")
+    public ResponseEntity<Void> dequeueProcessingQueue(@LoginUser User user, @PathVariable("concertId") Long concertId,
+                                                       @RequestParam("token") String token) {
+        queueCommandService.removeTokenInProcessingQueue(user.getId(), concertId, token);
         return ResponseEntity.ok(null);
     }
 }
