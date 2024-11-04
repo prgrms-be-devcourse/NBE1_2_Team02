@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 public class QueueScheduler {
     private final QueueCommandService queueCommandService;
 
-    @Scheduled(fixedRate = 30 * 1000) //30초마다
+    @Scheduled(fixedRate = 3 * 1000) //3초마다
     public void updateWaitingToProcessing() {
         queueCommandService.removeExpiredToken();
         queueCommandService.updateWaitingToProcessing();
