@@ -49,7 +49,7 @@
 |:---:|:---:|:---:|:---:|:---:|
 | <img src="https://avatars.githubusercontent.com/u/129512238?v=4" width="150"> | <img src="https://avatars.githubusercontent.com/u/103844957?v=4" width="150"> | <img src="https://avatars.githubusercontent.com/u/83461362?s=400&u=25e719b72f905561d1f8c6cd130170815cf88c29&v=4" width="150">  | <img src="https://avatars.githubusercontent.com/u/83914354?v=4" width="150">  | <img src="https://avatars.githubusercontent.com/u/122003584?v=4" width="150">  |
 | [kwanse](https://github.com/kwanse)  | [kimdw0823](https://github.com/kimdw0823)  | [tnals2384](https://github.com/tnals2384)  | [AnTaeho](https://github.com/AnTaeho)  | [kcsc2217](https://github.com/kcsc2217) |
-|공연 API, 예매,결제 API|Swagger API, 예매, 결제 API|회원 API, 쿠폰 API, 대기열 API|프로젝트 기본 세팅, 쿠폰 API, 대기열 API|쿠폰 API, Slack API, 리뷰 API|
+|공연 API, 예매,결제 API|Swagger API, 예매, 결제 API|회원 API, 쿠폰 API, 대기열 API|럭키드로우 API, 쿠폰 API, 대기열 API|쿠폰 API, Slack API, 리뷰 API|
 
 
 ## ERD
