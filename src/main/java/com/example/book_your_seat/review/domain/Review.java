@@ -39,8 +39,6 @@ public class Review extends BaseEntity {
         this.starCount = starCount;
         this.user = user;
         this.concert = concert;
-        user.addReview(this);
-        concert.addReview(this);
     }
 
 

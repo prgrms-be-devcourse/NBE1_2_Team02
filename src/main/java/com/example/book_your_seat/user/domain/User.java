@@ -1,9 +1,6 @@
 package com.example.book_your_seat.user.domain;
 
 import com.example.book_your_seat.common.entity.BaseEntity;
-import com.example.book_your_seat.coupon.domain.UserCoupon;
-import com.example.book_your_seat.reservation.domain.Reservation;
-import com.example.book_your_seat.review.domain.Review;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -32,17 +29,13 @@ public class User extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private UserRole userRole;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @ElementCollection
+    @CollectionTable(
+            name = "address",
+            joinColumns = @JoinColumn(name = "user_id")
+    )
     private final List<Address> addressList = new ArrayList<>();
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private final List<UserCoupon> userCoupons = new ArrayList<>();
-
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private final List<Review> reviews = new ArrayList<>();
-
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private final List<Reservation> reservations = new ArrayList<>();
 
     public User(String nickname, String username, String email, String password) {
         this.nickname = nickname;
@@ -56,19 +49,8 @@ public class User extends BaseEntity {
         this.userRole = UserRole.ADMIN;
     }
 
-    public void setAddress(Address address) {
+    public void addAddress(Address address) {
         this.addressList.add(address);
     }
 
-    public void adduserCoupon(UserCoupon userCoupon) {
-        this.userCoupons.add(userCoupon);
-    }
-
-    public void addReview(Review review) {
-        this.reviews.add(review);
-    }
-
-    public void addReservation(Reservation reservation) {
-        this.reservations.add(reservation);
-    }
 }

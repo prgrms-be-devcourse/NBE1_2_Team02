@@ -17,7 +17,9 @@ public record PaymentRequest(
         @NotNull(message = ENTER_SEAT_ID)
         List<Long> seatNumbers,
         @NotNull(message = ENTER_ADDRESS_ID)
-        Long addressId,
+        String postCode,
+        @NotNull(message = ENTER_ADDRESS_ID)
+        String detail,
 
         Long concertId,
 

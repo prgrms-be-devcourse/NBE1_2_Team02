@@ -29,21 +29,12 @@ public class SeatFacade {
         return SeatResponse.from(allSeats);
     }
 
-    public SelectSeatResponse selectSeat(final SelectSeatRequest request, final Long userId) {
+    public SeatResponse selectSeat(final SelectSeatRequest request, final Long userId) {
         checkInProcessingQueue(request.concertId(), request.queueToken());
 
-        List<Seat> seats = seatCommandService.selectSeat(concertId, request);
+        List<Seat> seats = seatCommandService.selectSeat(request);
         redisService.cacheSeatIds(seats, userId);
         return SeatResponse.from(seats);
-    }
-
-    @SeatLock
-    public SelectSeatResponse selectSeatRedisson(final SelectSeatRequest request, final Long userId) {
-        checkInProcessingQueue(request.concertId(), request.queueToken());
-        List<Seat> seats = seatCommandService.selectSeatRedisson(request);
-        redisService.cacheSeatIds(seats, userId);
-
-        return SelectSeatResponse.fromSeats(seats);
     }
 
     private void checkInProcessingQueue(Long concertId, String queueToken) {

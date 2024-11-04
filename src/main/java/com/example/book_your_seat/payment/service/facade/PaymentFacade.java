@@ -16,27 +16,21 @@ import com.example.book_your_seat.payment.service.command.PaymentCommandService;
 import com.example.book_your_seat.payment.service.dto.PaymentCommand;
 import com.example.book_your_seat.queue.service.command.QueueCommandService;
 import com.example.book_your_seat.reservation.domain.Reservation;
-import com.example.book_your_seat.reservation.domain.ReservationStatus;
 import com.example.book_your_seat.reservation.service.command.ReservationCommandService;
 import com.example.book_your_seat.seat.domain.SeatId;
 import com.example.book_your_seat.seat.service.query.SeatQueryService;
 import com.example.book_your_seat.user.domain.Address;
-import com.example.book_your_seat.user.domain.User;
-import com.example.book_your_seat.user.service.query.AddressQueryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.List;
 
 @Transactional
 @RequiredArgsConstructor
 @Service
 public class PaymentFacade {
-
-    private final AddressQueryService addressQueryService;
 
     private final PaymentCommandService paymentCommandService;
     private final ReservationCommandService reservationCommandService;
@@ -52,7 +46,7 @@ public class PaymentFacade {
     public ConfirmResponse processPayment(final PaymentCommand command, Long userId, String token) {
 
         Payment payment = createPayment(command);
-        Reservation reservation = createReservation(command, payment);
+        Reservation reservation = createReservation(command, payment, userId);
 
         paymentCommandService.savePayment(payment);
         reservationCommandService.saveReservation(reservation);
@@ -60,8 +54,6 @@ public class PaymentFacade {
         couponCommandService.useUserCoupon(command.userCouponId);
         ConcertResponse concert = concertQueryService.findById(command.concertId);
 
-
-        List<Integer> seatNumbers = seatQueryService.findSeatNumbers(command.seatIds);
         queueCommandService.removeTokenInProcessingQueue(userId, command.concertId, token);
 
         return ConfirmResponse.builder()
@@ -79,12 +71,12 @@ public class PaymentFacade {
                 .build();
     }
 
-    private Reservation createReservation(PaymentCommand command, Payment payment) {
-        Address address = addressQueryService.getAddressWithUser(command.addressId);
-        User user = address.getUser();
+    private Reservation createReservation(PaymentCommand command, Payment payment, Long userId) {
+        Address address = new Address(command.postCode, command.detail);
+
 
         return Reservation.builder()
-                .userId(user.getId())
+                .userId(userId)
                 .address(address)
                 .paymentId(payment.getId())
                 .seatIds(command.seatIds)

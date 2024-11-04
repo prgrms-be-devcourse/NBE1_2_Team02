@@ -31,7 +31,7 @@ public class SeatController {
             @PathVariable final Long concertId,
             @RequestBody @Valid final SelectSeatRequest request
     ) {
-        SeatResponse response = seatFacade.selectSeat(user.getId(), concertId, request);
+        SeatResponse response = seatFacade.selectSeat(request, user.getId());
         return ResponseEntity.ok(response);
     }
 

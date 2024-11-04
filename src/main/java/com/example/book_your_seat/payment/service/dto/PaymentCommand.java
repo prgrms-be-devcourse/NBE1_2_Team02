@@ -16,12 +16,12 @@ public final class PaymentCommand {
     public final String paymentKey;
     public final LocalDateTime approvedAt;
     public final List<SeatId> seatIds;
-    public final Long addressId;
+    public final String postCode;
+    public final String detail;
     public final Long userCouponId;
     public final Long concertId;
 
     private PaymentCommand(PaymentRequest request, TossConfirmResponse confirmResponse) {
-
         Long requestAmount = request.amount();
         Long confirmAmount = confirmResponse.totalAmount();
         if (!requestAmount.equals(confirmAmount)) {
@@ -35,9 +35,10 @@ public final class PaymentCommand {
         this.seatIds = request.seatNumbers().stream()
                 .map(number -> new SeatId(request.concertId(), number))
                 .toList();
-        this.addressId = request.addressId();
         this.userCouponId = request.userCouponId();
         this.concertId = request.concertId();
+        this.postCode = request.postCode();
+        this.detail = request.detail();
     }
 
     public static PaymentCommand from(PaymentRequest request, TossConfirmResponse confirmResponse) {

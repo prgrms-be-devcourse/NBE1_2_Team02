@@ -22,10 +22,8 @@ public class SeatCommandService {
 
     private final SeatRepository seatRepository;
 
-    public List<Seat> selectSeat(final Long concertId,
-                                 final SelectSeatRequest request
-    ) {
-        List<Seat> seats = seatRepository.findAllByIdWithLock(concertId, request.seatNumbers());
+    public List<Seat> selectSeat(final SelectSeatRequest request) {
+        List<Seat> seats = seatRepository.findAllByIdWithLock(request.concertId(), request.seatNumbers());
         seats.forEach(seat -> {
             if (seat.isSold()) {
                 throw new IllegalArgumentException(SeatConst.SEAT_SOLD);

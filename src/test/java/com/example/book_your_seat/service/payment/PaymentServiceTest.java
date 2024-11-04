@@ -23,7 +23,6 @@ import com.example.book_your_seat.seat.domain.Seat;
 import com.example.book_your_seat.seat.repository.SeatRepository;
 import com.example.book_your_seat.user.domain.Address;
 import com.example.book_your_seat.user.domain.User;
-import com.example.book_your_seat.user.repository.AddressRepository;
 import com.example.book_your_seat.user.repository.UserRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;

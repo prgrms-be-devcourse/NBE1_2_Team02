@@ -2,8 +2,6 @@ package com.example.book_your_seat.concert.domain;
 
 import com.example.book_your_seat.common.entity.BaseEntity;
 import com.example.book_your_seat.review.domain.Review;
-import com.example.book_your_seat.seat.domain.Seat;
-import com.example.book_your_seat.seat.domain.SeatId;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -11,8 +9,6 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 import static com.example.book_your_seat.concert.ConcertConst.*;
 
@@ -39,9 +35,6 @@ public class Concert extends BaseEntity {
 
     private LocalDateTime reservationStartAt;
 
-    @OneToMany(mappedBy = "concert", cascade = CascadeType.ALL)
-    private final List<Review> reviews = new ArrayList<>();
-
     public Concert(String title, LocalDate startDate, LocalDate endDate, int price, int startHour) {
         this.title = title;
         this.totalStock = TOTAL_STOCK;
@@ -62,11 +55,6 @@ public class Concert extends BaseEntity {
                 RESERVATION_START_SECOND
         )
                 .minusWeeks(1);
-    }
-
-
-    public void addReview(Review review) {
-        this.reviews.add(review);
     }
 
 }

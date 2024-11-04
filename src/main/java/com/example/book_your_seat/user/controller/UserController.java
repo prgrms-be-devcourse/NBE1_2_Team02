@@ -2,6 +2,7 @@ package com.example.book_your_seat.user.controller;
 
 import com.example.book_your_seat.config.security.auth.LoginUser;
 import com.example.book_your_seat.user.controller.dto.*;
+import com.example.book_your_seat.user.domain.Address;
 import com.example.book_your_seat.user.domain.User;
 import com.example.book_your_seat.user.service.command.UserCommandService;
 import com.example.book_your_seat.user.service.facade.UserFacade;
@@ -59,30 +60,33 @@ public class UserController {
     }
 
     @PostMapping("/address")
-    public ResponseEntity<AddressIdResponse> addAddress(
+    public ResponseEntity<AddressResponse> addAddress(
             @LoginUser User user,
             @Valid @RequestBody AddAddressRequest addAddressRequest
     ) {
+        Address address = userFacade.addAddress(user.getId(), addAddressRequest);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(userFacade.addAddress(user.getId(), addAddressRequest));
+                .body(AddressResponse.from(address));
     }
 
-    @DeleteMapping("/address/{addressId}")
-    public ResponseEntity<AddressIdResponse> deleteAddress(
+    @DeleteMapping("/address")
+    public ResponseEntity<Void> deleteAddress(
             @LoginUser User user,
-            @PathVariable("addressId") Long addressId
+            @RequestBody DeleteAddressRequest request
     ) {
-        return ResponseEntity
-                .status(HttpStatus.OK)
-                .body(userFacade.deleteAddress(user.getId(), addressId));
+        userFacade.deleteAddress(user.getId(), request);
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/address")
     public ResponseEntity<List<AddressResponse>> getUserAddressList(@LoginUser User user) {
+        List<AddressResponse> responses = userQueryService.getUserAddressList(user.getId()).stream()
+                .map(AddressResponse::from)
+                .toList();
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(userQueryService.getUserAddressList(user.getId()));
+                .body(responses);
     }
 
     @PatchMapping("/role")

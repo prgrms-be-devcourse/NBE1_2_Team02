@@ -8,7 +8,6 @@ import com.example.book_your_seat.user.domain.Address;
 import com.example.book_your_seat.user.domain.User;
 import com.example.book_your_seat.user.mail.repository.MailRedisRepository;
 import com.example.book_your_seat.user.mail.service.MailService;
-import com.example.book_your_seat.user.repository.AddressRepository;
 import com.example.book_your_seat.user.repository.UserRepository;
 import com.example.book_your_seat.user.service.command.UserCommandService;
 import com.example.book_your_seat.user.service.facade.UserFacade;
