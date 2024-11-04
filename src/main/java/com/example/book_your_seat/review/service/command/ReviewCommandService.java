@@ -31,7 +31,7 @@ public class ReviewCommandService {
         User user = userQueryService.getUserByUserId(userId);
         Concert concert = concertQueryService.findByConcertId(concertId);
 
-        Review review = Review.from(content, startCount, user, concert);
+        Review review = Review.from(content, startCount, userId, concertId);
         Review savedReview = reviewRepository.save(review);
 
         return ReviewResponse.from(savedReview);

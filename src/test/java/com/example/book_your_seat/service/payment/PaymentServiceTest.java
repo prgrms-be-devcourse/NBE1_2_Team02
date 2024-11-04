@@ -51,8 +51,7 @@ class PaymentServiceTest extends IntegralTestSupport {
     private CouponRepository couponRepository;
     @Autowired
     private UserRepository userRepository;
-    @Autowired
-    private AddressRepository addressRepository;
+
     @Autowired
     private SeatRepository seatRepository;
     @Autowired

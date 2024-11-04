@@ -19,7 +19,6 @@ public class LikeConcertRepositoryImpl implements LikeConcertRepositoryCustom {
     
     @Override
     public List<LikeConcert> findByUserId(Long userId, Long likeId) {
-        
         return queryFactory
                 .selectFrom(likeConcert)
                 .where(
