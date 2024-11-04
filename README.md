@@ -110,7 +110,7 @@ book_your_seat
 **3. 공연 및 리뷰**
 * 공연 목록과 상세 정보 조회
 * 공연 리뷰 작성 및 리뷰 조회 가능
-
+* 관심 공연 설정 가능
 ---
 
 **4. 대기열**
@@ -130,8 +130,17 @@ book_your_seat
 | --- | --- |
 | <img src="https://github.com/user-attachments/assets/9c0819e8-16c9-44f1-bc2d-eb905134044b" width="500"/> | <img src="https://github.com/user-attachments/assets/26d97aac-bbb0-42c9-acaf-e6961eeb454f" width="450"/><br> <img src="https://github.com/user-attachments/assets/d3672355-cb6c-4c79-a6f6-30556f817a15" width="450"/> |
 
+---
+
+**6. 럭키드로우**
+* 이벤트 기간 내 티켓을 예매한 고객에게 랜덤 럭키드로우 쿠폰 지급
+* 1등 -> 5명
+* 2등 -> 10명
+* 3등 -> 15명
+* 4등 -> 20명
+* 스케줄러를 통해 추첨 후, 예매자 email로 당첨 알림
 
 ## Notion
+### [Notion](https://www.notion.so/2-bedcbbc5e4764192b2b56fc006769ddf?pvs=4)
 트러블 슈팅, 일정관리, 프로젝트 문서 등은 여기 2팀 노션에서 보실 수 있습니다!
-[Notion](https://www.notion.so/2-bedcbbc5e4764192b2b56fc006769ddf?pvs=4)
 
