@@ -37,7 +37,6 @@ public class SeatController {
     @PostMapping
     public ResponseEntity<SeatResponse> selectSeat(
             @LoginUser User user,
-            @PathVariable final Long concertId,
             @RequestBody @Valid final SelectSeatRequest request
     ) {
         SeatResponse response = seatFacade.selectSeat(request, user.getId());

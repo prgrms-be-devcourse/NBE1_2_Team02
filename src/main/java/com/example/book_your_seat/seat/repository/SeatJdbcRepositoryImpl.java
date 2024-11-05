@@ -1,10 +1,8 @@
 package com.example.book_your_seat.seat.repository;
 
-import com.example.book_your_seat.concert.domain.Concert;
 import com.example.book_your_seat.seat.domain.Seat;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.stereotype.Repository;
 
 import java.sql.PreparedStatement;
