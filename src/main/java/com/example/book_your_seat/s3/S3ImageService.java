@@ -21,11 +21,11 @@ public class S3ImageService {
 
     private final AmazonS3Client amazonS3Client;
 
-    @Value("${cloud.aws.s3.bucket}")
-    private String bucket;
+//    @Value("${cloud.aws.s3.bucket}")
+    private String bucket = "bucket";
 
-    @Value("${cloud.aws.region.static}")
-    private String region;
+//    @Value("${cloud.aws.region.static}")
+    private String region = "region";
 
     public UploadResponse upload(MultipartFile file) throws IOException {
         String fileName = file.getOriginalFilename();

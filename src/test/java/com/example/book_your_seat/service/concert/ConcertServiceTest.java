@@ -6,6 +6,7 @@ import com.example.book_your_seat.concert.controller.dto.ConcertListResponse;
 import com.example.book_your_seat.concert.controller.dto.ConcertResponse;
 import com.example.book_your_seat.concert.service.command.ConcertCommandService;
 import com.example.book_your_seat.concert.service.query.ConcertQueryService;
+import com.example.book_your_seat.seat.repository.SeatRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -15,6 +16,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
+
 class ConcertServiceTest extends IntegralTestSupport {
 
     @Autowired
@@ -22,6 +24,11 @@ class ConcertServiceTest extends IntegralTestSupport {
 
     @Autowired
     private ConcertQueryService concertQueryService;
+
+    @Test
+    void successTest() {
+        Assertions.assertThat(1).isEqualTo(1);
+    }
 
 
     @DisplayName("제목, 시작 시간, 종료 시간, 금액, 러닝 타임을 입력하면 Concert 를 생성한다.")
@@ -40,7 +47,6 @@ class ConcertServiceTest extends IntegralTestSupport {
         Long id = concertCommandService.add(request);
         ConcertResponse response = concertQueryService.findById(id);
 
-        // then  쿼리 101개 전송.. Concert 1, Seat 100..
         Assertions.assertThat(response)
                 .extracting("title", "startDate", "endDate", "price", "startHour")
                         .containsExactly(

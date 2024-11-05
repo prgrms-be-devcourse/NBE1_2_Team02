@@ -1,6 +1,6 @@
 package com.example.book_your_seat.user.service.query;
 
-import com.example.book_your_seat.user.controller.dto.AddressResponse;
+import com.example.book_your_seat.user.domain.Address;
 import com.example.book_your_seat.user.domain.User;
 import com.example.book_your_seat.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -22,13 +22,9 @@ public class UserQueryService {
                 .orElseThrow(() -> new IllegalArgumentException(USER_NOT_FOUND));
     }
 
-    public List<AddressResponse> getUserAddressList(Long userId) {
+    public List<Address> getUserAddressList(Long userId) {
         User user = getUserByUserId(userId);
-        return user.getAddressList().stream()
-                .map(address -> new AddressResponse(
-                        address.getPostcode(),
-                        address.getDetail()
-                )).toList();
+        return user.getAddressList();
     }
 
     public void checkEmail(String email) {

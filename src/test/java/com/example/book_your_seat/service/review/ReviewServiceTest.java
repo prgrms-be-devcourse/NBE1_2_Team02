@@ -46,8 +46,8 @@ public class ReviewServiceTest extends IntegralTestSupport {
         concert = concertRepository.save(new Concert("테스트 콘서트", LocalDate.now(), LocalDate.now(), 10000, 10));
 
         List<Review> reviewList = new ArrayList<>();
-        reviewList.add(Review.from("테스트1", 5, user, concert));
-        reviewList.add(Review.from("테스트2", 4, user, concert));
+        reviewList.add(Review.from("테스트1", 5, user.getId(), concert.getId()));
+        reviewList.add(Review.from("테스트2", 4, user.getId(), concert.getId()));
 
         reviewRepository.saveAll(reviewList);
     }
@@ -78,7 +78,7 @@ public class ReviewServiceTest extends IntegralTestSupport {
     public void reviewPageNationAll() {
         // given
         for (int i = 0; i < 3; i++) {
-            reviewService.saveReview(user.getId(), concert.getId(), "테스트1", 5);
+            reviewService.saveReview(user.getId(), concert.getId(), "테스트1", 10);
         }
         PageRequest pageRequest = PageRequest.of(0, 5);
 

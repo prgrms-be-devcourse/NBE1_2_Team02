@@ -4,22 +4,25 @@ import com.example.book_your_seat.seat.domain.Seat;
 import lombok.Builder;
 import lombok.Getter;
 
+import java.util.List;
+
 @Getter
 public final class SeatResponse {
 
-    private final Long seatId;
-    private final boolean isSold;
+    private final Long concertId;
+    private final List<Long> seatNumbers;
 
-    @Builder
-    private SeatResponse(Long seatId, boolean isSold) {
-        this.seatId = seatId;
-        this.isSold = isSold;
+    private SeatResponse(Long concertId, List<Long> seatNumbers) {
+        this.concertId = concertId;
+        this.seatNumbers = seatNumbers;
     }
 
-    public static SeatResponse from(Seat seat) {
-        return SeatResponse.builder()
-                .seatId(seat.getId())
-                .isSold(seat.isSold())
-                .build();
+    public static SeatResponse from(final List<Seat> seats) {
+        Long concertId = seats.get(0).getId().getConcertId();
+        List<Long> seatNumbers = seats.stream()
+                .map(seat -> seat.getId().getConcertId())
+                .toList();
+
+        return new SeatResponse(concertId, seatNumbers);
     }
 }

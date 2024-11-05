@@ -52,7 +52,7 @@ class UserCouponFacadeImplTest extends IntegralTestSupport {
             Coupon coupon = new Coupon(100, DiscountRate.FIFTEEN, LocalDate.now());
             couponRepository.save(coupon);
 
-            UserCoupon userCoupon = new UserCoupon(user, coupon);
+            UserCoupon userCoupon = new UserCoupon(coupon.getId(), user.getId());
 
             if (i % 2 == 0) {
                 userCoupon.setUsed();

@@ -23,34 +23,15 @@ public class SeatCommandService {
     private final SeatRepository seatRepository;
 
     public List<Seat> selectSeat(final SelectSeatRequest request) {
-        List<Seat> seats = seatRepository.findAllByIdWithLock(request.seatIds());
-
-        seats.forEach(seat -> {
-            if (seat.isSold()) {
-                log.info("seatId = {}", seat.getId());
-                log.info("seat isSold = {}", seat.isSold());
-                throw new IllegalArgumentException(SeatConst.SEAT_SOLD);
-            }
-            seat.selectSeat();
-        });
-        return seatRepository.saveAll(seats);
-    }
-
-    public List<Seat> selectSeatRedisson(final SelectSeatRequest request) {
-        List<Seat> seats = seatRepository.findAllById(request.seatIds());
-
+        List<Seat> seats = seatRepository.findAllByIdWithLock(request.concertId(), request.seatNumbers());
         seats.forEach(seat -> {
             if (seat.isSold()) {
                 throw new IllegalArgumentException(SeatConst.SEAT_SOLD);
             }
             seat.selectSeat();
         });
+
         return seatRepository.saveAll(seats);
     }
 
-    public void seatReservationComplete(final List<Seat> seats, final Reservation reservation) {
-        seats.forEach(seat -> seat.assignReservation(reservation));
-
-        seatRepository.saveAll(seats);
-    }
 }

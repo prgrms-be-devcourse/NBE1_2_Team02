@@ -7,6 +7,7 @@ import com.example.book_your_seat.concert.service.command.ConcertCommandService;
 import com.example.book_your_seat.queue.service.command.QueueCommandService;
 import com.example.book_your_seat.seat.controller.dto.SelectSeatRequest;
 import com.example.book_your_seat.seat.domain.Seat;
+import com.example.book_your_seat.seat.domain.SeatId;
 import com.example.book_your_seat.seat.repository.SeatRepository;
 import com.example.book_your_seat.seat.service.facade.SeatFacade;
 import com.example.book_your_seat.user.domain.User;
@@ -53,7 +54,7 @@ class SeatCommandServiceImplTest extends IntegralTestSupport {
     DbCleaner dbCleaner;
 
     private Long concertId;
-    private List<Long> seatIds;
+    private List<Long> seatNumbers;
     private User savedUser;
     private static final Long CONCERT_ID = 1L;
 
@@ -71,9 +72,10 @@ class SeatCommandServiceImplTest extends IntegralTestSupport {
         );
 
         concertId = concertCommandService.add(request);
-        seatIds = seatRepository.findByConcertId(concertId)
+        seatNumbers = seatRepository.findByConcertId(concertId)
                 .stream()
                 .map(Seat::getId)
+                .map(SeatId::getSeatNumber)
                 .collect(Collectors.toList());
     }
 
@@ -89,7 +91,7 @@ class SeatCommandServiceImplTest extends IntegralTestSupport {
         // given
         Long userId = savedUser.getId();
         String queueToken = queueCommandService.issueTokenAndEnqueue(userId, CONCERT_ID).token();
-        SelectSeatRequest request = new SelectSeatRequest(queueToken, CONCERT_ID, seatIds);
+        SelectSeatRequest request = new SelectSeatRequest(queueToken, CONCERT_ID, seatNumbers);
 
         // when
         int threadCount = 1000;

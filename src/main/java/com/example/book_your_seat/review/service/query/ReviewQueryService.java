@@ -21,13 +21,13 @@ public class ReviewQueryService {
 
 
     public List<ReviewListResponse> reviewPageList(Long concertId, Long reviewId, Pageable pageable){
-        Slice<Review> reviews = reviewRepository.pageNationReviewList(concertId, reviewId, pageable);
-        return reviews.stream().map(ReviewListResponse::fromReview).toList();
+        return reviewRepository.pageNationReviewList(concertId, reviewId, pageable).stream()
+                .toList();
     }
 
     public List<ReviewListResponse> reviewUserList(Long userId, Long reviewId, Pageable pageable){
-        Slice<Review> reviews = reviewRepository.pageNationUserReviewList(userId, reviewId, pageable);
-        return reviews.stream().map(ReviewListResponse::fromReview).toList();
+        return reviewRepository.pageNationUserReviewList(userId, reviewId, pageable).stream()
+                .toList();
     }
 
 

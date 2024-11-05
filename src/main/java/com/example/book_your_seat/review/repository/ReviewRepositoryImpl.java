@@ -1,6 +1,7 @@
 package com.example.book_your_seat.review.repository;
 
-import com.example.book_your_seat.review.domain.Review;
+import com.example.book_your_seat.review.controller.dto.ReviewListResponse;
+import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
@@ -21,13 +22,20 @@ public class ReviewRepositoryImpl implements ReviewRepositoryCustom{
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public Slice<Review> pageNationReviewList(Long concertId, Long reviewId, Pageable pageable) {
+    public Slice<ReviewListResponse> pageNationReviewList(Long concertId, Long reviewId, Pageable pageable) {
 
-        List<Review> reviewList = queryFactory.selectFrom(review)
-                .where(eqConcertId(concertId).and(ltReviewId(reviewId)))
-                .join(review.user, user).fetchJoin()
-                .limit(pageable.getPageSize() + 1) //후에 값이 더 있나 체크하기 위해 하나 더 가져옴
+        List<ReviewListResponse> reviewList = queryFactory
+                .select(Projections.constructor(ReviewListResponse.class,
+                        user.username,
+                        review.content,
+                        review.starCount,
+                        review.id
+                ))
+                .from(review)
+                .join(user).on(review.userId.eq(user.id))
+                .where(ltReviewId(reviewId))
                 .orderBy(review.createdAt.desc())
+                .limit(pageable.getPageSize() + 1) //후에 값이 더 있나 체크하기 위해 하나 더 가져옴
                 .fetch();
 
         boolean hasNext = false;
@@ -42,11 +50,18 @@ public class ReviewRepositoryImpl implements ReviewRepositoryCustom{
     }
 
     @Override
-    public Slice<Review> pageNationUserReviewList(Long userId, Long reviewId, Pageable pageable) {
+    public Slice<ReviewListResponse> pageNationUserReviewList(Long userId, Long reviewId, Pageable pageable) {
 
-        List<Review> reviewList = queryFactory.selectFrom(review)
-                .where(eqUserId(userId).and(ltReviewId(reviewId)))
-                .join(review.user, user).fetchJoin()
+        List<ReviewListResponse> reviewList = queryFactory
+                .select(Projections.constructor(ReviewListResponse.class,
+                        user.username,
+                        review.content,
+                        review.starCount,
+                        review.id
+                ))
+                .from(review)
+                .join(user).on(review.userId.eq(user.id))
+                .where(ltReviewId(reviewId))
                 .limit(pageable.getPageSize() + 1) //후에 값이 더 있나 체크하기 위해 하나 더 가져옴
                 .orderBy(review.createdAt.desc())
                 .fetch();
@@ -64,13 +79,5 @@ public class ReviewRepositoryImpl implements ReviewRepositoryCustom{
 
     private BooleanExpression ltReviewId(Long reviewId) {
         return reviewId != null ? review.id.lt(reviewId) : null;
-    }
-
-    private BooleanExpression eqUserId(Long userId){
-        return review.user.id.eq(userId);
-    }
-
-    private BooleanExpression eqConcertId(Long concertId){
-        return review.concert.id.eq(concertId);
     }
 }

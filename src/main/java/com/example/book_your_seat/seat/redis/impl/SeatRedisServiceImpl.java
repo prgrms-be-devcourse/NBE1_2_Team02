@@ -3,8 +3,10 @@ package com.example.book_your_seat.seat.redis.impl;
 
 import com.example.book_your_seat.reservation.contorller.dto.request.PaymentRequest;
 import com.example.book_your_seat.seat.domain.Seat;
+import com.example.book_your_seat.seat.domain.SeatId;
 import com.example.book_your_seat.seat.redis.SeatRedisService;
 import lombok.RequiredArgsConstructor;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,21 +27,25 @@ public class SeatRedisServiceImpl implements SeatRedisService {
     @Transactional
     public void cacheSeatIds(final List<Seat> seats,final Long userId) {
         seats.forEach(seat -> {
-            String redisKey = "seat:" + seat.getId();
+            String redisKey = createRedisKey(seat);
             try {
                 redisTemplate.opsForValue().set(redisKey, userId.toString(), 30, TimeUnit.MINUTES);
             }catch (Exception e){
-
                 throw new IllegalArgumentException(SEAT_SOLD);
             }
         });
     }
 
+    @NotNull
+    private String createRedisKey(Seat seat) {
+        return  "seat:" + seat.getId().getConcertId() + "-" + seat.getId().getSeatNumber();
+    }
+
     @Override
     @Transactional(readOnly = true)
     public void validateSeat(final PaymentRequest request, final Long userId) {
-        for (Long seatId : request.seatIds()) {
-            String redisKey = "seat:" + seatId;
+        for (Long number : request.seatNumbers()) {
+            String redisKey = "concert:" + request.concertId() + "seat:" + number;
 
             if(Boolean.FALSE.equals(redisTemplate.hasKey(redisKey))) {
                 throw new IllegalArgumentException(ACCEPTABLE_TIMEOUT);
@@ -54,11 +60,9 @@ public class SeatRedisServiceImpl implements SeatRedisService {
 
     @Override
     @Transactional
-    public void deleteCache(final Long seatId) {
+    public void deleteCache(final SeatId seatId) {
         // Redis에서 키 삭제
-        String key = "seat:" + seatId;
+        String key = "seat:" + seatId.getConcertId() + "-" + seatId.getSeatNumber();
         redisTemplate.delete(key);
     }
-
-
 }

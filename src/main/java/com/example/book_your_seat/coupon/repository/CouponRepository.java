@@ -13,4 +13,5 @@ public interface CouponRepository extends JpaRepository<Coupon, Long>, CouponRep
     @Query("SELECT c FROM Coupon c WHERE c.id = :couponId")
     Optional<Coupon> findByIdWithPessimistic(@Param("couponId") Long couponId);
 
+
 }

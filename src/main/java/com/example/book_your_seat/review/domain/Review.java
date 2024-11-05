@@ -26,26 +26,19 @@ public class Review extends BaseEntity {
 
     private int starCount;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private User user;
+    private Long userId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "concert_id")
-    private Concert concert;
+    private Long concertId;
 
-    public Review(String content, int starCount, User user, Concert concert) {
+    public Review(String content, int starCount, Long userId, Long concertId) {
         this.content = content;
         this.starCount = starCount;
-        this.user = user;
-        this.concert = concert;
-        user.addReview(this);
-        concert.addReview(this);
+        this.userId = userId;
+        this.concertId = concertId;
     }
 
-
-    public static Review from(String content, int starCount, User user, Concert concert){
-        return new Review(content, starCount, user, concert);
+    public static Review from(String content, int starCount, Long userId, Long concertId){
+        return new Review(content, starCount, userId, concertId);
     }
 
 

@@ -6,6 +6,7 @@ import com.example.book_your_seat.coupon.controller.dto.CouponDetailResponse;
 import com.example.book_your_seat.coupon.domain.DiscountRate;
 import com.example.book_your_seat.coupon.service.command.CouponCommandService;
 import com.example.book_your_seat.coupon.service.query.CouponQueryService;
+
 import com.example.book_your_seat.payment.controller.dto.request.FinalPriceRequest;
 import com.example.book_your_seat.payment.controller.dto.response.ConfirmResponse;
 import com.example.book_your_seat.payment.controller.dto.response.FinalPriceResponse;
@@ -15,26 +16,21 @@ import com.example.book_your_seat.payment.service.command.PaymentCommandService;
 import com.example.book_your_seat.payment.service.dto.PaymentCommand;
 import com.example.book_your_seat.queue.service.command.QueueCommandService;
 import com.example.book_your_seat.reservation.domain.Reservation;
-import com.example.book_your_seat.reservation.domain.ReservationStatus;
 import com.example.book_your_seat.reservation.service.command.ReservationCommandService;
+import com.example.book_your_seat.seat.domain.SeatId;
 import com.example.book_your_seat.seat.service.query.SeatQueryService;
 import com.example.book_your_seat.user.domain.Address;
-import com.example.book_your_seat.user.domain.User;
-import com.example.book_your_seat.user.service.query.AddressQueryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.List;
 
 @Transactional
 @RequiredArgsConstructor
 @Service
 public class PaymentFacade {
-
-    private final AddressQueryService addressQueryService;
 
     private final PaymentCommandService paymentCommandService;
     private final ReservationCommandService reservationCommandService;
@@ -50,39 +46,40 @@ public class PaymentFacade {
     public ConfirmResponse processPayment(final PaymentCommand command, Long userId, String token) {
 
         Payment payment = createPayment(command);
-        Reservation reservation = createReservation(command, payment);
+        Reservation reservation = createReservation(command, payment, userId);
 
         paymentCommandService.savePayment(payment);
-        Reservation savedReservation = reservationCommandService.saveReservation(reservation);
+        reservationCommandService.saveReservation(reservation);
 
         couponCommandService.useUserCoupon(command.userCouponId);
         ConcertResponse concert = concertQueryService.findById(command.concertId);
 
-
-        List<Integer> seatNumbers = seatQueryService.findSeatNumbers(command.seatIds);
         queueCommandService.removeTokenInProcessingQueue(userId, command.concertId, token);
 
         return ConfirmResponse.builder()
                 .userId(userId)
-                .reservationId(savedReservation.getId())
+                .reservationId(reservation.getId())
                 .concludePrice(command.totalAmount)
-                .status(savedReservation.getStatus())
+                .status(reservation.getStatus())
                 .concertTitle(concert.getTitle())
                 .concertStartHour(concert.getStartHour())
-                .seatsId(command.seatIds)
-                .seatNumbers(seatNumbers)
+                .seatNumbers(
+                        command.seatIds.stream()
+                        .map(SeatId::getSeatNumber)
+                        .toList()
+                )
                 .build();
     }
 
-    private Reservation createReservation(PaymentCommand command, Payment payment) {
-        Address address = addressQueryService.getAddressWithUser(command.addressId);
-        User user = address.getUser();
+    private Reservation createReservation(PaymentCommand command, Payment payment, Long userId) {
+        Address address = new Address(command.postCode, command.detail);
+
 
         return Reservation.builder()
-                .user(user)
+                .userId(userId)
                 .address(address)
-                .payment(payment)
-                .status(ReservationStatus.ORDERED)
+                .paymentId(payment.getId())
+                .seatIds(command.seatIds)
                 .build();
     }
 
@@ -101,7 +98,7 @@ public class PaymentFacade {
     @Transactional(readOnly = true)
     public FinalPriceResponse getFinalPrice(final FinalPriceRequest request) {
 
-        Integer originPrice = seatQueryService.getSeatPrice(request.seatIds());
+        Integer originPrice = seatQueryService.getSeatPrice(request);
         DiscountRate discountRate = couponQueryService.getDiscountRate(request.userCouponId());
 
         return new FinalPriceResponse(calculateDiscountPrice(originPrice, discountRate));

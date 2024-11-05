@@ -37,7 +37,7 @@ public class CouponFacade {
         coupon.issue();
         couponCommandService.saveAndFlush(coupon);
         return new UserCouponIdResponse(
-                userCouponQueryService.save(new UserCoupon(user, coupon)).getId()
+                userCouponQueryService.save(new UserCoupon(user.getId(), coupon.getId())).getId()
         );
     }
 

@@ -8,7 +8,6 @@ import com.example.book_your_seat.user.domain.Address;
 import com.example.book_your_seat.user.domain.User;
 import com.example.book_your_seat.user.mail.repository.MailRedisRepository;
 import com.example.book_your_seat.user.mail.service.MailService;
-import com.example.book_your_seat.user.repository.AddressRepository;
 import com.example.book_your_seat.user.repository.UserRepository;
 import com.example.book_your_seat.user.service.command.UserCommandService;
 import com.example.book_your_seat.user.service.facade.UserFacade;
@@ -23,7 +22,6 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
 import static com.example.book_your_seat.user.UserConst.*;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -47,9 +45,6 @@ public class UserCommandServiceTest extends IntegralTestSupport {
 
     @Autowired
     private UserRepository userRepository;
-
-    @Autowired
-    private AddressRepository addressRepository;
 
     @Autowired
     private MailRedisRepository mailRedisRepository;
@@ -180,28 +175,28 @@ public class UserCommandServiceTest extends IntegralTestSupport {
         AddAddressRequest addAddressRequest = new AddAddressRequest("postcode", "detail");
 
         // when
-        AddressIdResponse addressIdResponse = userFacade.addAddress(existingUser.getId(), addAddressRequest);
+        Address address = userFacade.addAddress(existingUser.getId(), addAddressRequest);
         List<Address> list = existingUser.getAddressList();
 
         // then
-        assertThat(list.size()).isEqualTo(1);
-        assertThat(list.get(0).getUser().getId()).isEqualTo(existingUser.getId());
-        assertThat(list.get(0).getId()).isEqualTo(addressIdResponse.addressId());
+        assertThat(list).contains(address);
     }
 
     @Test
     @DisplayName("주소를 삭제한다.")
     void deleteAddressTest() {
         // given
-        AddAddressRequest addAddressRequest = new AddAddressRequest("postcode", "detail");
-        AddressIdResponse addressIdResponse = userFacade.addAddress(existingUser.getId(), addAddressRequest);
+        DeleteAddressRequest deleteRequest = new DeleteAddressRequest("postcode", "detail");
+        AddAddressRequest addRequest = new AddAddressRequest("postcode", "detail");
+        Address address = addRequest.to();
+        userFacade.addAddress(existingUser.getId(), addRequest);
 
         // when
-        userFacade.deleteAddress(existingUser.getId(), addressIdResponse.addressId());
-        Optional<Address> byId = addressRepository.findById(addressIdResponse.addressId());
+        userFacade.deleteAddress(existingUser.getId(), deleteRequest);
+        List<Address> list = existingUser.getAddressList();
 
         // then
-        assertThat(byId.isEmpty()).isTrue();
+        assertThat(list).doesNotContain(address);
     }
 
     @Test
@@ -211,12 +206,11 @@ public class UserCommandServiceTest extends IntegralTestSupport {
         User newUser = new User("nickname", "username", "test@test.com", "passwordpassword");
         userRepository.saveAndFlush(newUser);
 
-        AddAddressRequest addAddressRequest = new AddAddressRequest("postcode", "detail");
-        AddressIdResponse addressIdResponse = userFacade.addAddress(newUser.getId(), addAddressRequest);
+        DeleteAddressRequest request = new DeleteAddressRequest("postcode", "detail");
 
         // when
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
-                () -> userFacade.deleteAddress(existingUser.getId(), addressIdResponse.addressId()));
+                () -> userFacade.deleteAddress(existingUser.getId(), request));
 
         //then
         assertEquals(ADDRESS_NOT_OWNED, exception.getMessage());
@@ -233,11 +227,10 @@ public class UserCommandServiceTest extends IntegralTestSupport {
         userFacade.addAddress(existingUser.getId(), addAddressRequest2);
 
         // when
-        List<AddressResponse> list = userQueryService.getUserAddressList(existingUser.getId());
+        List<Address> userAddressList = userQueryService.getUserAddressList(existingUser.getId());
 
         // then
-        assertEquals(2, list.size());
-        Assertions.assertThat(list)
+        Assertions.assertThat(userAddressList)
                 .extracting("postcode")
                 .containsExactly("postcode", "postcode2");
     }

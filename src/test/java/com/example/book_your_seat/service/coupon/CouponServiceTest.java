@@ -1,5 +1,6 @@
 package com.example.book_your_seat.service.coupon;
 
+import com.example.DbCleaner;
 import com.example.book_your_seat.IntegralTestSupport;
 import com.example.book_your_seat.coupon.controller.dto.CouponCreateRequest;
 import com.example.book_your_seat.coupon.controller.dto.CouponResponse;
@@ -28,6 +29,8 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 public class CouponServiceTest extends IntegralTestSupport {
 
     @Autowired
+    private DbCleaner dbCleaner;
+    @Autowired
     private CouponFacade couponCommandService;
 
     @Autowired
@@ -49,6 +52,7 @@ public class CouponServiceTest extends IntegralTestSupport {
 
     @AfterEach
     void afterEach() {
+        dbCleaner.cleanDatabase();
         userRepository.deleteAll();
         couponRepository.deleteAll();
         userCouponRepository.deleteAll();

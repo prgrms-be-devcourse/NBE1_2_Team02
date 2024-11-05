@@ -2,10 +2,8 @@ package com.example.book_your_seat.user.service.command;
 
 import com.example.book_your_seat.config.security.auth.CustomUserDetails;
 import com.example.book_your_seat.config.security.jwt.SecurityJwtUtil;
-import com.example.book_your_seat.user.controller.dto.JoinRequest;
-import com.example.book_your_seat.user.controller.dto.LoginRequest;
-import com.example.book_your_seat.user.controller.dto.TokenResponse;
-import com.example.book_your_seat.user.controller.dto.UserResponse;
+import com.example.book_your_seat.user.controller.dto.*;
+import com.example.book_your_seat.user.domain.Address;
 import com.example.book_your_seat.user.domain.User;
 import com.example.book_your_seat.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +15,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
+import static com.example.book_your_seat.user.UserConst.ADDRESS_NOT_OWNED;
 import static com.example.book_your_seat.user.UserConst.INVALID_LOGIN_REQUEST;
 
 @Service
@@ -60,6 +61,19 @@ public class UserCommandService {
         user.changeRoleToAdmin();
         userRepository.save(user);
         return new TokenResponse(securityJwtUtil.createJwt(user));
+    }
+
+    public Address addAddress(User user, Address address) {
+        user.addAddress(address);
+        return address;
+    }
+
+    public void deleteAddress(User user, Address address) {
+        List<Address> addressList = user.getAddressList();
+        if(!addressList.contains(address)) {
+            throw new IllegalArgumentException(ADDRESS_NOT_OWNED);
+        }
+        addressList.remove(address);
     }
 
 }

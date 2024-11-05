@@ -1,9 +1,8 @@
 package com.example.book_your_seat.coupon.repository;
 
-import com.example.book_your_seat.coupon.controller.dto.QUserCouponResponse;
 import com.example.book_your_seat.coupon.controller.dto.UserCouponRequest;
 import com.example.book_your_seat.coupon.controller.dto.UserCouponResponse;
-import com.example.book_your_seat.coupon.domain.QCoupon;
+import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
@@ -28,10 +27,15 @@ public class CouponRepositoryImpl implements CouponRepositoryCustom{
     @Override
     public Slice<UserCouponResponse> selectUserCoupons(UserCouponRequest userCouponRequest,Long memberId, Pageable pageable) {
         List<UserCouponResponse> result = queryFactory
-                .select(new QUserCouponResponse(coupon.id,userCoupon.isUsed, coupon.expirationDate.stringValue(), coupon.discountRate.stringValue()))
+                .select(Projections.constructor(UserCouponResponse.class,
+                        userCoupon.couponId,
+                        userCoupon.isUsed,
+                        coupon.expirationDate,
+                        coupon.discountRate
+                        ))
                 .from(userCoupon)
-                .join(userCoupon.user, user)
-                .join(userCoupon.coupon, coupon)   //inner join을 사용함
+                .join(user).on(user.id.eq(userCoupon.userId))
+                .join(coupon).on(coupon.id.eq(userCoupon.couponId))
                 .where(isUsed(userCouponRequest.used()), isMember(memberId))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize() + 1) // 한개를 더 반환

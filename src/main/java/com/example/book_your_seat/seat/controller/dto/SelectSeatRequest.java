@@ -12,6 +12,6 @@ public record SelectSeatRequest(
         @NotNull(message = ENTER_CONCERT_ID )
         Long concertId,
         @NotNull(message = ENTER_SEATS)
-        List<Long> seatIds
+        List<Long> seatNumbers
 ) {
 }

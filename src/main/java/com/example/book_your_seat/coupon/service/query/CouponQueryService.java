@@ -21,14 +21,18 @@ public class CouponQueryService {
 
     public CouponDetailResponse getCouponDetailById(Long userCouponId) {
         UserCoupon userCoupon = userCouponQueryService.findValidUserCoupon(userCouponId);
-        Coupon coupon = userCoupon.getCoupon();
+        Coupon coupon = couponRepository.findById(userCoupon.getCouponId())
+                .orElseThrow(() -> new IllegalArgumentException(COUPON_NOT_FOUND));
+
         return CouponDetailResponse.fromCoupon(coupon);
     }
 
     public DiscountRate getDiscountRate(Long userCouponId) {
-        return userCouponQueryService.findValidUserCoupon(userCouponId)
-                .getCoupon()
-                .getDiscountRate();
+        UserCoupon userCoupon = userCouponQueryService.findValidUserCoupon(userCouponId);
+        Coupon coupon = couponRepository.findById(userCoupon.getCouponId())
+                .orElseThrow(() -> new IllegalArgumentException(COUPON_NOT_FOUND));
+
+        return coupon.getDiscountRate();
     }
 
     public Coupon findByIdWithPessimistic(Long couponId) {

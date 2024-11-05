@@ -1,8 +1,6 @@
 package com.example.book_your_seat.concert.domain;
 
 import com.example.book_your_seat.common.entity.BaseEntity;
-import com.example.book_your_seat.review.domain.Review;
-import com.example.book_your_seat.seat.domain.Seat;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -10,14 +8,12 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.IntStream;
 
 import static com.example.book_your_seat.concert.ConcertConst.*;
 
 @Entity
 @Getter
+@Table(indexes = @Index(name = "idx_concert_title", columnList = "title"))
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Concert extends BaseEntity {
 
@@ -39,13 +35,6 @@ public class Concert extends BaseEntity {
 
     private LocalDateTime reservationStartAt;
 
-    @OneToMany(mappedBy = "concert", cascade = CascadeType.ALL)
-    private final List<Review> reviews = new ArrayList<>();
-
-    @OneToMany(mappedBy = "concert", cascade = CascadeType.ALL, orphanRemoval = true)
-    private final List<Seat> seats = new ArrayList<>();
-
-
     public Concert(String title, LocalDate startDate, LocalDate endDate, int price, int startHour) {
         this.title = title;
         this.totalStock = TOTAL_STOCK;
@@ -54,7 +43,6 @@ public class Concert extends BaseEntity {
         this.price = price;
         this.startHour = startHour;
         this.reservationStartAt = setReservationTime(startDate);
-        initializeSeats(); // 혹시라도 Seat 가 100개를 초과하지 않을까
     }
 
     private LocalDateTime setReservationTime(LocalDate startDate) {
@@ -67,20 +55,6 @@ public class Concert extends BaseEntity {
                 RESERVATION_START_SECOND
         )
                 .minusWeeks(1);
-    }
-
-    private void initializeSeats() {
-        IntStream.rangeClosed(1, TOTAL_STOCK)
-                .mapToObj(i -> new Seat(this, i))
-                .forEach(this::addSeat);
-    }
-
-    public void addReview(Review review) {
-        this.reviews.add(review);
-    }
-
-    public void addSeat(Seat seat) {
-        this.seats.add(seat);
     }
 
 }

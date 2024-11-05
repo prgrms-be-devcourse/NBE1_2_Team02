@@ -1,5 +1,6 @@
 package com.example.book_your_seat.user.controller.dto;
 
+import com.example.book_your_seat.user.domain.Address;
 import jakarta.validation.constraints.NotNull;
 
 public record AddAddressRequest(
@@ -11,4 +12,8 @@ public record AddAddressRequest(
         String detail
 
 ) {
+
+        public Address to() {
+                return new Address(postcode, detail);
+        }
 }
