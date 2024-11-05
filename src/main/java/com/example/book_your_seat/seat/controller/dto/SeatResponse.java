@@ -20,7 +20,7 @@ public final class SeatResponse {
     public static SeatResponse from(final List<Seat> seats) {
         Long concertId = seats.get(0).getId().getConcertId();
         List<Long> seatNumbers = seats.stream()
-                .map(seat -> seat.getId().getConcertId())
+                .map(seat -> seat.getId().getSeatNumber())
                 .toList();
 
         return new SeatResponse(concertId, seatNumbers);
