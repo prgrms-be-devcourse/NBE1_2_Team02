@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 import static com.example.book_your_seat.payment.domain.PaymentStatus.CANCELLED;
 
@@ -15,9 +16,9 @@ import static com.example.book_your_seat.payment.domain.PaymentStatus.CANCELLED;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Payment {
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "payment_id")
-    private Long id;
+    private UUID id;
 
     private Long totalPrice;
     private LocalDateTime expiryAt;

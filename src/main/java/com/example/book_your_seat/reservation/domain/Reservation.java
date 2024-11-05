@@ -10,6 +10,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
+import java.util.UUID;
 
 import static com.example.book_your_seat.reservation.domain.ReservationStatus.CANCELLED;
 import static com.example.book_your_seat.reservation.domain.ReservationStatus.ORDERED;
@@ -35,7 +36,7 @@ public class Reservation extends BaseEntity {
     @Embedded
     private Address address;
 
-    private Long paymentId;
+    private UUID paymentId;
 
     @ElementCollection
     @Column(name = "seat_id")
@@ -46,7 +47,7 @@ public class Reservation extends BaseEntity {
     }
 
     @Builder
-    public Reservation(Long userId, Address address, Long paymentId, List<SeatId> seatIds) {
+    public Reservation(Long userId, Address address, UUID paymentId, List<SeatId> seatIds) {
         this.userId = userId;
         this.address = address;
         this.paymentId = paymentId;
