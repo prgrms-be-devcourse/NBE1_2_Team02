@@ -132,4 +132,17 @@ public class SwaggerConfig {
                                 .version("1.0.0")))
                 .build();
     }
+
+    @Bean
+    public GroupedOpenApi likeConcertAPI() {
+        return GroupedOpenApi.builder()
+                .group("likeConcert API")
+                .pathsToMatch("/api/v1/likes/**")
+                .addOpenApiCustomizer(openApi ->
+                        openApi.info(new Info()
+                                .title("likeConcert API")
+                                .description("likeConcert 관련 API를 제공합니다.")
+                                .version("1.0.0")))
+                .build();
+    }
 }
