@@ -7,6 +7,7 @@ import com.example.book_your_seat.review.controller.dto.ReviewResponse;
 import com.example.book_your_seat.review.controller.dto.ReviewUpdateDTO;
 import com.example.book_your_seat.review.service.facade.ReviewFacade;
 import com.example.book_your_seat.user.domain.User;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -24,6 +25,10 @@ public class ReviewController {
 
     private final ReviewFacade reviewService;
 
+    @Operation(
+            summary = "리뷰를 저장합니다.",
+            description = "리뷰를 저장합니다."
+    )
     @PostMapping
     public ResponseEntity<ReviewResponse> saveReview(
             @RequestBody ReviewCreateRequest req,
@@ -41,6 +46,11 @@ public class ReviewController {
                 .body(reviewResponse);
     }
 
+
+    @Operation(
+            summary = "모든 리뷰를 조회합니다.",
+            description = "모든 리뷰를 조회합니다."
+    )
     @GetMapping
     public ResponseEntity<List<ReviewListResponse>> findAll(
             @RequestParam("concertId") Long concertId,
@@ -58,6 +68,10 @@ public class ReviewController {
         return ResponseEntity.ok(reviewResDTOS);
     }
 
+    @Operation(
+            summary = "특정 유저의 모든 리뷰를 조회합니다.",
+            description = "특정 유저의 모든 리뷰를 조회합니다."
+    )
     @GetMapping("/userConcert")
     public ResponseEntity<List<ReviewListResponse>> findUserReviewAll(
             @RequestParam("userId") Long userId,
@@ -73,6 +87,10 @@ public class ReviewController {
         return ResponseEntity.ok(reviewResDTOS);
     }
 
+    @Operation(
+            summary = "리뷰를 수정합니다.",
+            description = "리뷰를 수정합니다."
+    )
     @PatchMapping
     public ResponseEntity<ReviewResponse> updateReview(
             @RequestBody ReviewUpdateDTO reviewUpdateDTO,
@@ -88,6 +106,10 @@ public class ReviewController {
         return ResponseEntity.ok(reviewResponse);
     }
 
+    @Operation(
+            summary = "리뷰를 삭제합니다.",
+            description = "리뷰를 삭제합니다."
+    )
     @DeleteMapping("/{reviewId}")
     public ResponseEntity<Void> deleteReview(
             @LoginUser User user,

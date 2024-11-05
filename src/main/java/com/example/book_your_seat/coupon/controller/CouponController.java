@@ -7,6 +7,7 @@ import com.example.book_your_seat.coupon.controller.dto.UserCouponResponse;
 import com.example.book_your_seat.coupon.service.facade.CouponFacade;
 import com.example.book_your_seat.coupon.service.facade.UserCouponFacade;
 import com.example.book_your_seat.user.domain.User;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -22,7 +23,10 @@ public class CouponController {
     private final UserCouponFacade userCouponFacade;
     private final CouponFacade couponFacade;
 
-
+    @Operation(
+            summary = "쿠폰을 발행합니다.",
+            description = "쿠폰을 발행합니다."
+    )
     @PostMapping("/{couponId}")
     public ResponseEntity<UserCouponIdResponse> issueCoupon(
             @LoginUser User user,
@@ -33,6 +37,10 @@ public class CouponController {
                 .body(couponFacade.issueCouponWithPessimistic(user.getId(), couponId));
     }
 
+    @Operation(
+            summary = "사용자 쿠폰을 조회합니다.",
+            description = "사용자의 쿠폰을 조회합니다."
+    )
     @GetMapping("/user")
     public Slice<UserCouponResponse> getUserCoupons(@LoginUser User user,
                                                     UserCouponRequest userCouponRequest,
