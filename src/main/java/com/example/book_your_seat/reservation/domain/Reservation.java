@@ -17,10 +17,7 @@ import static com.example.book_your_seat.reservation.domain.ReservationStatus.OR
 
 @Entity
 @Getter
-@Table(indexes = {
-        @Index(name = "idx_reservation_user_id", columnList = "user_id"),
-        @Index(name = "idx_reservation_seat_id", columnList = "seat_id")
-})
+@Table(indexes = @Index(name = "idx_reservation_user_id", columnList = "user_id"))
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Reservation extends BaseEntity {
 
@@ -39,7 +36,9 @@ public class Reservation extends BaseEntity {
     private UUID paymentId;
 
     @ElementCollection
-    @Column(name = "seat_id")
+    @CollectionTable(name = "reservation_seat", joinColumns = @JoinColumn(name = "reservation_id"),
+            indexes = @Index(name = "idx_reservation_seat_id", columnList = "reservation_id, concert_id, seat_number")
+    )
     private List<SeatId> seatIds;
 
     public void cancelReservation() {
