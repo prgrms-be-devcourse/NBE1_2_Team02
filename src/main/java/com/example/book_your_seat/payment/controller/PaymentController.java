@@ -16,6 +16,7 @@ import com.example.book_your_seat.reservation.contorller.dto.request.PaymentRequ
 import com.example.book_your_seat.reservation.service.facade.ReservationFacade;
 import com.example.book_your_seat.seat.redis.SeatRedisService;
 import com.example.book_your_seat.user.domain.User;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -32,7 +33,11 @@ public class PaymentController {
     private final SeatRedisService seatRedisService;
     private final SlackFacade slackFacade;
     private final ReservationFacade reservationFacade;
-    
+
+    @Operation(
+            summary = "최종 가격을 가져옵니다.",
+            description = "최종 가격을 가져옵니다."
+    )
     @PostMapping("/totalPrice")
     public ResponseEntity<FinalPriceResponse> getTotalPrice(
             @Valid @RequestBody final FinalPriceRequest request
@@ -44,6 +49,10 @@ public class PaymentController {
                 .body(finalPrice);
     }
 
+    @Operation(
+            summary = "토스페이먼츠에 결재 승인 요청을 보냅니다.",
+            description = "토스페이먼츠에 결재 승인 요청을 보냅니다."
+    )
     @PostMapping("/success")
     public ResponseEntity<ConfirmResponse> confirmPayment(
             @Valid @RequestBody final PaymentRequest request,
@@ -62,6 +71,10 @@ public class PaymentController {
         return ResponseEntity.ok(response);
     }
 
+    @Operation(
+            summary = "예매 취소를 요청합니다.",
+            description = "예매 취소를 요청합니다."
+    )
     @PutMapping("/cancel")
     public ResponseEntity<TossCancelResponse> cancelReservation(
             @Valid @RequestBody final CancelReservationRequest request,
